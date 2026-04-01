@@ -2,7 +2,7 @@
 const fs=require('fs'),path=require('path');
 const contentPath=path.join(__dirname,'content.json');
 const inputPath=path.join(__dirname,'revnox-media-v4.html');
-const outputPath=path.join(__dirname,'index.html');
+const outputPath=path.join(__dirname,'revnox-media-v4.html');
 if(!fs.existsSync(contentPath)){console.error('ERROR: content.json not found');process.exit(1);}
 if(!fs.existsSync(inputPath)){console.error('ERROR: revnox-media-v4.html not found');process.exit(1);}
 const content=JSON.parse(fs.readFileSync(contentPath,'utf8'));
@@ -80,4 +80,4 @@ html=html.replace(/<\/body>/i,`  ${inj}\n</body>`);
 
 // 6. write
 fs.writeFileSync(outputPath,html,'utf8');
-console.log('\u2713 build.js: index.html updated (SEO + content replacements)');
+console.log('\u2713 build.js: revnox-media-v4.html updated (SEO + content replacements)');
