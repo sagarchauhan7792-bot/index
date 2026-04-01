@@ -1,0 +1,85 @@
+{
+  "seo": {
+    "title": "Revnox Media | Revenue Growth Infrastructure",
+    "description": "Revnox Media builds Revenue Growth Infrastructure for D2C brands — combining performance marketing, creative intelligence, ecommerce systems, and AI automation to scale revenue consistently.",
+    "keywords": "revenue growth, performance marketing, D2C marketing agency, Meta ads, Google ads, ecommerce growth, creative testing, AI automation, Shopify marketing",
+    "canonical": "https://www.revnoxmedia.com/",
+    "og_title": "Revnox Media | Revenue Growth Infrastructure",
+    "og_description": "We build Revenue Growth Infrastructure for D2C brands — performance marketing, creative systems, ecommerce, and AI automation.",
+    "og_image": "https://www.revnoxmedia.com/og-image.png",
+    "og_url": "https://www.revnoxmedia.com/",
+    "twitter_card": "summary_large_image",
+    "twitter_title": "Revnox Media | Revenue Growth Infrastructure",
+    "twitter_description": "We build Revenue Growth Infrastructure for D2C brands — performance marketing, creative systems, ecommerce, and AI automation.",
+    "twitter_image": "https://www.revnoxmedia.com/og-image.png"
+  },
+  "hero": {
+    "heading": "Revenue Growth Infrastructure",
+    "subheading": "Marketing should translate into measurable business impact. Every Revnox engagement is engineered around the metrics that determine long-term growth.",
+    "cta_primary": "Book a Call",
+    "cta_secondary": "Pull for a Strategy"
+  },
+  "stats": {
+    "revenue_generated": "120 Crore+",
+    "ad_spend_managed": "30 Crore+",
+    "creatives_tested": "1500",
+    "industries_scaled": "12"
+  },
+  "services": [
+    {
+      "key": "performance_marketing",
+      "title": "Performance Marketing",
+      "description": "High-performance acquisition systems across Meta and Google — structured to identify scalable audiences and unlock consistent revenue growth."
+    },
+    {
+      "key": "creative_intelligence",
+      "title": "Creative Intelligence",
+      "description": "Structured creative testing frameworks that rapidly identify winning ad concepts, messaging angles, and storytelling formats."
+    },
+    {
+      "key": "ecommerce_infrastructure",
+      "title": "Ecommerce Infrastructure",
+      "description": "Shopify stores, high-converting landing pages, and optimized customer journeys that transform traffic into revenue for D2C brands."
+    },
+    {
+      "key": "ai_automation",
+      "title": "AI Automation",
+      "description": "AI-assisted workflows that streamline marketing operations, creative generation, reporting, and campaign management."
+    },
+    {
+      "key": "influencer_marketing",
+      "title": "Influencer Marketing",
+      "description": "Creator programs aligned with performance marketing goals — expanding brand reach while maintaining measurable ROI."
+    },
+    {
+      "key": "data_intelligence",
+      "title": "Data Intelligence",
+      "description": "Analytics systems and dashboards that translate campaign performance into actionable insights for continuous optimization."
+    }
+  ],
+  "case_studies": [
+    {
+      "key": "case_1",
+      "title": "₹40L → ₹2Cr/month",
+      "description": "Restructured the advertising account, introduced a creative testing framework, and optimized the landing page funnel. Revenue scaled 5x."
+    },
+    {
+      "key": "case_2",
+      "title": "3.8x Return on Ad Spend",
+      "description": "Implemented a systematic creative testing pipeline that resolved creative fatigue and drove a consistent 3.8x ROAS across all campaigns."
+    },
+    {
+      "key": "case_3",
+      "title": "42% CPA Reduction",
+      "description": "Built a demand generation framework combining paid media, landing page optimization, and lead qualification systems for enterprise clients."
+    }
+  ],
+  "nav": {
+    "links": ["Growth", "Services", "Case Studies", "Methodology", "Book a Call"]
+  },
+  "footer": {
+    "tagline": "Revenue Growth Infrastructure",
+    "copyright": "© 2025 Revnox Media. All rights reserved."
+  },
+  "blog": []
+}

@@ -1,0 +1,34 @@
+name: Build Revnox Site
+
+on:
+  push:
+    paths:
+      - 'content.json'   # trigger only when content changes
+  workflow_dispatch:      # allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run build script
+        run: node build.js
+
+      - name: Commit updated index.html
+        run: |
+          git config user.name  "Revnox CMS Bot"
+          git config user.email "cms-bot@revnoxmedia.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "chore: rebuild index.html from content.json [skip ci]"
+          git push
