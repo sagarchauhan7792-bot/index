@@ -1,0 +1,125 @@
+<h1>Blog Posts</h1>
+<p class="subtitle">Create and manage blog content. Posts are stored in <code>content.json</code>.</p>
+
+<% const success = new URLSearchParams(/* query */).get ? null : null %>
+<% if (typeof success === 'string' && success) { %><div class="alert alert-success"><%= success %></div><% } %>
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<!-- New Post Form -->
+<div class="form-section">
+  <h2>New Post</h2>
+  <form method="POST" action="/blog/new">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="title" placeholder="Post title" required>
+      </div>
+      <div class="form-group">
+        <label>Slug <span style="color:#555;font-size:11px;">(URL path, auto-generated if blank)</span></label>
+        <input type="text" name="slug" placeholder="my-post-title">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="<%= new Date().toISOString().split('T')[0] %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Excerpt <span style="color:#555;font-size:11px;">(short summary)</span></label>
+      <textarea name="excerpt" rows="2" placeholder="Brief description of the post..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Body <span style="color:#555;font-size:11px;">(HTML supported)</span></label>
+      <textarea name="body" rows="8" placeholder="Write post content here..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">Publish Post</button>
+  </form>
+</div>
+
+<!-- Existing Posts -->
+<div class="form-section">
+  <h2>All Posts (<%= posts.length %>)</h2>
+  <% if (posts.length === 0) { %>
+    <p style="color:#555;font-size:14px;">No posts yet. Create your first post above.</p>
+  <% } else { %>
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <% posts.forEach(post => { %>
+      <tr>
+        <td style="color:#fff;font-weight:500;"><%= post.title %></td>
+        <td style="color:#666;"><%= post.date %></td>
+        <td><span class="badge <%= post.published ? 'badge-green' : 'badge-gray' %>"><%= post.published ? 'Published' : 'Draft' %></span></td>
+        <td>
+          <button onclick="toggleEdit('<%= post.id %>')" class="btn btn-sm" style="background:#222;color:#aaa;border:1px solid #333;margin-right:6px;">Edit</button>
+          <form method="POST" action="/blog/delete/<%= post.id %>" style="display:inline;" onsubmit="return confirm('Delete this post?')">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <!-- Inline edit form (hidden by default) -->
+      <tr id="edit-<%= post.id %>" style="display:none;">
+        <td colspan="4" style="padding:16px;background:#111;">
+          <form method="POST" action="/blog/edit/<%= post.id %>">
+            <div class="form-row" style="margin-bottom:12px;">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" value="<%= post.title %>" required>
+              </div>
+              <div class="form-group">
+                <label>Slug</label>
+                <input type="text" name="slug" value="<%= post.slug %>">
+              </div>
+            </div>
+            <div class="form-row" style="margin-bottom:12px;">
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" name="date" value="<%= post.date %>">
+              </div>
+              <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px;">
+                <input type="checkbox" name="published" id="pub-<%= post.id %>" <%= post.published ? 'checked' : '' %> style="width:auto;">
+                <label for="pub-<%= post.id %>" style="margin:0;">Published</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Excerpt</label>
+              <textarea name="excerpt" rows="2"><%= post.excerpt || '' %></textarea>
+            </div>
+            <div class="form-group">
+              <label>Body</label>
+              <textarea name="body" rows="6"><%= post.body || '' %></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Update Post</button>
+            <button type="button" onclick="toggleEdit('<%= post.id %>')" class="btn btn-sm" style="background:#222;color:#aaa;border:1px solid #333;margin-left:8px;">Cancel</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+
+<script>
+function toggleEdit(id) {
+  const row = document.getElementById('edit-' + id);
+  row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+}
+// Show flash messages from query params
+const params = new URLSearchParams(location.search);
+if (params.get('success')) {
+  const el = document.createElement('div');
+  el.className = 'alert alert-success';
+  el.textContent = params.get('success');
+  document.querySelector('h1').after(el);
+}
+if (params.get('error')) {
+  const el = document.createElement('div');
+  el.className = 'alert alert-error';
+  el.textContent = params.get('error');
+  document.querySelector('h1').after(el);
+}
+</script>

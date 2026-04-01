@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revnox CMS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0d0d0d; color: #e8e8e8; min-height: 100vh; }
+    a { color: #7c6fff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; height: 100vh; width: 220px;
+      background: #161616; border-right: 1px solid #2a2a2a;
+      display: flex; flex-direction: column; padding: 24px 16px;
+    }
+    .sidebar .brand { font-weight: 700; font-size: 18px; color: #fff; margin-bottom: 32px; }
+    .sidebar .brand span { color: #7c6fff; }
+    .sidebar nav a {
+      display: block; padding: 10px 12px; border-radius: 8px;
+      color: #aaa; font-size: 14px; margin-bottom: 4px; transition: all .15s;
+    }
+    .sidebar nav a:hover, .sidebar nav a.active {
+      background: #222; color: #fff; text-decoration: none;
+    }
+    .sidebar nav a.active { border-left: 3px solid #7c6fff; padding-left: 9px; }
+    .sidebar .logout { margin-top: auto; }
+    .sidebar .logout form button {
+      width: 100%; padding: 10px; background: #1e1e1e; border: 1px solid #333;
+      color: #aaa; border-radius: 8px; cursor: pointer; font-size: 13px;
+    }
+    .sidebar .logout form button:hover { background: #2a2a2a; color: #fff; }
+
+    /* Main */
+    .main { margin-left: 220px; padding: 40px; max-width: 900px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 32px; }
+
+    /* Alerts */
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; font-size: 14px; }
+    .alert-success { background: #0d2e1a; border: 1px solid #1a5c35; color: #4caf7d; }
+    .alert-error   { background: #2e0d0d; border: 1px solid #5c1a1a; color: #e57373; }
+
+    /* Form styles */
+    .form-section { background: #161616; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .form-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: #fff; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; color: #888; margin-bottom: 6px; font-weight: 500; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 10px 12px; background: #1e1e1e; border: 1px solid #333;
+      border-radius: 8px; color: #e8e8e8; font-size: 14px; font-family: inherit;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none; border-color: #7c6fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .char-count { font-size: 11px; color: #555; margin-top: 4px; }
+    .char-count.warn { color: #e5a03a; }
+    .char-count.over { color: #e57373; }
+
+    /* Buttons */
+    .btn { padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+    .btn-primary { background: #7c6fff; color: #fff; }
+    .btn-primary:hover { background: #6558e8; }
+    .btn-danger  { background: #c0392b; color: #fff; font-size: 13px; padding: 8px 16px; }
+    .btn-danger:hover { background: #a93226; }
+    .btn-sm { padding: 7px 14px; font-size: 13px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #222; }
+    th { color: #888; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+    tr:hover td { background: #161616; }
+
+    /* Badge */
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-green { background: #0d2e1a; color: #4caf7d; }
+    .badge-gray  { background: #222; color: #888; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">Revnox <span>CMS</span></div>
+  <nav>
+    <a href="/"        class="<%= page === 'dashboard' ? 'active' : '' %>">📊 Dashboard</a>
+    <a href="/seo"     class="<%= page === 'seo'       ? 'active' : '' %>">🔍 SEO</a>
+    <a href="/content" class="<%= page === 'content'   ? 'active' : '' %>">✏️  Content</a>
+    <a href="/images"  class="<%= page === 'images'    ? 'active' : '' %>">🖼️  Images</a>
+    <a href="/blog"    class="<%= page === 'blog'      ? 'active' : '' %>">📝 Blog</a>
+    <a href="https://www.revnoxmedia.com" target="_blank">🌐 View Site ↗</a>
+  </nav>
+  <div class="logout">
+    <form method="POST" action="/logout">
+      <button type="submit">Sign Out</button>
+    </form>
+  </div>
+</aside>
+
+<main class="main">
+  <%- body %>
+</main>
+
+<script>
+// Live character counter for SEO fields
+document.querySelectorAll('[data-maxlen]').forEach(el => {
+  const max = parseInt(el.dataset.maxlen);
+  const counter = el.parentElement.querySelector('.char-count');
+  function update() {
+    const len = el.value.length;
+    if (!counter) return;
+    counter.textContent = `${len} / ${max} characters`;
+    counter.className = 'char-count' + (len > max ? ' over' : len > max * 0.9 ? ' warn' : '');
+  }
+  el.addEventListener('input', update);
+  update();
+});
+</script>
+</body>
+</html>

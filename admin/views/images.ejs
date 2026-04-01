@@ -1,0 +1,33 @@
+<h1>Image Manager</h1>
+<p class="subtitle">Upload images to your GitHub repo's <code>/assets/</code> folder.</p>
+
+<% if (success) { %>
+  <div class="alert alert-success">
+    <%= success %>
+    <% if (url) { %><br>URL: <a href="<%= url %>" target="_blank"><%= url %></a><% } %>
+  </div>
+<% } %>
+<% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<div class="form-section">
+  <h2>Upload Image</h2>
+  <form method="POST" action="/images/upload" enctype="multipart/form-data">
+    <div class="form-group">
+      <label>Select Image <span style="color:#555;font-size:11px;">(JPG, PNG, GIF, WebP, SVG — max 5MB)</span></label>
+      <input type="file" name="image" accept="image/*" style="background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:10px;width:100%;color:#888;">
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" name="set_og_image" id="set_og_image" style="width:auto;">
+      <label for="set_og_image" style="margin:0;cursor:pointer;">Also set this image as the OG / Twitter share image</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload to GitHub</button>
+  </form>
+</div>
+
+<div class="form-section">
+  <h2>How to use uploaded images</h2>
+  <p style="color:#888;font-size:14px;line-height:1.8;">
+    After uploading, copy the URL shown and use it in your SEO settings (OG Image) or paste it into your HTML.<br>
+    Images are stored at: <code style="color:#7c6fff;">https://www.revnoxmedia.com/assets/filename.jpg</code>
+  </p>
+</div>

@@ -1,0 +1,35 @@
+<h1>Dashboard</h1>
+<p class="subtitle">Welcome to Revnox CMS — manage your site content below.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px;">
+  <a href="/seo" style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;display:block;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='#7c6fff'" onmouseout="this.style.borderColor='#2a2a2a'">
+    <div style="font-size:28px;margin-bottom:8px;">🔍</div>
+    <div style="font-weight:600;color:#fff;margin-bottom:4px;">SEO Settings</div>
+    <div style="font-size:13px;color:#666;">Edit meta tags, OG image, Twitter card</div>
+  </a>
+  <a href="/content" style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;display:block;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='#7c6fff'" onmouseout="this.style.borderColor='#2a2a2a'">
+    <div style="font-size:28px;margin-bottom:8px;">✏️</div>
+    <div style="font-weight:600;color:#fff;margin-bottom:4px;">Page Content</div>
+    <div style="font-size:13px;color:#666;">Edit hero, services, case studies, stats</div>
+  </a>
+  <a href="/images" style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;display:block;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='#7c6fff'" onmouseout="this.style.borderColor='#2a2a2a'">
+    <div style="font-size:28px;margin-bottom:8px;">🖼️</div>
+    <div style="font-weight:600;color:#fff;margin-bottom:4px;">Images</div>
+    <div style="font-size:13px;color:#666;">Upload images to your repo</div>
+  </a>
+  <a href="/blog" style="background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:20px;display:block;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='#7c6fff'" onmouseout="this.style.borderColor='#2a2a2a'">
+    <div style="font-size:28px;margin-bottom:8px;">📝</div>
+    <div style="font-weight:600;color:#fff;margin-bottom:4px;">Blog</div>
+    <div style="font-size:13px;color:#666;">Create and manage blog posts</div>
+  </a>
+</div>
+
+<div class="form-section">
+  <h2>How it works</h2>
+  <ol style="padding-left:20px;color:#888;font-size:14px;line-height:2;">
+    <li>Edit any section above and click <strong style="color:#fff;">Save</strong></li>
+    <li>Changes are written to <code style="color:#7c6fff;">content.json</code> in your GitHub repo</li>
+    <li>A GitHub Action runs <code style="color:#7c6fff;">build.js</code> and rebuilds <code style="color:#7c6fff;">index.html</code></li>
+    <li>GitHub Pages deploys the updated site — live in ~30 seconds</li>
+  </ol>
+</div>

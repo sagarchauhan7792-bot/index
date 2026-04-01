@@ -1,0 +1,109 @@
+<h1>Page Content</h1>
+<p class="subtitle">Edit the main text content of your website.</p>
+
+<% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+<% if (error)   { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<form method="POST" action="/content">
+
+  <!-- Hero -->
+  <div class="form-section">
+    <h2>Hero Section</h2>
+    <div class="form-group">
+      <label>Main Heading</label>
+      <input type="text" name="hero_heading" value="<%= (data.hero || {}).heading || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Subheading / Description</label>
+      <textarea name="hero_subheading"><%= (data.hero || {}).subheading || '' %></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Primary CTA Button</label>
+        <input type="text" name="hero_cta_primary" value="<%= (data.hero || {}).cta_primary || '' %>">
+      </div>
+      <div class="form-group">
+        <label>Secondary CTA Button</label>
+        <input type="text" name="hero_cta_secondary" value="<%= (data.hero || {}).cta_secondary || '' %>">
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="form-section">
+    <h2>Stats / Numbers</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Revenue Generated</label>
+        <input type="text" name="stat_revenue" value="<%= (data.stats || {}).revenue_generated || '' %>">
+      </div>
+      <div class="form-group">
+        <label>Ad Spend Managed</label>
+        <input type="text" name="stat_ad_spend" value="<%= (data.stats || {}).ad_spend_managed || '' %>">
+      </div>
+      <div class="form-group">
+        <label>Creatives Tested</label>
+        <input type="text" name="stat_creatives" value="<%= (data.stats || {}).creatives_tested || '' %>">
+      </div>
+      <div class="form-group">
+        <label>Industries Scaled</label>
+        <input type="text" name="stat_industries" value="<%= (data.stats || {}).industries_scaled || '' %>">
+      </div>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="form-section">
+    <h2>Services</h2>
+    <% (data.services || []).forEach(svc => { %>
+    <div style="border:1px solid #2a2a2a;border-radius:8px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:12px;color:#555;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;"><%= svc.key %></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" name="svc_title_<%= svc.key %>" value="<%= svc.title %>">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="svc_desc_<%= svc.key %>"><%= svc.description %></textarea>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <!-- Case Studies -->
+  <div class="form-section">
+    <h2>Case Studies</h2>
+    <% (data.case_studies || []).forEach(cs => { %>
+    <div style="border:1px solid #2a2a2a;border-radius:8px;padding:16px;margin-bottom:16px;">
+      <div style="font-size:12px;color:#555;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;"><%= cs.key %></div>
+      <div class="form-group">
+        <label>Title / Result</label>
+        <input type="text" name="cs_title_<%= cs.key %>" value="<%= cs.title %>">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="cs_desc_<%= cs.key %>"><%= cs.description %></textarea>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-section">
+    <h2>Footer</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tagline</label>
+        <input type="text" name="footer_tagline" value="<%= (data.footer || {}).tagline || '' %>">
+      </div>
+      <div class="form-group">
+        <label>Copyright Text</label>
+        <input type="text" name="footer_copyright" value="<%= (data.footer || {}).copyright || '' %>">
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save Content</button>
+</form>

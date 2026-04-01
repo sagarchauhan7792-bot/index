@@ -1,0 +1,83 @@
+<h1>SEO Settings</h1>
+<p class="subtitle">These tags are injected into your site's &lt;head&gt; on every build.</p>
+
+<% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+<% if (error)   { %><div class="alert alert-error"><%= error %></div><% } %>
+
+<form method="POST" action="/seo">
+
+  <div class="form-section">
+    <h2>Basic SEO</h2>
+    <div class="form-group">
+      <label>Page Title <span style="color:#555;font-size:11px;">(50–60 chars ideal)</span></label>
+      <input type="text" name="title" value="<%= seo.title || '' %>" data-maxlen="60">
+      <div class="char-count"></div>
+    </div>
+    <div class="form-group">
+      <label>Meta Description <span style="color:#555;font-size:11px;">(120–155 chars ideal)</span></label>
+      <textarea name="description" data-maxlen="155"><%= seo.description || '' %></textarea>
+      <div class="char-count"></div>
+    </div>
+    <div class="form-group">
+      <label>Keywords <span style="color:#555;font-size:11px;">(comma-separated)</span></label>
+      <input type="text" name="keywords" value="<%= seo.keywords || '' %>">
+    </div>
+    <div class="form-group">
+      <label>Canonical URL</label>
+      <input type="url" name="canonical" value="<%= seo.canonical || '' %>">
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2>Open Graph (Facebook / LinkedIn / WhatsApp preview)</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>OG Title</label>
+        <input type="text" name="og_title" value="<%= seo.og_title || '' %>" data-maxlen="60">
+        <div class="char-count"></div>
+      </div>
+      <div class="form-group">
+        <label>OG URL</label>
+        <input type="url" name="og_url" value="<%= seo.og_url || '' %>">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>OG Description</label>
+      <textarea name="og_description" data-maxlen="155"><%= seo.og_description || '' %></textarea>
+      <div class="char-count"></div>
+    </div>
+    <div class="form-group">
+      <label>OG Image URL <span style="color:#555;font-size:11px;">(1200×630px recommended)</span></label>
+      <input type="url" name="og_image" value="<%= seo.og_image || '' %>">
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2>Twitter Card</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Card Type</label>
+        <select name="twitter_card">
+          <option value="summary_large_image" <%= seo.twitter_card === 'summary_large_image' ? 'selected' : '' %>>summary_large_image</option>
+          <option value="summary" <%= seo.twitter_card === 'summary' ? 'selected' : '' %>>summary</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Twitter Title</label>
+        <input type="text" name="twitter_title" value="<%= seo.twitter_title || '' %>" data-maxlen="70">
+        <div class="char-count"></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Twitter Description</label>
+      <textarea name="twitter_description" data-maxlen="155"><%= seo.twitter_description || '' %></textarea>
+      <div class="char-count"></div>
+    </div>
+    <div class="form-group">
+      <label>Twitter Image URL</label>
+      <input type="url" name="twitter_image" value="<%= seo.twitter_image || '' %>">
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save SEO Settings</button>
+</form>
