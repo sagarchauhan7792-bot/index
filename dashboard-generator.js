@@ -18,6 +18,7 @@ function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
     actionItems = [], spreadsheetUrl = '',
     allDailyData = {}, historyStart = '2026-04-01',
     adsetTargetingData = [],
+    adsetTargetingMap = {},
     shopifyData = null,
     amazonData = null,
   } = data;
@@ -461,7 +462,9 @@ function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>${brandName} · Ads Intelligence</title>
+<title>${brandName} · RevNox Media Dashboard</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -478,6 +481,31 @@ function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
   --t:#f8fafc;--t2:#cbd5e1;--t3:#94a3b8;--t4:#475569;
   --rad:16px;--rads:10px;--sh:0 8px 32px rgba(0,0,0,0.25);
 }
+/* ── LIGHT MODE ─────────────────────────────────────────────────────── */
+body.light-mode{
+  --bg:#f0f4f8;--s1:rgba(248,250,252,0.85);--s2:rgba(226,232,240,0.9);--card:rgba(255,255,255,0.85);--ch:#e2e8f0;
+  --b:rgba(0,0,0,0.08);--b2:rgba(0,0,0,0.04);
+  --blue:#2563eb;--bl:#3b82f6;--ind:#4f46e5;
+  --g:#059669;--gl:#10b981;--a:#d97706;--al:#f59e0b;
+  --r:#dc2626;--rl:#ef4444;--pur:#7c3aed;--cy:#0891b2;
+  --t:#0f172a;--t2:#334155;--t3:#64748b;--t4:#94a3b8;
+  --sh:0 4px 20px rgba(0,0,0,0.08);
+}
+body.light-mode{background:linear-gradient(135deg,#e2e8f0 0%,#f8fafc 100%)!important;color:var(--t)}
+body.light-mode .nav{background:rgba(248,250,252,0.95)!important;border-bottom:1px solid rgba(0,0,0,0.08)!important}
+body.light-mode .platform-bar{background:rgba(248,250,252,0.98)!important;border-bottom-color:rgba(79,70,229,0.2)!important}
+body.light-mode .sidebar{background:rgba(255,255,255,0.9)!important;border-right-color:rgba(0,0,0,0.08)!important}
+body.light-mode .kcard{background:rgba(255,255,255,0.95)!important;border-color:rgba(0,0,0,0.07)!important;box-shadow:0 2px 8px rgba(0,0,0,0.06)!important}
+body.light-mode .cc,.light-mode .tcard,.light-mode .sec-head{background:rgba(255,255,255,0.95)!important;border-color:rgba(0,0,0,0.07)!important}
+body.light-mode .sh-qbtn{background:rgba(226,232,240,0.8)!important;border-color:rgba(0,0,0,0.1)!important;color:#475569!important}
+body.light-mode .sh-qbtn.active{background:rgba(79,70,229,0.15)!important;color:#4f46e5!important;border-color:rgba(79,70,229,0.4)!important}
+body.light-mode table thead tr{background:rgba(226,232,240,0.7)!important}
+body.light-mode table tbody tr:hover{background:rgba(226,232,240,0.5)!important}
+body.light-mode ::-webkit-scrollbar-track{background:rgba(226,232,240,0.5)}
+body.light-mode ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15)}
+body.light-mode .f-step{background:rgba(255,255,255,0.9)!important;border-color:rgba(0,0,0,0.07)!important}
+body.light-mode .sb-health{background:rgba(255,255,255,0.95)!important}
+/* ── END LIGHT MODE ─────────────────────────────────────────────────── */
 html{font-size:13px;scroll-behavior:smooth}
 body{background:linear-gradient(135deg, #020617 0%, #0f172a 100%);color:var(--t);font-family:'Inter',system-ui,sans-serif;min-height:100vh;background-attachment:fixed;}
 ::-webkit-scrollbar{width:6px;height:6px}
@@ -783,6 +811,69 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
   .funnel{grid-template-columns:1fr}
   .ac-grid{grid-template-columns:1fr}
 }
+/* ── LOGIN SCREEN ────────────────────────────────────────────────────── */
+#loginOverlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#020617 0%,#0f172a 50%,#1e1b4b 100%);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px)}
+#loginOverlay.hidden{display:none!important}
+.login-box{background:rgba(30,41,59,0.95);border:1px solid rgba(99,102,241,0.3);border-radius:24px;padding:48px 40px;width:360px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(99,102,241,0.1)}
+.login-logo{margin-bottom:24px}
+.login-title{font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:6px;letter-spacing:-0.5px}
+.login-sub{font-size:13px;color:#64748b;margin-bottom:32px}
+.login-inp{width:100%;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:13px 16px;font-size:14px;color:#f8fafc;font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:14px}
+.login-inp:focus{border-color:rgba(99,102,241,0.6)}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:0.3px}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(99,102,241,0.4)}
+.login-err{color:#ef4444;font-size:12px;margin-top:8px;min-height:16px}
+.login-hint{font-size:11px;color:#334155;margin-top:20px}
+/* ── END LOGIN SCREEN ───────────────────────────────────────────────── */
+/* ══════════════ MOBILE RESPONSIVE ══════════════════════════════════════ */
+@media(max-width:768px){
+  html{font-size:12px}
+  .platform-bar{padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .ptab{padding:10px 14px;font-size:12px;white-space:nowrap}
+  .nav{padding:0 12px;height:auto;min-height:52px;flex-wrap:wrap;gap:8px;padding-top:8px;padding-bottom:8px;top:42px}
+  .nav svg{width:90px!important;height:24px!important}
+  .nav-range{display:none}
+  .nav-live{display:none}
+  .nav-refresh{display:none}
+  #themeToggle{padding:5px 8px!important;font-size:15px!important}
+  .layout{flex-direction:column!important}
+  .sidebar{width:100%!important;max-width:100%!important;position:static!important;height:auto!important;border-right:none!important;border-bottom:1px solid var(--b);display:flex;flex-wrap:wrap;gap:0;padding:8px 12px!important;overflow:visible!important}
+  .sb-section{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px!important}
+  .sb-lbl{width:100%;margin:4px 0 2px!important;font-size:10px}
+  .sb-link{padding:5px 10px!important;font-size:11px!important;border-radius:20px!important}
+  .sb-health{display:none}
+  .sb-kpi-cards{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+  .kcard{min-width:calc(50% - 4px)!important;padding:10px!important}
+  .k-val{font-size:18px!important}
+  .main{padding:12px!important;margin-left:0!important}
+  .cg2{grid-template-columns:1fr!important}
+  .cg3,.cg4{grid-template-columns:1fr!important}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)!important}
+  .kpi-grid.g6{grid-template-columns:repeat(2,1fr)!important}
+  .kpi-grid.g4{grid-template-columns:repeat(2,1fr)!important}
+  .sec-head{flex-direction:column;gap:8px;align-items:flex-start!important}
+  .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tscroll table{min-width:600px}
+  .funnel{flex-direction:column!important;gap:4px!important}
+  .f-step{flex-direction:row!important;padding:8px 12px!important;justify-content:space-between}
+  .f-bar{display:none}
+  .ac-grid{grid-template-columns:1fr!important}
+  .date-wrap{display:flex!important}
+  [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  .sh-date-bar{flex-wrap:wrap!important;padding:10px 12px!important}
+  .cw{height:200px!important}
+  .cw.h280,.cw.h240{height:200px!important}
+  .login-box{width:90vw;padding:32px 24px}
+  /* Period bar on mobile */
+  div[style*="flex-wrap:nowrap"]{flex-wrap:wrap!important}
+}
+@media(max-width:480px){
+  .kpi-grid,.kpi-grid.g6,.kpi-grid.g4{grid-template-columns:1fr!important}
+  .platform-bar{gap:0}
+  .ptab{padding:8px 12px;font-size:11px}
+}
+/* ══════════════ END MOBILE ══════════════════════════════════════════════ */
 </style>
 </head>
 <body class="view-overview" id="bodyEl">
@@ -819,26 +910,52 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
 <div class="platform-content active" id="platform-meta">
 
 <nav class="nav">
-  <div class="nav-brand">${brandName}</div>
-  <div class="nav-title">Meta Ads Intelligence</div>
+  <div style="display:flex;align-items:center;gap:0">
+    <svg width="120" height="32" viewBox="0 0 200 52" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#ef4444"/>
+          <stop offset="100%" style="stop-color:#dc2626"/>
+        </linearGradient>
+      </defs>
+      <!-- REVN text -->
+      <text x="2" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">REVN</text>
+      <!-- Crosshair O -->
+      <circle cx="147" cy="24" r="14" fill="none" stroke="url(#rg)" stroke-width="3.5"/>
+      <circle cx="147" cy="24" r="5" fill="#ef4444"/>
+      <line x1="147" y1="6" x2="147" y2="42" stroke="#ef4444" stroke-width="2.5"/>
+      <line x1="129" y1="24" x2="165" y2="24" stroke="#ef4444" stroke-width="2.5"/>
+      <!-- X text -->
+      <text x="163" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">X</text>
+      <!-- Arrow -->
+      <path d="M183 38 L196 10 L184 14 M196 10 L192 22" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
   <div class="nav-range" id="rangeLabel">${historyStart} → ${dateStr}</div>
   <div class="nav-space"></div>
-  <div class="view-tabs">
-    <button class="vtab active" id="tabOverview" onclick="switchView('overview')">📊 Overview</button>
-    <button class="vtab" id="tabDay" onclick="switchView('day')">📅 Day Detail</button>
-  </div>
+
   <div class="date-wrap day-only" style="display:none">
     <span class="date-lbl">Date:</span>
     <select class="date-sel" id="datePicker" onchange="changeDate(this.value)">
       ${sortedDates.slice().reverse().map(d => `<option value="${d}" ${d === latestDate ? 'selected' : ''}>${d}</option>`).join('')}
     </select>
   </div>
-  <!-- Range picker shown on Overview -->
-  <div class="range-wrap" id="rangeWrap">
-    <input type="date" class="range-inp" id="rangeFrom" onchange="applyRange()" title="From">
+  <!-- Theme + Auth buttons -->
+  <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+    <button id="themeToggle" onclick="toggleTheme()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:18px;line-height:1;transition:all .2s" title="Toggle Dark/Light mode">🌙</button>
+  </div>
+  <!-- Period filter: presets + custom date range in one row -->
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
+    <span style="font-size:10px;font-weight:700;color:#475569;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Period:</span>
+    <button class="sh-qbtn meta-preset-btn" data-p="today"     onclick="metaSetPreset('today')">Today</button>
+    <button class="sh-qbtn meta-preset-btn" data-p="yesterday" onclick="metaSetPreset('yesterday')">Yesterday</button>
+    <button class="sh-qbtn meta-preset-btn" data-p="7d"        onclick="metaSetPreset('7d')">7 Days</button>
+    <button class="sh-qbtn meta-preset-btn" data-p="14d"       onclick="metaSetPreset('14d')">14 Days</button>
+    <button class="sh-qbtn meta-preset-btn active" data-p="mtd" onclick="metaSetPreset('mtd')">MTD Apr</button>
+    <button class="sh-qbtn meta-preset-btn" data-p="all"       onclick="metaSetPreset('all')">All Time</button>
+    <input type="date" class="range-inp" id="rangeFrom" onchange="applyRange()" title="From" style="margin-left:4px">
     <span style="color:var(--t2);font-size:11px">→</span>
-    <input type="date" class="range-inp" id="rangeTo" onchange="applyRange()" title="To">
-    <button class="cmp-open-btn" onclick="openCompare()">⚖️ Compare</button>
+    <input type="date" class="range-inp" id="rangeTo"   onchange="applyRange()" title="To">
   </div>
   <div class="nav-live">
     <div class="dot"></div>
@@ -1190,13 +1307,13 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
   </div>
   <div class="tcard">
     <div class="ttop"><div class="ttitle">📋 Campaign Table</div></div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th><th>CTR</th><th>CPM</th><th>Freq</th><th>Action</th></tr></thead><tbody>${campTableRows}</tbody></table></div>
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th><th>CTR</th><th>CPM</th><th>Freq</th><th>Action</th></tr></thead><tbody id="camp-tbody">${campTableRows}</tbody></table></div>
   </div>
 </div>
 
 <!-- CREATIVES (day) -->
 <div class="sec day-only" id="creative">
-  <div class="sec-head"><div><div class="sec-title">🎨 Creative Performance</div><div class="sec-sub">4 buckets · Top · Bottom · Runner-up · Fatigue + Video stats</div></div></div>
+  <div class="sec-head"><div><div class="sec-title">🎨 Creative Performance</div><div class="sec-sub">3 buckets · Top · Bottom · Runner-up · Video stats</div></div></div>
 
   <div class="cg2" style="margin-bottom:16px">
     <div class="cc">
@@ -1215,7 +1332,7 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
       <div class="ttitle">🏆 Top Creatives — Highest ROAS</div>
       <div class="t-meta">Scale budget · Best performers with conversions</div>
     </div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody>${bucketTop.length>0?bucketTop.map((a,i)=>{
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody id="creative-top-tbody">${bucketTop.length>0?bucketTop.map((a,i)=>{
   const playPct=a.plays>0?((a.v100/a.plays)*100).toFixed(1)+'%':'—';
   const v25Pct=a.plays>0?((a.v25/a.plays)*100).toFixed(1)+'%':'—';
   return '<tr><td class=\"cm\">'+(i+1)+'</td>'
@@ -1238,7 +1355,7 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
       <div class="ttitle">📉 Bottom Creatives — Losing Money</div>
       <div class="t-meta">Spend ₹200+ · ROAS &lt; 1x · Consider pausing</div>
     </div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody>${bucketBottom.length>0?bucketBottom.map((a,i)=>{
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody id="creative-bottom-tbody">${bucketBottom.length>0?bucketBottom.map((a,i)=>{
   const playPct=a.plays>0?((a.v100/a.plays)*100).toFixed(1)+'%':'—';
   const v25Pct=a.plays>0?((a.v25/a.plays)*100).toFixed(1)+'%':'—';
   return '<tr><td class=\"cm\">'+(i+1)+'</td>'
@@ -1261,7 +1378,7 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
       <div class="ttitle">🚀 Daily Runner-ups — 1x–2x ROAS</div>
       <div class="t-meta">Promising · Optimise to push above 2x</div>
     </div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody>${bucketRunnerup.length>0?bucketRunnerup.map((a,i)=>{
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Ad Name</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Buys</th><th>Freq</th><th>Plays</th><th>25% View</th><th>100% View</th></tr></thead><tbody id="creative-runnerup-tbody">${bucketRunnerup.length>0?bucketRunnerup.map((a,i)=>{
   const playPct=a.plays>0?((a.v100/a.plays)*100).toFixed(1)+'%':'—';
   const v25Pct=a.plays>0?((a.v25/a.plays)*100).toFixed(1)+'%':'—';
   return '<tr><td class=\"cm\">'+(i+1)+'</td>'
@@ -1284,16 +1401,10 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
 <div class="sec day-only" id="audience">
   <div class="sec-head"><div><div class="sec-title">👥 Audience Intelligence</div><div class="sec-sub">Demographics · Interests · Custom · Lookalike · Geo Targeting</div></div></div>
 
-  <!-- Geo Targets table -->
-  <div class="tcard" style="margin-bottom:14px">
-    <div class="ttop"><div class="ttitle">📍 Geo Targets — Spend &amp; Revenue by Country</div><div class="t-meta">Meta Ads API · Countries only · Min ₹1 spend</div></div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Country</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>Action</th></tr></thead><tbody>${geoTableRows}</tbody></table></div>
-  </div>
-
-  <!-- Age Ranges table -->
+    <!-- Age Ranges table -->
   <div class="tcard" style="margin-bottom:14px">
     <div class="ttop"><div class="ttitle">🎂 Age Ranges — Performance Breakdown</div><div class="t-meta">Meta Ads API · Age segments · Actual spend data</div></div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Age</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th></tr></thead><tbody>${ageRows}</tbody></table></div>
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Age</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th></tr></thead><tbody id="age-range-tbody">${ageRows}</tbody></table></div>
   </div>
 
   <!-- Charts row -->
@@ -1310,19 +1421,19 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
 
   <!-- Demographics table -->
   <div class="tcard" style="margin-bottom:14px">
-    <div class="ttop"><div class="ttitle">📊 Age × Gender Performance (${dateStr})</div><div class="t-meta">From Meta Ads Insights API breakdown</div></div>
-    <div class="tscroll"><table><thead><tr><th>#</th><th>Age/Gender</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th></tr></thead><tbody>${demoRows}</tbody></table></div>
+    <div class="ttop"><div class="ttitle">📊 Age × Gender Performance (<span id="demo-date-label">${dateStr}</span>)</div><div class="t-meta">From Meta Ads Insights API breakdown</div></div>
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Age/Gender</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th></tr></thead><tbody id="age-gender-tbody">${demoRows}</tbody></table></div>
   </div>
 
   <!-- 3-col: Interests | Custom Audiences | Lookalike -->
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
     <div class="tcard">
-      <div class="ttop"><div class="ttitle">🎯 Interest Targeting</div><div class="t-meta">${topInterests.length} unique interests across active adsets</div></div>
-      <div class="tscroll" style="max-height:260px"><table><thead><tr><th>#</th><th>Interest</th><th>Adsets</th></tr></thead><tbody>${interestRows}</tbody></table></div>
+      <div class="ttop"><div class="ttitle">🎯 Interest Targeting</div><div class="t-meta"><span id="interest-meta">${topInterests.length} unique interests across active adsets</span></div></div>
+      <div class="tscroll" style="max-height:260px"><table><thead><tr><th>#</th><th>Interest</th><th>Adsets</th></tr></thead><tbody id="interest-tbody">${interestRows}</tbody></table></div>
     </div>
     <div class="tcard">
       <div class="ttop"><div class="ttitle">👤 Custom Audiences</div><div class="t-meta">${customAudiences.length} audiences in active adsets</div></div>
-      <div class="tscroll" style="max-height:260px"><table><thead><tr><th>#</th><th>Audience</th><th>Used In Adsets</th></tr></thead><tbody>${customAudRows}</tbody></table></div>
+      <div class="tscroll" style="max-height:260px"><table><thead><tr><th>#</th><th>Audience</th><th>Used In Adsets</th></tr></thead><tbody id="custom-audience-tbody">${customAudRows}</tbody></table></div>
     </div>
     <div class="tcard">
       <div class="ttop"><div class="ttitle">🔄 Lookalike Audiences</div><div class="t-meta">${lookalikesArr.length} LAL sets found</div></div>
@@ -1387,14 +1498,8 @@ ${shopifyData ? `
     <span style="font-size:12px;color:#475569;margin-left:6px" id="sh-day-count"></span>
   </div>
 
-  <!-- True ROAS Banner (static, always shows today cross-channel) -->
-  ${trueRoas > 0 ? `<div style="background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(99,102,241,0.08));border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-    <div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">True ROAS (Today)</div><div style="font-size:26px;font-weight:800;color:${trueRoas>=2?'#10b981':trueRoas>=1?'#f59e0b':'#ef4444'}">${trueRoas.toFixed(2)}x</div><div style="font-size:11px;color:#64748b">Shopify GMV ÷ Meta Spend</div></div>
-    <div style="width:1px;height:44px;background:rgba(255,255,255,0.07)"></div>
-    <div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">CAC (Today)</div><div style="font-size:20px;font-weight:700;color:#e2e8f0">₹${cac.toLocaleString('en-IN',{maximumFractionDigits:0})}</div><div style="font-size:11px;color:#64748b">${shNewCust} new cust. today</div></div>
-    <div style="width:1px;height:44px;background:rgba(255,255,255,0.07)"></div>
-    <div style="font-size:12px;color:#64748b;line-height:1.9">Meta Spend: <strong style="color:#94a3b8">₹${yesterdaySpend.toLocaleString('en-IN',{maximumFractionDigits:0})}</strong> &nbsp;·&nbsp; Shopify GMV Today: <strong style="color:#10b981">₹${shGmv.toLocaleString('en-IN',{maximumFractionDigits:0})}</strong><br>Pixel ROAS: <strong style="color:#94a3b8">${accRoas.toFixed(2)}x</strong> &nbsp;·&nbsp; Gap: <strong style="color:${trueRoas>accRoas?'#10b981':'#ef4444'}">${trueRoas>accRoas?'+':''}${(trueRoas-accRoas).toFixed(2)}x</strong></div>
-  </div>` : ''}
+  <!-- True ROAS Banner — updates dynamically with Shopify date filter -->
+  <div id="sh-true-roas-banner" style="margin-bottom:16px"></div>
 
   <!-- ── DYNAMIC KPI SECTION (filled by JS renderShopify) ── -->
   <div id="sh-kpi-section"></div>
@@ -1547,7 +1652,7 @@ ${shopifyData ? `
 <!-- ═══ END OVERALL PLATFORM ═════════════════════════════════════════════════ -->
 
 <footer class="footer">
-  <div class="footer-brand">${brandName} · Ads Intelligence Dashboard</div>
+  <div class="footer-brand">${brandName} · RevNox Media Dashboard</div>
   <div>Period: ${historyStart} → ${dateStr} · ${now}</div>
 </footer>
 
@@ -1637,14 +1742,13 @@ function switchView(view, date) {
   if(date) currentDate = date;
   const body = document.getElementById('bodyEl');
   body.className = view === 'overview' ? 'view-overview' : 'view-day';
-  document.getElementById('tabOverview').className = 'vtab' + (view==='overview'?' active':'');
-  document.getElementById('tabDay').className = 'vtab' + (view==='day'?' active':'');
   const dp = document.querySelector('.date-wrap.day-only');
-  dp.style.display = view==='day' ? 'flex' : 'none';
+  if(dp) dp.style.display = view==='day' ? 'flex' : 'none';
   document.querySelectorAll('.sb-link.overview-only').forEach(l=>l.style.display=view==='overview'?'':'none');
   document.querySelectorAll('.sb-link.day-only').forEach(l=>l.style.display=view==='day'?'':'none');
   if(view==='day') {
-    document.getElementById('datePicker').value = currentDate;
+    const dp2 = document.getElementById('datePicker');
+    if(dp2) dp2.value = currentDate;
     renderDayDetail(currentDate);
   } else {
     initOverviewCharts();
@@ -1728,11 +1832,11 @@ function renderDayDetail(date) {
 
   if(charts.campRoas) charts.campRoas.destroy();
   const cr = document.getElementById('chartCampRoas').getContext('2d');
-  charts.campRoas = new Chart(cr,{type:'bar',data:{labels:cNames,datasets:[{label:'ROAS',data:cRoas,backgroundColor:cBg,borderColor:cColors,borderWidth:1.5,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' '+parseFloat(c.raw).toFixed(2)+'x ROAS'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}}}}});
+  window._chartCampRoas = charts.campRoas = new Chart(cr,{type:'bar',data:{labels:cNames,datasets:[{label:'ROAS',data:cRoas,backgroundColor:cBg,borderColor:cColors,borderWidth:1.5,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' '+parseFloat(c.raw).toFixed(2)+'x ROAS'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}}}}});
 
   if(charts.campRevSpend) charts.campRevSpend.destroy();
   const crv = document.getElementById('chartCampRevSpend').getContext('2d');
-  charts.campRevSpend = new Chart(crv,{type:'bar',data:{labels:cNames,datasets:[{label:'Revenue',data:cRevs,backgroundColor:'rgba(16,185,129,0.7)',borderColor:'#10b981',borderWidth:1,borderRadius:4},{label:'Spend',data:cSpends,backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3b82f6',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{usePointStyle:true,padding:12,color:'#94a3b8',font:{size:10}}},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(0)+'L':v>=1000?(v/1000).toFixed(0)+'K':v),color:'#94a3b8'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}}}}});
+  window._chartCampRevSpend = charts.campRevSpend = new Chart(crv,{type:'bar',data:{labels:cNames,datasets:[{label:'Revenue',data:cRevs,backgroundColor:'rgba(16,185,129,0.7)',borderColor:'#10b981',borderWidth:1,borderRadius:4},{label:'Spend',data:cSpends,backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3b82f6',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{usePointStyle:true,padding:12,color:'#94a3b8',font:{size:10}}},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(0)+'L':v>=1000?(v/1000).toFixed(0)+'K':v),color:'#94a3b8'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}}}}});
 
   // Top ads
   const topAds = (window.topAdsData || []).sort((a,b)=>parseFloat(b.spend||0)-parseFloat(a.spend||0)).slice(0, 8);
@@ -1877,10 +1981,10 @@ function initDemoCharts() {
 
   if(charts.demoRoas) charts.demoRoas.destroy();
   const demoColors = demoRoas.map(r=>r>=2?'#10b981':r>=1?'#f59e0b':'#ef4444');
-  charts.demoRoas = new Chart(document.getElementById('chartDemoRoas'),{type:'bar',data:{labels:demoLabels,datasets:[{label:'ROAS',data:demoRoas.map(r=>r.toFixed(2)),backgroundColor:demoColors,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'x'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+  window._chartDemoRoas = charts.demoRoas = new Chart(document.getElementById('chartDemoRoas'),{type:'bar',data:{labels:demoLabels,datasets:[{label:'ROAS',data:demoRoas.map(r=>r.toFixed(2)),backgroundColor:demoColors,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'x'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 
   if(charts.demoSpend) charts.demoSpend.destroy();
-  charts.demoSpend = new Chart(document.getElementById('chartDemoSpend'),{type:'bar',data:{labels:demoLabels,datasets:[{label:'Spend',data:demoSpends,backgroundColor:'rgba(59,130,246,0.8)',borderColor:'#3b82f6',borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+  window._chartDemoSpend = charts.demoSpend = new Chart(document.getElementById('chartDemoSpend'),{type:'bar',data:{labels:demoLabels,datasets:[{label:'Spend',data:demoSpends,backgroundColor:'rgba(59,130,246,0.8)',borderColor:'#3b82f6',borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 }
 
 // ── LIVE TIMER ─────────────────────────────────────────────────────────────────
@@ -2017,9 +2121,35 @@ function renderShopify(from, to) {
 
   // Update period label
   const lbl = document.getElementById('sh-period-label');
-  if(lbl) lbl.textContent = from + ' → ' + to + ' · ' + nDays + ' days · 53 metrics · Updates every 15 min';
+  if(lbl) lbl.textContent = from + ' → ' + to + ' · ' + nDays + ' days · 53 metrics · Updates every 5 min';
   const cnt = document.getElementById('sh-day-count');
   if(cnt) cnt.textContent = nDays + ' day' + (nDays!==1?'s':'');
+
+  // ── True ROAS Banner — dynamic, updates with date filter ─────────────────
+  const _metaSpend = _SH_META_SPEND_TODAY > 0 ? _SH_META_SPEND_TODAY * nDays : 0;
+  const _trueRoas  = _metaSpend > 0 && S.gmv > 0 ? S.gmv / _metaSpend : 0;
+  const _cac       = S.newCust > 0 ? _metaSpend / S.newCust : 0;
+  const _pixelRoas = ${accRoas.toFixed(2)};
+  const _roasColor = _trueRoas >= 2 ? '#10b981' : _trueRoas >= 1 ? '#f59e0b' : '#ef4444';
+  const _bannerEl  = document.getElementById('sh-true-roas-banner');
+  if(_bannerEl) _bannerEl.innerHTML = _trueRoas > 0 ? \`
+    <div style="background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(99,102,241,0.08));border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">True ROAS (\${from===to?from:from+' → '+to})</div>
+        <div style="font-size:26px;font-weight:800;color:\${_roasColor}">\${_trueRoas.toFixed(2)}x</div>
+        <div style="font-size:11px;color:#64748b">Shopify GMV ÷ Meta Spend</div></div>
+      <div style="width:1px;height:44px;background:rgba(255,255,255,0.07)"></div>
+      <div><div style="font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">CAC (Period)</div>
+        <div style="font-size:20px;font-weight:700;color:#e2e8f0">₹\${parseInt(_cac).toLocaleString('en-IN')}</div>
+        <div style="font-size:11px;color:#64748b">\${S.newCust} new customers</div></div>
+      <div style="width:1px;height:44px;background:rgba(255,255,255,0.07)"></div>
+      <div style="font-size:12px;color:#64748b;line-height:1.9">
+        Meta Spend (est): <strong style="color:#94a3b8">₹\${parseInt(_metaSpend).toLocaleString('en-IN')}</strong> &nbsp;·&nbsp;
+        Shopify GMV: <strong style="color:#10b981">₹\${parseInt(S.gmv).toLocaleString('en-IN')}</strong><br>
+        Pixel ROAS: <strong style="color:#94a3b8">\${_pixelRoas.toFixed(2)}x</strong> &nbsp;·&nbsp;
+        Gap: <strong style="color:\${_trueRoas>_pixelRoas?'#10b981':'#ef4444'}">\${_trueRoas>_pixelRoas?'+':''}\${(_trueRoas-_pixelRoas).toFixed(2)}x</strong>
+      </div>
+    </div>\` : '';
+  // ─────────────────────────────────────────────────────────────────────────
 
   // ── Render KPI cards ──────────────────────────────────────────────────────
   const kc = (lbl,val,sub,cls='')=>\`<div class="kcard \${cls}"><div class="k-lbl">\${lbl}</div><div class="k-val">\${val}</div><div class="k-meta"><span class="k-bench">\${sub}</span></div></div>\`;
@@ -2434,6 +2564,289 @@ window.topAdsData = topAdsData;
 
 // ═══ ALL DAILY DATA (for compare + range filter) ═══════════════════════════
 const _allDaily = ${JSON.stringify(allDailyData)};
+const _adsetTargeting = ${JSON.stringify(adsetTargetingMap)};
+
+// ═══ CREATIVE BUCKETS — date-reactive ════════════════════════════════════
+
+// ═══ CAMPAIGN TABLE — date-reactive ═══════════════════════════════════════
+function renderMetaCampaigns(from, to) {
+  const campMap = {};
+  Object.entries(_allDaily).forEach(([date, dayData]) => {
+    if(date < from || date > to) return;
+    (dayData.campaigns || []).forEach(camp => {
+      const k = camp.id || camp.name;
+      if(!campMap[k]) campMap[k] = { name:camp.name, spend:0, revenue:0, purchases:0, impressions:0, clicks:0, freq:0, _days:0 };
+      campMap[k].spend      += camp.spend      || 0;
+      campMap[k].revenue    += camp.revenue    || 0;
+      campMap[k].purchases  += camp.purchases  || 0;
+      campMap[k].impressions+= camp.impressions|| 0;
+      campMap[k].clicks     += camp.clicks     || 0;
+      campMap[k].freq       += camp.freq       || 0;
+      campMap[k]._days++;
+    });
+  });
+  const camps = Object.values(campMap).map(camp => ({
+    ...camp,
+    roas: camp.spend>0&&camp.revenue>0 ? camp.revenue/camp.spend : 0,
+    cpa:  camp.purchases>0 ? camp.spend/camp.purchases : 0,
+    ctr:  camp.impressions>0 ? camp.clicks/camp.impressions*100 : 0,
+    avgFreq: camp._days>0 ? camp.freq/camp._days : 0,
+  })).sort((a,b)=>b.spend-a.spend);
+  if(camps.length===0) return;
+  const inr = n => 'Rs.'+parseInt(n||0).toLocaleString('en-IN');
+  const roasCls = r => r>=3?'badge-green':r>=2?'badge-blue':r>=1?'badge-amber':'badge-red';
+  const roasS   = r => r>0?r.toFixed(2)+'x':'--';
+  const sub = document.getElementById('campDayLabel');
+  if(sub) sub.textContent = 'Period: '+(from===to?from:from+' to '+to);
+  const badge = document.querySelector('#campaigns .sec-badge');
+  if(badge) badge.textContent = camps.length+' campaigns';
+  const tbody = document.getElementById('camp-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = camps.map((camp, i) => {
+    const action = camp.roas>=2?'<span style="color:#10b981;font-size:11px;font-weight:600">Scale Up</span>':camp.roas>=1?'<span style="color:#f59e0b;font-size:11px">Optimise</span>':'<span style="color:#ef4444;font-size:11px">Review</span>';
+    return '<tr><td class="cm">'+(i+1)+'</td>'
+      +'<td class="cn">'+(camp.name||'--').slice(0,30)+'</td>'
+      +'<td>'+inr(camp.spend)+'</td>'
+      +'<td style="color:'+(camp.revenue>camp.spend?'var(--g)':camp.revenue>0?'var(--a)':'var(--t2)')+'">'+inr(camp.revenue)+'</td>'
+      +'<td><span class="badge '+roasCls(camp.roas)+'">'+roasS(camp.roas)+'</span></td>'
+      +'<td>'+camp.purchases+'</td>'
+      +'<td>'+(camp.cpa>0?inr(camp.cpa):'--')+'</td>'
+      +'<td>'+camp.ctr.toFixed(2)+'%</td>'
+      +'<td>'+(camp.impressions>0?inr(camp.spend/camp.impressions*1000):'--')+'</td>'
+      +'<td>'+camp.avgFreq.toFixed(2)+'</td>'
+      +'<td>'+action+'</td></tr>';
+  }).join('');
+  const topCamps = camps.slice(0,8);
+  if(window._chartCampRoas) {
+    window._chartCampRoas.data.labels = topCamps.map(c=>(c.name||'').slice(0,20));
+    window._chartCampRoas.data.datasets[0].data = topCamps.map(c=>parseFloat(c.roas.toFixed(2)));
+    window._chartCampRoas.update();
+  }
+  if(window._chartCampRevSpend) {
+    window._chartCampRevSpend.data.labels = topCamps.map(c=>(c.name||'').slice(0,20));
+    window._chartCampRevSpend.data.datasets[0].data = topCamps.map(c=>parseInt(c.revenue));
+    window._chartCampRevSpend.data.datasets[1].data = topCamps.map(c=>parseInt(c.spend));
+    window._chartCampRevSpend.update();
+  }
+}
+
+// ═══ FUNNEL METRICS — date-reactive ════════════════════════════════════════
+function renderMetaFunnel(from, to) {
+  const keys = Object.keys(_allDaily).filter(d=>d>=from&&d<=to);
+  let sp=0,rev=0,pur=0,impr=0,clks=0,atc=0,checkout=0,lpv=0;
+  keys.forEach(d=>{
+    const a=_allDaily[d]?.account||{};
+    sp+=a.spend||0;rev+=a.revenue||0;pur+=a.purchases||0;
+    impr+=a.impressions||0;clks+=a.clicks||0;atc+=a.atc||0;
+    checkout+=a.checkout||0;lpv+=a.lpv||0;
+  });
+  const fCtr   =impr>0?clks/impr*100:0;
+  const fLpv   =clks>0?lpv/clks*100:0;
+  const fAtc   =lpv>0?atc/lpv*100:0;
+  const fCkout =atc>0?checkout/atc*100:0;
+  const fPurch =checkout>0?pur/checkout*100:0;
+  const map2 = {
+    'fv-impr':parseInt(impr).toLocaleString('en-IN'),
+    'fv-clicks':parseInt(clks).toLocaleString('en-IN'),
+    'fv-lpv': parseInt(lpv).toLocaleString('en-IN'),
+    'fv-atc': parseInt(atc).toLocaleString('en-IN'),
+    'fv-checkout':parseInt(checkout).toLocaleString('en-IN'),
+    'fv-buys2':parseInt(pur).toLocaleString('en-IN'),
+    
+    'fr-lpv':fLpv.toFixed(1)+'% of Clicks',
+    'fr-atc':fAtc.toFixed(1)+'% of LPV',
+    'fr-checkout':fCkout.toFixed(1)+'% of ATC',
+    'fr-pur':fPurch.toFixed(1)+'% of Checkout',
+  };
+  Object.entries(map2).forEach(([id,val])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=val;
+  });
+}
+
+// ═══ HOURLY — dim and note when not today ═════════════════════════════════
+function updateHourlyVisibility(from, to) {
+  const dates=Object.keys(_allDaily).sort();
+  const today=dates[dates.length-1];
+  const sec=document.getElementById('hourly');
+  if(!sec)return;
+  const isToday=(to===today);
+  sec.style.opacity=isToday?'1':'0.45';
+  sec.style.pointerEvents=isToday?'':'none';
+  const sub=sec.querySelector('.sec-sub');
+  if(sub)sub.textContent=isToday?'Today bars vs 7-Day Daily Average (dashed lines)':'Hourly data only available for Today -- select Today to see live hourly breakdown';
+}
+
+// ═══ DEVICE — update note ═════════════════════════════════════════════════
+function updateDeviceNote(from, to) {
+  const sec=document.getElementById('devices');
+  if(!sec)return;
+  const sub=sec.querySelector('.sec-sub');
+  if(sub)sub.textContent='Device and platform breakdown - aggregated for current fetch period';
+}
+
+// === AGE/GENDER & AGE RANGES - date-reactive ===========================
+function renderMetaDemo(from, to) {
+  const demoMap = {}, ageMap = {};
+  Object.keys(_allDaily).filter(d => d >= from && d <= to).forEach(d => {
+    (_allDaily[d].demo || []).forEach(row => {
+      const key = row.age + "/" + row.gender;
+      if (!demoMap[key]) demoMap[key] = { label: key, spend: 0, revenue: 0, purchases: 0 };
+      demoMap[key].spend += row.spend || 0;
+      demoMap[key].revenue += row.revenue || 0;
+      demoMap[key].purchases += row.purchases || 0;
+      const age = row.age || "Unknown";
+      if (!ageMap[age]) ageMap[age] = { age, spend: 0, revenue: 0, purchases: 0 };
+      ageMap[age].spend += row.spend || 0;
+      ageMap[age].revenue += row.revenue || 0;
+      ageMap[age].purchases += row.purchases || 0;
+    });
+  });
+  const inr = n => "Rs." + parseInt(n||0).toLocaleString("en-IN");
+  const roasCls = r => r>=3?"badge-green":r>=2?"badge-blue":r>=1?"badge-amber":"badge-red";
+  const roasS = r => r>0?r.toFixed(2)+"x":"--";
+  const demoRows = Object.values(demoMap).map(d => ({...d, roas: d.spend>0?d.revenue/d.spend:0})).sort((a,b)=>b.spend-a.spend).slice(0,20);
+  const demoTbody = document.getElementById("age-gender-tbody");
+  if (demoTbody) {
+    demoTbody.innerHTML = demoRows.length > 0
+      ? demoRows.map((d,i) => {
+          const cpa = d.purchases>0?d.spend/d.purchases:0;
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+d.label+'</td>'
+            +'<td>'+inr(d.spend)+'</td><td>'+inr(d.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(d.roas)+'">'+roasS(d.roas)+'</span></td>'
+            +'<td>'+d.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
+        }).join("")
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No demographic data for this period</td></tr>';
+  }
+  const ageRows = Object.values(ageMap).map(a => ({...a, roas: a.spend>0?a.revenue/a.spend:0})).sort((a,b)=>b.spend-a.spend);
+  const ageTbody = document.getElementById("age-range-tbody");
+  if (ageTbody) {
+    ageTbody.innerHTML = ageRows.length > 0
+      ? ageRows.map((a,i) => {
+          const cpa = a.purchases>0?a.spend/a.purchases:0;
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+a.age+'</td>'
+            +'<td>'+inr(a.spend)+'</td><td>'+inr(a.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(a.roas)+'">'+roasS(a.roas)+'</span></td>'
+            +'<td>'+a.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
+        }).join("")
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No age data for this period</td></tr>';
+  }
+  const top8 = demoRows.slice(0,8);
+  const labels = top8.map(d => d.label);
+  const roasVals = top8.map(d => parseFloat(d.roas.toFixed(2)));
+  const spendVals = top8.map(d => parseInt(d.spend));
+  const colors = roasVals.map(r => r>=2?"#10b981":r>=1?"#f59e0b":"#ef4444");
+  if (window._chartDemoRoas) {
+    window._chartDemoRoas.data.labels = labels;
+    window._chartDemoRoas.data.datasets[0].data = roasVals;
+    window._chartDemoRoas.data.datasets[0].backgroundColor = colors;
+    window._chartDemoRoas.update();
+  }
+  if (window._chartDemoSpend) {
+    window._chartDemoSpend.data.labels = labels;
+    window._chartDemoSpend.data.datasets[0].data = spendVals;
+    window._chartDemoSpend.update();
+  }
+}
+
+// === AUDIENCE (INTEREST/CUSTOM) - date-reactive ==========================
+function renderMetaAudience(from, to) {
+  if (typeof _adsetTargeting === "undefined") return;
+  const activeIds = new Set();
+  Object.keys(_allDaily).filter(d => d >= from && d <= to).forEach(d => {
+    (_allDaily[d].adsets || []).forEach(a => { if ((a.spend||0) > 0) activeIds.add(a.id); });
+  });
+  const intMap = {}, caMap = {}, llSet = new Set();
+  activeIds.forEach(id => {
+    const t = _adsetTargeting[id]; if (!t) return;
+    const nm = t.adsetName || id;
+    (t.interests || []).forEach(int => {
+      if (!intMap[int.id||int.name]) intMap[int.id||int.name] = { name: int.name, count: 0, adsets: [] };
+      intMap[int.id||int.name].count++; intMap[int.id||int.name].adsets.push(nm);
+    });
+    (t.customAudiences || []).forEach(ca => {
+      if (!caMap[ca.id]) caMap[ca.id] = { name: ca.name, count: 0 };
+      caMap[ca.id].count++;
+    });
+    (t.lookalikes || []).forEach(ll => llSet.add(ll));
+  });
+  const badge = s => '<span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-radius:4px;padding:1px 6px;font-size:10px;color:#a5b4fc;margin:1px">'+s+'</span>';
+  const topInt = Object.values(intMap).sort((a,b)=>b.count-a.count).slice(0,20);
+  const topCa  = Object.values(caMap).sort((a,b)=>b.count-a.count).slice(0,20);
+  const intTbody = document.getElementById("interest-tbody");
+  if (intTbody) {
+    intTbody.innerHTML = topInt.length > 0
+      ? topInt.map((int,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+int.name+'</td><td>'+int.adsets.slice(0,3).map(badge).join('')+(int.adsets.length>3?'<span style="color:var(--t2);font-size:10px"> +'+(int.adsets.length-3)+' more</span>':'')+'</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No active interests in this period</td></tr>';
+    const meta = document.getElementById("interest-meta");
+    if (meta) meta.textContent = topInt.length + " unique interests across active adsets";
+  }
+  const caTbody = document.getElementById("custom-audience-tbody");
+  if (caTbody) {
+    caTbody.innerHTML = topCa.length > 0
+      ? topCa.map((ca,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+ca.name+'</td><td>'+ca.count+' adsets</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No custom audiences in this period</td></tr>';
+  }
+}
+
+function renderMetaCreatives(from, to) {
+  // Aggregate all ad rows in the selected date range
+  const adMap = {};
+  Object.entries(_allDaily).forEach(([date, dayData]) => {
+    if(date < from || date > to) return;
+    (dayData.ads || []).forEach(a => {
+      const k = a.id || a.name;
+      if(!adMap[k]) adMap[k] = { ad_name: a.name, campaign_name: a.campName, sp:0, rev:0, buys:0, freq:0, _freqDays:0 };
+      adMap[k].sp   += a.spend    || 0;
+      adMap[k].rev  += a.revenue  || 0;
+      adMap[k].buys += a.purchases|| 0;
+      adMap[k].freq += a.freq     || 0;
+      adMap[k]._freqDays++;
+    });
+  });
+  const ads = Object.values(adMap).map(a => ({
+    ...a,
+    roas: a.sp > 0 && a.rev > 0 ? a.rev / a.sp : 0,
+    freq: a._freqDays > 0 ? a.freq / a._freqDays : 0,
+  })).filter(a => a.sp > 0);
+
+  if(ads.length === 0) return; // no historical ad data — keep today's static render
+
+  const dollar = n => '₹' + parseInt(n||0).toLocaleString('en-IN');
+  const roasCls = r => r>=3?'badge-green':r>=2?'badge-blue':r>=1?'badge-amber':'badge-red';
+  const roasS   = r => r>0 ? r.toFixed(2)+'x' : '—';
+
+  const rowHtml = (ads, noMsg) => ads.length > 0 ? ads.map((a,i) => {
+    const roasCol = a.rev>a.sp?'var(--g)':a.rev>0?'var(--a)':'var(--t2)';
+    return '<tr><td class="cm">'+(i+1)+'</td>'
+      +'<td class="cn">'+(a.ad_name||'—').slice(0,26)+'</td>'
+      +'<td style="font-size:10px">'+(a.campaign_name||'—').slice(0,20)+'</td>'
+      +'<td>'+dollar(a.sp)+'</td>'
+      +'<td style="color:'+roasCol+'">'+dollar(a.rev)+'</td>'
+      +'<td><span class="badge '+roasCls(a.roas)+'">'+roasS(a.roas)+'</span></td>'
+      +'<td>'+a.buys+'</td>'
+      +'<td style="color:'+(a.freq>4?'var(--r)':a.freq>3?'var(--a)':'var(--t)')+'">'+a.freq.toFixed(2)+'</td>'
+      +'</tr>';
+  }).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--t2);padding:16px">'+noMsg+'</td></tr>';
+
+  const top      = [...ads].filter(a=>a.sp>=200&&a.buys>0).sort((a,b)=>b.roas-a.roas).slice(0,8);
+  const bottom   = [...ads].filter(a=>a.sp>=200&&a.roas<1).sort((a,b)=>a.roas-b.roas).slice(0,8);
+  const runnerup = [...ads].filter(a=>a.sp>=200&&a.roas>=1&&a.roas<2&&a.buys>0).sort((a,b)=>b.roas-a.roas).slice(0,8);
+
+  const pLabel = from===to ? from : from+' → '+to;
+  // Update table bodies + section subtitle
+  const subEl = document.querySelector('#creatives .sec-sub');
+  if(subEl) subEl.textContent = '3 buckets · '+pLabel+' · min ₹200 spend';
+
+  [['creative-top-tbody',    top,      'No top creatives in this period'],
+   ['creative-bottom-tbody', bottom,   'No bottom creatives in this period'],
+   ['creative-runnerup-tbody',runnerup,'No runner-up creatives in this period']
+  ].forEach(([id, data, msg]) => {
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = rowHtml(data, msg);
+  });
+}
+
 const _dateMin = '${historyStart}';
 const _dateMax = '${latestDate}';
 
@@ -2500,12 +2913,34 @@ function runCompare(){
   const el=document.getElementById('cmpResult');el.innerHTML=h;el.style.display='block';
 }
 
+
+// ── META DATE PRESET BAR ────────────────────────────────────────────────────────────
+function metaSetPreset(p){
+  const dates=Object.keys(_allDaily).sort();
+  const today=dates[dates.length-1]||'2026-04-25';
+  const pad=n=>String(n).padStart(2,'0');
+  let from,to;const d=new Date(today);
+  if(p==='today'){from=to=today;}
+  else if(p==='yesterday'){const y=new Date(d);y.setDate(y.getDate()-1);from=to=[y.getFullYear(),pad(y.getMonth()+1),pad(y.getDate())].join('-');}
+  else if(p==='7d'){const s=new Date(d);s.setDate(s.getDate()-6);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=today;}
+  else if(p==='14d'){const s=new Date(d);s.setDate(s.getDate()-13);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=today;}
+  else if(p==='mtd'){from=today.slice(0,7)+'-01';to=today;}
+  else if(p==='all'){from=dates[0]||today;to=today;}
+  const rf=document.getElementById('rangeFrom');const rt=document.getElementById('rangeTo');
+  if(rf)rf.value=from;if(rt)rt.value=to;
+  document.querySelectorAll('.meta-preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
+  applyRange();
+}
+
 // ── DATE RANGE FILTER (overview) ────────────────────────────────────────────
 function applyRange(){
   const from=document.getElementById('rangeFrom')?.value;
   const to=document.getElementById('rangeTo')?.value;
   if(!from||!to||from>to)return;
   document.getElementById('rangeLabel').textContent=from+' \u2192 '+to;
+  // Update Age x Gender date label
+  const demoLbl=document.getElementById('demo-date-label');
+  if(demoLbl)demoLbl.textContent=from===to?from:from+' → '+to;
   // Recompute and update period KPI cards in sidebar
   const keys=Object.keys(_allDaily).filter(d=>d>=from&&d<=to);
   let sp=0,rev=0,pur=0;
@@ -2519,13 +2954,91 @@ function applyRange(){
    ['kv-purchases',pur.toLocaleString('en-IN')],
    ['kv-aov',aov>0?'\u20B9'+aov.toFixed(2):'—'],
    ['kv-cpr',cpr>0?'\u20B9'+parseInt(cpr).toLocaleString('en-IN'):'—']
-  ].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+  ].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});  renderMetaCreatives(from, to);
+  renderMetaCampaigns(from, to);
+  renderMetaFunnel(from, to);
+  updateHourlyVisibility(from, to);
+  updateDeviceNote(from, to);
+  renderMetaDemo(from, to);
+  renderMetaAudience(from, to);
+
 }
 
+// ── THEME TOGGLE ─────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem('rnx-theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+}
+(function initTheme(){
+  const saved = localStorage.getItem('rnx-theme');
+  if(saved === 'light'){ document.body.classList.add('light-mode'); const btn=document.getElementById('themeToggle'); if(btn)btn.textContent='☀️'; }
+})();
+
+// ── PASSWORD PROTECTION ──────────────────────────────────────────────────────
+// SHA-256 hash of "revnox2026" — change password by updating this hash
+const _PW_HASH = '09bfb3f7c47ed64ee34b54fca122cd41e1ebf7971ca40c8d8bd0bd4c0ac9657c';
+async function sha256(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function checkLogin(){
+  const pw=document.getElementById('pwInput').value;
+  const err=document.getElementById('loginErr');
+  if(!pw){err.textContent='Please enter your password';return;}
+  const hash=await sha256(pw);
+  if(hash===_PW_HASH){
+    localStorage.setItem('rnx-auth',Date.now().toString());
+    document.getElementById('loginOverlay').classList.add('hidden');
+    err.textContent='';
+  } else {
+    err.textContent='Incorrect password. Please try again.';
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
+  }
+}
+(function initAuth(){
+  const ts=localStorage.getItem('rnx-auth');
+  const TWELVE_HOURS=12*60*60*1000;
+  if(ts && Date.now()-parseInt(ts)<TWELVE_HOURS){
+    document.getElementById('loginOverlay').classList.add('hidden');
+  }
+  // Show overlay if not authed
+})();
+
+// ── AUTO-REFRESH every 5 minutes so dashboard stays live ────────────────────
+setInterval(()=>{ window.location.reload(); }, 5*60*1000);
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
-initOverviewCharts();
+// Default to Day Detail view (Overview tab removed)
+switchView('day');
 initStaticCharts();
+metaSetPreset('mtd'); // Apply MTD filter on load
 </script>
+<!-- ── LOGIN OVERLAY ──────────────────────────────────────────────────── -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="140" height="38" viewBox="0 0 200 52" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#ef4444"/><stop offset="100%" style="stop-color:#dc2626"/></linearGradient></defs>
+        <text x="2" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">REVN</text>
+        <circle cx="147" cy="24" r="14" fill="none" stroke="url(#lg2)" stroke-width="3.5"/>
+        <circle cx="147" cy="24" r="5" fill="#ef4444"/>
+        <line x1="147" y1="6" x2="147" y2="42" stroke="#ef4444" stroke-width="2.5"/>
+        <line x1="129" y1="24" x2="165" y2="24" stroke="#ef4444" stroke-width="2.5"/>
+        <text x="163" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">X</text>
+        <path d="M183 38 L196 10 L184 14 M196 10 L192 22" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="login-title">Media Dashboard</div>
+    <div class="login-sub">Enter your access password to continue</div>
+    <input class="login-inp" id="pwInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkLogin()">
+    <button class="login-btn" onclick="checkLogin()">🔐 Access Dashboard</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-hint">Session stays active for 12 hours</div>
+  </div>
+</div>
+
 </body>
 </html>`;
 
