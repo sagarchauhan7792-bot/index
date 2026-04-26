@@ -27,7 +27,8 @@ const SHOPIFY_TOKEN = process.env.SHOPIFY_TOKEN        || '';
 const AMAZON_CLIENT_ID = process.env.AMAZON_CLIENT_ID || '';
 const AMAZON_CLIENT_SECRET = process.env.AMAZON_CLIENT_SECRET || '';
 const AMAZON_REFRESH_TOKEN = process.env.AMAZON_REFRESH_TOKEN || '';
-const AMAZON_PROFILE_ID = process.env.AMAZON_PROFILE_ID || '';
+const AMAZON_PROFILE_ID     = process.env.AMAZON_PROFILE_ID     || '2924755564335076';
+const AMAZON_API_ENDPOINT   = process.env.AMAZON_API_ENDPOINT   || 'advertising-api-eu.amazon.com';
 
 const REQUIRED_TABS = [
   '📊 Executive Dashboard',
@@ -424,49 +425,112 @@ async function fetchShopifyData(todayStr, yesterdayStr) {
 // ─── AMAZON API ───────────────────────────────────────────────────────────────
 async function fetchAmazonData(dateStr) {
   if (!AMAZON_CLIENT_ID || !AMAZON_REFRESH_TOKEN) {
-    // Return mock data for dashboard visualization if no keys are provided
-    return {
-      spend: 4520,
-      revenue: 12450,
-      orders: 42,
-      clicks: 850,
-      impressions: 45000,
-      roas: 12450 / 4520
-    };
+    console.log('  Amazon: no credentials, skipping');
+    return null;
   }
-  
   try {
+    const AMZN_ENDPOINT = AMAZON_API_ENDPOINT || 'advertising-api-eu.amazon.com';
+    const AMZN_PROFILE  = AMAZON_PROFILE_ID   || '2924755564335076';
+    const HISTORY_START_AMZN = '2026-04-01';
+
     // 1. Get Access Token
-    const authBody = `grant_type=refresh_token&client_id=${AMAZON_CLIENT_ID}&client_secret=${AMAZON_CLIENT_SECRET}&refresh_token=${AMAZON_REFRESH_TOKEN}`;
+    const authBody = 'grant_type=refresh_token&client_id=' + AMAZON_CLIENT_ID + '&client_secret=' + AMAZON_CLIENT_SECRET + '&refresh_token=' + AMAZON_REFRESH_TOKEN;
     const tokenRes = await new Promise((resolve, reject) => {
-      const req = https.request({
-        hostname: 'api.amazon.com',
-        path: '/auth/o2/token',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(authBody) }
-      }, res => {
-        let d = '';
-        res.on('data', c => d += c);
-        res.on('end', () => resolve(JSON.parse(d)));
+      const req = https.request({ hostname: 'api.amazon.com', path: '/auth/o2/token', method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(authBody) } }, res => {
+        let d = ''; res.on('data', chunk => d += chunk); res.on('end', () => resolve(JSON.parse(d)));
       });
-      req.on('error', reject);
-      req.write(authBody); req.end();
+      req.on('error', reject); req.write(authBody); req.end();
     });
-    
-    if (!tokenRes.access_token) throw new Error('Failed to get Amazon access token');
-    
-    // NOTE: Amazon Ads API reporting is asynchronous (Create Report -> Check Status -> Download).
-    // This is a placeholder for the actual API call logic.
-    // For now, returning mock data mixed with a success flag.
+    if (!tokenRes.access_token) { console.log('  Amazon token failed'); return null; }
+    const amznToken = tokenRes.access_token;
+
+    const amznHdrs = { 'Authorization': 'Bearer ' + amznToken, 'Amazon-Advertising-API-ClientId': AMAZON_CLIENT_ID, 'Amazon-Advertising-API-Scope': AMZN_PROFILE, 'Content-Type': 'application/json' };
+    function amznReq(method, path, body) {
+      return new Promise((resolve, reject) => {
+        const b = body ? JSON.stringify(body) : null;
+        const hdrs = Object.assign({}, amznHdrs);
+        if (b) hdrs['Content-Length'] = Buffer.byteLength(b);
+        const r = https.request({ hostname: AMZN_ENDPOINT, path, method, headers: hdrs }, res => {
+          let d = ''; res.on('data', chunk => d += chunk); res.on('end', () => { try { resolve(JSON.parse(d)); } catch(e) { resolve({}); } });
+        });
+        r.on('error', reject); if (b) r.write(b); r.end();
+      });
+    }
+
+    // 2. Request SP + SD reports (async reporting API)
+    const [spRes, sdRes] = await Promise.all([
+      amznReq('POST', '/reporting/reports', { name: 'sp_daily', startDate: HISTORY_START_AMZN, endDate: dateStr, configuration: { adProduct: 'SPONSORED_PRODUCTS', groupBy: ['campaign'], columns: ['date','campaignName','impressions','clicks','cost','purchases14d','sales14d'], reportTypeId: 'spCampaigns', timeUnit: 'DAILY', format: 'GZIP_JSON' } }),
+      amznReq('POST', '/reporting/reports', { name: 'sd_daily', startDate: HISTORY_START_AMZN, endDate: dateStr, configuration: { adProduct: 'SPONSORED_DISPLAY', groupBy: ['campaign'], columns: ['date','campaignName','impressions','clicks','cost','sales','unitsSold','detailPageViews'], reportTypeId: 'sdCampaigns', timeUnit: 'DAILY', format: 'GZIP_JSON' } }),
+    ]);
+    const spReportId = spRes.reportId, sdReportId = sdRes.reportId;
+    console.log('  Amazon SP reportId: ' + (spReportId || 'FAIL') + ' | SD: ' + (sdReportId || 'FAIL'));
+
+    // 3. Poll until COMPLETED (max 90s, 5s intervals)
+    async function pollReport(reportId, label) {
+      if (!reportId) return [];
+      for (let i = 0; i < 18; i++) {
+        await new Promise(r => setTimeout(r, 5000));
+        const status = await amznReq('GET', '/reporting/reports/' + reportId);
+        if (status.status === 'COMPLETED' && status.url) {
+          const zlib = require('zlib');
+          const rows = await new Promise((resolve, reject) => {
+            https.get(status.url, res => {
+              const gunzip = zlib.createGunzip();
+              res.pipe(gunzip);
+              let d = ''; gunzip.on('data', chunk => d += chunk);
+              gunzip.on('end', () => { try { resolve(JSON.parse(d)); } catch(e) { resolve([]); } });
+            }).on('error', reject);
+          });
+          console.log('  Amazon ' + label + ': ' + rows.length + ' rows downloaded');
+          return rows;
+        }
+        if (status.status === 'FAILED') { console.log('  Amazon ' + label + ' FAILED'); return []; }
+      }
+      console.log('  Amazon ' + label + ' timed out'); return [];
+    }
+    const [spRows, sdRows] = await Promise.all([pollReport(spReportId, 'SP'), pollReport(sdReportId, 'SD')]);
+
+    // 4. Aggregate per-day
+    const allDailyAmzn = {};
+    spRows.forEach(row => {
+      const d = row.date;
+      if (!allDailyAmzn[d]) allDailyAmzn[d] = { spend:0, revenue:0, orders:0, impressions:0, clicks:0 };
+      allDailyAmzn[d].spend += parseFloat(row.cost||0); allDailyAmzn[d].revenue += parseFloat(row.sales14d||0);
+      allDailyAmzn[d].orders += parseFloat(row.purchases14d||0); allDailyAmzn[d].impressions += parseInt(row.impressions||0); allDailyAmzn[d].clicks += parseInt(row.clicks||0);
+    });
+    sdRows.forEach(row => {
+      const d = row.date;
+      if (!allDailyAmzn[d]) allDailyAmzn[d] = { spend:0, revenue:0, orders:0, impressions:0, clicks:0 };
+      allDailyAmzn[d].spend += parseFloat(row.cost||0); allDailyAmzn[d].revenue += parseFloat(row.sales||0);
+      allDailyAmzn[d].impressions += parseInt(row.impressions||0); allDailyAmzn[d].clicks += parseInt(row.clicks||0);
+    });
+
+    // 5. Campaign summary
+    const campMap = {};
+    spRows.forEach(row => {
+      const k = row.campaignName || 'Unknown';
+      if (!campMap[k]) campMap[k] = { name:k, spend:0, revenue:0, orders:0, impressions:0, clicks:0 };
+      campMap[k].spend += parseFloat(row.cost||0); campMap[k].revenue += parseFloat(row.sales14d||0);
+      campMap[k].orders += parseFloat(row.purchases14d||0); campMap[k].impressions += parseInt(row.impressions||0); campMap[k].clicks += parseInt(row.clicks||0);
+    });
+    const campaigns = Object.values(campMap).map(camp => ({ ...camp, roas: camp.spend>0&&camp.revenue>0?camp.revenue/camp.spend:0, cpa: camp.orders>0?camp.spend/camp.orders:0, ctr: camp.impressions>0?camp.clicks/camp.impressions*100:0 })).sort((a,b)=>b.spend-a.spend);
+
+    const totalSpend = Object.values(allDailyAmzn).reduce((s,d)=>s+(d.spend||0),0);
+    const totalRevenue = Object.values(allDailyAmzn).reduce((s,d)=>s+(d.revenue||0),0);
+    const totalOrders = Object.values(allDailyAmzn).reduce((s,d)=>s+(d.orders||0),0);
+    const todayData = allDailyAmzn[dateStr] || {};
+
     return {
       connected: true,
-      spend: 5200,
-      revenue: 15400,
-      orders: 55,
-      roas: 15400 / 5200
+      spend: todayData.spend||0, revenue: todayData.revenue||0, orders: todayData.orders||0,
+      roas: (todayData.spend>0&&todayData.revenue>0) ? todayData.revenue/todayData.spend : 0,
+      impressions: todayData.impressions||0, clicks: todayData.clicks||0,
+      totalSpend, totalRevenue, totalOrders,
+      totalRoas: totalSpend>0&&totalRevenue>0 ? totalRevenue/totalSpend : 0,
+      campaigns, allDailyAmzn, marketplace: 'Amazon.in', currency: 'INR',
     };
   } catch(e) {
-    console.log('⚠️  Amazon fetch error:', e.message);
+    console.log('Amazon fetch error:', e.message);
     return null;
   }
 }
@@ -1818,12 +1882,17 @@ async function main() {
   console.log('📅 Fetching historical data from April 1...');
   const HISTORY_START = '2026-04-01';
   const histRange = `&time_range={"since":"${HISTORY_START}","until":"${dateStr}"}&time_increment=1`;
-  const [histAccData, histCampData, histAdsetData] = await Promise.all([
+  // Ad-level uses a smaller field set to avoid hitting API limits
+  const histAdRange = `&time_range={"since":"${HISTORY_START}","until":"${dateStr}"}&time_increment=1&fields=ad_id,ad_name,campaign_name,adset_name,spend,frequency,action_values,actions&limit=500`;
+  const histDemoRange = histRange + '&breakdowns=age,gender&fields=age,gender,spend,action_values,actions&limit=500';
+  const [histAccData, histCampData, histAdsetData, histAdData, histDemoData] = await Promise.all([
     metaFetch('account', '', null, histRange),
     metaFetch('campaign', '', null, histRange),
     metaFetch('adset', '', null, histRange),
+    metaFetch('ad', '', null, histAdRange).catch(() => []),
+    metaFetch('account', '', null, histDemoRange).catch(() => []),
   ]);
-  console.log(`✅ Historical: ${histAccData.length} days fetched`);
+  console.log(`✅ Historical: ${histAccData.length} days fetched, ${histAdData.length} ad-day rows`);
 
   const allDailyData = {};
   histAccData.forEach(d => {
@@ -1844,7 +1913,7 @@ async function main() {
         fAtc: lpv>0?atc/lpv*100:0, fCheckout: atc>0?checkout/atc*100:0,
         fPurchase: checkout>0?buys/checkout*100:0,
       },
-      campaigns:[], adsets:[]
+      campaigns:[], adsets:[], ads:[], demo:[]
     };
   });
   histCampData.forEach(d => {
@@ -1868,9 +1937,50 @@ async function main() {
     });
   });
 
+  histAdData.forEach(d => {
+    if (!allDailyData[d.date_start]) return;
+    const sp  = parseFloat(d.spend||0);
+    const rev = parseFloat(getAction(d.action_values,'purchase')||0);
+    const buys= parseFloat(getAction(d.actions,'purchase')||0);
+    allDailyData[d.date_start].ads.push({
+      id: d.ad_id, name: d.ad_name, campName: d.campaign_name, adsetName: d.adset_name,
+      spend:sp, revenue:rev, purchases:buys,
+      roas: sp>0&&rev>0 ? rev/sp : 0,
+      freq: parseFloat(d.frequency||0),
+    });
+  });  // ── STORE DEMO (AGE/GENDER) PER DAY ──────────────────────────────────────
+  (histDemoData||[]).forEach(d => {
+    if (!allDailyData[d.date_start]) return;
+    const sp  = parseFloat(d.spend||0);
+    const rev = parseFloat(getAction(d.action_values,'purchase')||0);
+    const buys= parseFloat(getAction(d.actions,'purchase')||0);
+    allDailyData[d.date_start].demo.push({
+      age: d.age||'Unknown', gender: d.gender||'Unknown',
+      spend:sp, revenue:rev, purchases:buys,
+    });
+  });
+
+
+
   // ── GENERATE HTML DASHBOARD ───────────────────────────────────────────────
   const dashboardPath = require('path').join(__dirname, 'dashboard.html');
   try {
+    // Build adsetTargetingMap for client-side reactivity
+    const adsetTargetingMap = {};
+    (adsetTargetingData || []).forEach(adset => {
+      const t = adset.targeting || {};
+      const interests = [];
+      (t.flexible_spec || []).forEach(spec => {
+        (spec.interests || []).forEach(int => interests.push({ id: int.id, name: int.name || int.id }));
+      });
+      const customAudiences = (t.custom_audiences || []).map(ca => ({ id: ca.id, name: ca.name || ca.id }));
+      const lookalikes = (t.lookalike_spec ? [t.lookalike_spec] : []).map(ll => 'Lookalike ' + (ll.country || '') + ' ' + (ll.ratio ? (ll.ratio*100).toFixed(0)+'%' : '')).filter(Boolean);
+      adsetTargetingMap[adset.id] = {
+        adsetName: adset.name || adset.id,
+        interests, customAudiences, lookalikes,
+      };
+    });
+
     generateDashboard({
       dateStr, yesterdaySpend, accRevenue, accRoas, accPurchases, accCpa,
       accCtr, accCpm, accCpc, accImpressions, accReach, accFreq,
@@ -1883,6 +1993,7 @@ async function main() {
       actionItems, spreadsheetUrl, allDailyData,
       historyStart: HISTORY_START,
       adsetTargetingData,
+      adsetTargetingMap,
       shopifyData,
       amazonData,
     }, dashboardPath, 'Logi5');
