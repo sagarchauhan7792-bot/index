@@ -2419,9 +2419,15 @@ const _OV_META_TODAY  = { spend:${yesterdaySpend}, revenue:${accRevenue}, purcha
 
 let _ovSpendChart=null, _ovRoasChart=null, _ovChannelChart=null, _ovOrdersChart=null, _ovCacChart=null;
 
+// Standalone date helper (does not depend on Shopify being loaded)
+function ovGetDate(offsetDays = 0) {
+  const d = new Date(Date.now() + 5.5*3600000 - offsetDays*86400000);
+  return d.toISOString().slice(0,10);
+}
+
 function ovSetPreset(p) {
   const today = '${dateStr}';
-  const map = { today:[today,today], '7d':[shGetIST(6),today], '14d':[shGetIST(13),today], mtd:['2026-04-01',today], all:['2026-04-01',today] };
+  const map = { today:[today,today], '7d':[ovGetDate(6),today], '14d':[ovGetDate(13),today], mtd:['2026-04-01',today], all:['2026-04-01',today] };
   const [f,t] = map[p]||map.mtd;
   document.getElementById('ov-from').value=f;
   document.getElementById('ov-to').value=t;
