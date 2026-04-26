@@ -954,7 +954,7 @@ async function main() {
     metaFetch('campaign', '', activeDatePreset),
     metaFetch('adset', '', activeDatePreset),
     metaFetch('ad', '', activeDatePreset),
-    metaFetch('campaign', 'age,gender', activeDatePreset),
+    metaFetch('ad', 'age,gender', activeDatePreset),
     metaFetch('campaign', 'country', activeDatePreset),
     metaFetch('campaign', 'publisher_platform,platform_position,impression_device', activeDatePreset),
     metaFetch('campaign', 'device_platform', activeDatePreset),
@@ -1884,7 +1884,7 @@ async function main() {
   const histRange = `&time_range={"since":"${HISTORY_START}","until":"${dateStr}"}&time_increment=1`;
   // Ad-level uses a smaller field set to avoid hitting API limits
   const histAdRange = `&time_range={"since":"${HISTORY_START}","until":"${dateStr}"}&time_increment=1&fields=ad_id,ad_name,campaign_name,adset_name,spend,frequency,action_values,actions&limit=500`;
-  const histDemoRange = histRange + '&breakdowns=age,gender&fields=age,gender,spend,action_values,actions&limit=500';
+  const histDemoRange = histRange + '&breakdowns=age,gender&fields=spend,action_values,actions&limit=500';
   const [histAccData, histCampData, histAdsetData, histAdData, histDemoData] = await Promise.all([
     metaFetch('account', '', null, histRange),
     metaFetch('campaign', '', null, histRange),
