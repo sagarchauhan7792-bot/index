@@ -2428,12 +2428,12 @@ function renderMetaDemo(from, to) {
     demoTbody.innerHTML = demoRows.length > 0
       ? demoRows.map((d,i) => {
           const cpa = d.purchases>0?d.spend/d.purchases:0;
-          return "<tr><td class="cm">"+(i+1)+"</td><td style="font-weight:600">"+d.label+"</td>"
-            +"<td>"+inr(d.spend)+"</td><td>"+inr(d.revenue)+"</td>"
-            +"<td><span class="badge "+roasCls(d.roas)+"">"+roasS(d.roas)+"</span></td>"
-            +"<td>"+d.purchases+"</td><td>"+(cpa>0?inr(cpa):"--")+"</td></tr>";
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+d.label+'</td>'
+            +'<td>'+inr(d.spend)+'</td><td>'+inr(d.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(d.roas)+'">'+roasS(d.roas)+'</span></td>'
+            +'<td>'+d.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
         }).join("")
-      : "<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No demographic data for this period</td></tr>";
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No demographic data for this period</td></tr>';
   }
   const ageRows = Object.values(ageMap).map(a => ({...a, roas: a.spend>0?a.revenue/a.spend:0})).sort((a,b)=>b.spend-a.spend);
   const ageTbody = document.getElementById("age-range-tbody");
@@ -2441,12 +2441,12 @@ function renderMetaDemo(from, to) {
     ageTbody.innerHTML = ageRows.length > 0
       ? ageRows.map((a,i) => {
           const cpa = a.purchases>0?a.spend/a.purchases:0;
-          return "<tr><td class="cm">"+(i+1)+"</td><td style="font-weight:600">"+a.age+"</td>"
-            +"<td>"+inr(a.spend)+"</td><td>"+inr(a.revenue)+"</td>"
-            +"<td><span class="badge "+roasCls(a.roas)+"">"+roasS(a.roas)+"</span></td>"
-            +"<td>"+a.purchases+"</td><td>"+(cpa>0?inr(cpa):"--")+"</td></tr>";
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+a.age+'</td>'
+            +'<td>'+inr(a.spend)+'</td><td>'+inr(a.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(a.roas)+'">'+roasS(a.roas)+'</span></td>'
+            +'<td>'+a.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
         }).join("")
-      : "<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No age data for this period</td></tr>";
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No age data for this period</td></tr>';
   }
   const top8 = demoRows.slice(0,8);
   const labels = top8.map(d => d.label);
@@ -2487,22 +2487,22 @@ function renderMetaAudience(from, to) {
     });
     (t.lookalikes || []).forEach(ll => llSet.add(ll));
   });
-  const badge = s => "<span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-radius:4px;padding:1px 6px;font-size:10px;color:#a5b4fc;margin:1px">"+s+"</span>";
+  const badge = s => '<span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-radius:4px;padding:1px 6px;font-size:10px;color:#a5b4fc;margin:1px">'+s+'</span>';
   const topInt = Object.values(intMap).sort((a,b)=>b.count-a.count).slice(0,20);
   const topCa  = Object.values(caMap).sort((a,b)=>b.count-a.count).slice(0,20);
   const intTbody = document.getElementById("interest-tbody");
   if (intTbody) {
     intTbody.innerHTML = topInt.length > 0
-      ? topInt.map((int,i) => "<tr><td class="cm">"+(i+1)+"</td><td>"+int.name+"</td><td>"+int.adsets.slice(0,3).map(badge).join("")+(int.adsets.length>3?"<span style="color:var(--t2);font-size:10px"> +"+(int.adsets.length-3)+" more</span>":"")+"</td></tr>").join("")
-      : "<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No active interests in this period</td></tr>";
+      ? topInt.map((int,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+int.name+'</td><td>'+int.adsets.slice(0,3).map(badge).join('')+(int.adsets.length>3?'<span style="color:var(--t2);font-size:10px"> +'+(int.adsets.length-3)+' more</span>':'')+'</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No active interests in this period</td></tr>';
     const meta = document.getElementById("interest-meta");
     if (meta) meta.textContent = topInt.length + " unique interests across active adsets";
   }
   const caTbody = document.getElementById("custom-audience-tbody");
   if (caTbody) {
     caTbody.innerHTML = topCa.length > 0
-      ? topCa.map((ca,i) => "<tr><td class="cm">"+(i+1)+"</td><td>"+ca.name+"</td><td>"+ca.count+" adsets</td></tr>").join("")
-      : "<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No custom audiences in this period</td></tr>";
+      ? topCa.map((ca,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+ca.name+'</td><td>'+ca.count+' adsets</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No custom audiences in this period</td></tr>';
   }
 }
 
