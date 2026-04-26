@@ -465,11 +465,11 @@ async function fetchAmazonData(dateStr) {
     const spReportId = spRes.reportId, sdReportId = sdRes.reportId;
     console.log('  Amazon SP reportId: ' + (spReportId || 'FAIL') + ' | SD: ' + (sdReportId || 'FAIL'));
 
-    // 3. Poll until COMPLETED (max 90s, 5s intervals)
+    // 3. Poll until COMPLETED (max 5min, 10s intervals)
     async function pollReport(reportId, label) {
       if (!reportId) return [];
-      for (let i = 0; i < 18; i++) {
-        await new Promise(r => setTimeout(r, 5000));
+      for (let i = 0; i < 30; i++) {
+        await new Promise(r => setTimeout(r, 10000));
         const status = await amznReq('GET', '/reporting/reports/' + reportId);
         if (status.status === 'COMPLETED' && status.url) {
           const zlib = require('zlib');
