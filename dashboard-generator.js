@@ -1561,25 +1561,36 @@ ${shopifyData ? `
     <input type="date" id="amz-to" value="${dateStr}" min="2026-04-01" max="${dateStr}" onchange="renderAmazon()" style="background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 8px;color:#94a3b8;font-size:12px">
   </div>
 
-  <!-- Mock KPIs (replace with real data once connected) -->
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Ad Performance (Preview — Mock Data)</div>
-  <div class="kpi-grid g6" style="margin-bottom:14px">
-    <div class="kcard green"><div class="k-lbl">Ad Revenue</div><div class="k-val">₹${(amzRevenue*25).toLocaleString('en-IN',{maximumFractionDigits:0})}</div><div class="k-meta"><span class="k-bench">Period estimate</span></div></div>
-    <div class="kcard"><div class="k-lbl">Ad Spend</div><div class="k-val">₹${(amzSpend*25).toLocaleString('en-IN',{maximumFractionDigits:0})}</div><div class="k-meta"><span class="k-bench">Period estimate</span></div></div>
-    <div class="kcard ${amzRoas>=4?'green':amzRoas>=2?'amber':'red'}"><div class="k-lbl">ROAS</div><div class="k-val">${amzRoas.toFixed(2)}x</div><div class="k-meta"><span class="k-bench">Revenue ÷ Spend</span></div></div>
-    <div class="kcard purple"><div class="k-lbl">Orders</div><div class="k-val">${amzOrders*25}</div><div class="k-meta"><span class="k-bench">Period estimate</span></div></div>
-    <div class="kcard amber"><div class="k-lbl">ACOS</div><div class="k-val">${amzRevenue>0?(amzSpend/amzRevenue*100).toFixed(1):0}%</div><div class="k-meta"><span class="k-bench">Ad Cost of Sales</span></div></div>
-    <div class="kcard"><div class="k-lbl">TACOS</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Need seller data</span></div></div>
+  <!-- KPI Cards real data reactive -->
+  <div id="amz-kpi-section">
+    <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Ad Performance — <span id="amz-period-label">${historyStart} → ${dateStr}</span></div>
+    <div class="kpi-grid g6" style="margin-bottom:14px">
+      <div class="kcard green"><div class="k-lbl">Ad Revenue</div><div class="k-val" id="amz-revenue">₹${parseInt((amazonData||{}).totalRevenue||0).toLocaleString('en-IN')}</div></div>
+      <div class="kcard"><div class="k-lbl">Ad Spend</div><div class="k-val" id="amz-spend">₹${parseInt((amazonData||{}).totalSpend||0).toLocaleString('en-IN')}</div></div>
+      <div class="kcard amber"><div class="k-lbl">ROAS</div><div class="k-val" id="amz-roas">${((amazonData||{}).totalRoas||0).toFixed(2)}x</div></div>
+      <div class="kcard purple"><div class="k-lbl">Orders</div><div class="k-val" id="amz-orders">${(amazonData||{}).totalOrders||0}</div></div>
+      <div class="kcard"><div class="k-lbl">ACOS</div><div class="k-val" id="amz-acos">${(amazonData||{}).totalRevenue>0?((amazonData||{}).totalSpend/(amazonData||{}).totalRevenue*100).toFixed(1):0}%</div><div class="k-meta"><span class="k-sub">Ad Cost of Sales</span></div></div>
+      <div class="kcard"><div class="k-lbl">Clicks</div><div class="k-val" id="amz-clicks">${parseInt(Object.values((amazonData||{}).allDailyAmzn||{}).reduce((s,d)=>s+(d.clicks||0),0)).toLocaleString('en-IN')}</div></div>
+    </div>
+    <div class="kpi-grid g4" style="margin-bottom:18px">
+      <div class="kcard"><div class="k-lbl">Impressions</div><div class="k-val" id="amz-impr">${parseInt(Object.values((amazonData||{}).allDailyAmzn||{}).reduce((s,d)=>s+(d.impressions||0),0)).toLocaleString('en-IN')}</div></div>
+      <div class="kcard"><div class="k-lbl">CTR</div><div class="k-val" id="amz-ctr">—</div></div>
+      <div class="kcard"><div class="k-lbl">CPC</div><div class="k-val" id="amz-cpc">—</div></div>
+      <div class="kcard"><div class="k-lbl">CPA</div><div class="k-val" id="amz-cpa">—</div></div>
+    </div>
   </div>
 
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Campaign Metrics</div>
-  <div class="kpi-grid g6" style="margin-bottom:14px">
-    <div class="kcard"><div class="k-lbl">Impressions</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
-    <div class="kcard"><div class="k-lbl">Clicks</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
-    <div class="kcard"><div class="k-lbl">CTR</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
-    <div class="kcard"><div class="k-lbl">CPC</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
-    <div class="kcard"><div class="k-lbl">Sponsored Products</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
-    <div class="kcard"><div class="k-lbl">Sponsored Brands</div><div class="k-val">—</div><div class="k-meta"><span class="k-bench">Connect to view</span></div></div>
+  <!-- Campaign Table -->
+  <div class="tcard" style="margin-bottom:18px">
+    <div class="ttop"><div class="ttitle">📋 Campaign Performance</div><div class="t-meta" id="amz-camp-meta">Sponsored Products · ${dateStr}</div></div>
+    <div class="tscroll"><table><thead><tr><th>#</th><th>Campaign</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Orders</th><th>ACOS</th><th>Clicks</th><th>Impressions</th></tr></thead>
+    <tbody id="amz-camp-tbody">${((amazonData||{}).campaigns||[]).slice(0,20).map((camp,i)=>{
+      const acos = camp.revenue>0?(camp.spend/camp.revenue*100).toFixed(1)+'%':'—';
+      const roas = camp.roas>0?camp.roas.toFixed(2)+'x':'—';
+      const rc = camp.roas>=4?'badge-green':camp.roas>=2?'badge-blue':camp.roas>=1?'badge-amber':'badge-red';
+      return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:500">'+(camp.name||'').slice(0,35)+'</td><td>₹'+parseInt(camp.spend).toLocaleString('en-IN')+'</td><td>₹'+parseInt(camp.revenue).toLocaleString('en-IN')+'</td><td><span class="badge '+rc+'">'+roas+'</span></td><td>'+camp.orders+'</td><td>'+acos+'</td><td>'+parseInt(camp.clicks).toLocaleString('en-IN')+'</td><td>'+parseInt(camp.impressions).toLocaleString('en-IN')+'</td></tr>';
+    }).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--t2);padding:16px">No campaign data yet</td></tr>'}</tbody>
+    </table></div>
   </div>
 
   <!-- Charts placeholder -->
@@ -1588,7 +1599,7 @@ ${shopifyData ? `
     <div class="cc"><div class="cc-head"><div class="cc-title">💰 Spend vs Revenue Daily</div></div><div class="cw" style="height:200px"><canvas id="chartAmzSpend"></canvas></div></div>
   </div>
 
-  <!-- Connection guide -->
+  ${(amazonData||{}).connected ? "" : `<!-- Connection guide -->
   <div style="background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(239,68,68,0.04));border:1px solid rgba(245,158,11,0.15);border-radius:14px;padding:24px 28px;margin-top:8px">
     <div style="font-size:15px;font-weight:700;color:#fbbf24;margin-bottom:12px">🔗 Connect Amazon Ads in 4 Steps</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
@@ -1600,6 +1611,7 @@ ${shopifyData ? `
   </div>
 
 </div>
+`}
 </div>
 <!-- ═══ END AMAZON PLATFORM ══════════════════════════════════════════════════ -->
 
@@ -2564,6 +2576,9 @@ window.topAdsData = topAdsData;
 
 // ═══ ALL DAILY DATA (for compare + range filter) ═══════════════════════════
 const _allDaily = ${JSON.stringify(allDailyData)};
+const _allDailyAmzn = ${JSON.stringify((amazonData||{}).allDailyAmzn||{})};
+const _amzCampaigns = ${JSON.stringify((amazonData||{}).campaigns||[])};
+const _amzConnected = ${JSON.stringify(!!(amazonData||{}).connected)};
 const _adsetTargeting = ${JSON.stringify(adsetTargetingMap)};
 
 // ═══ CREATIVE BUCKETS — date-reactive ════════════════════════════════════
@@ -2789,6 +2804,119 @@ function renderMetaAudience(from, to) {
   }
 }
 
+
+// === AMAZON — date-reactive ===============================================
+function amzSetPreset(p) {
+  const dates = Object.keys(_allDailyAmzn).sort();
+  const today = dates[dates.length-1] || Object.keys(_allDaily).sort().pop() || '2026-04-26';
+  let from = today, to = today;
+  if (p === 'today')     { from = to = today; }
+  else if (p === '7d')   { const d=new Date(today); d.setDate(d.getDate()-6); from=d.toISOString().slice(0,10); to=today; }
+  else if (p === '14d')  { const d=new Date(today); d.setDate(d.getDate()-13); from=d.toISOString().slice(0,10); to=today; }
+  else if (p === 'mtd')  { from=today.slice(0,7)+'-01'; to=today; }
+  else if (p === 'all')  { from=dates[0]||today; to=today; }
+  const rf=document.getElementById('amz-from'), rt=document.getElementById('amz-to');
+  if(rf) rf.value=from; if(rt) rt.value=to;
+  document.querySelectorAll('[id^="amzp-"]').forEach(b=>b.classList.toggle('active', b.id==='amzp-'+p));
+  renderAmazon();
+}
+
+function renderAmazon() {
+  const from = document.getElementById('amz-from')?.value;
+  const to   = document.getElementById('amz-to')?.value;
+  if (!from || !to) return;
+
+  // Update period label
+  const lbl = document.getElementById('amz-period-label');
+  if (lbl) lbl.textContent = from === to ? from : from + ' → ' + to;
+
+  // Aggregate daily data
+  const keys = Object.keys(_allDailyAmzn).filter(d => d >= from && d <= to);
+  let spend=0, revenue=0, orders=0, clicks=0, impressions=0;
+  keys.forEach(d => {
+    const r = _allDailyAmzn[d] || {};
+    spend       += r.spend       || 0;
+    revenue     += r.revenue     || 0;
+    orders      += r.orders      || 0;
+    clicks      += r.clicks      || 0;
+    impressions += r.impressions || 0;
+  });
+  const roas = spend>0&&revenue>0 ? revenue/spend : 0;
+  const acos = revenue>0 ? spend/revenue*100 : 0;
+  const ctr  = impressions>0 ? clicks/impressions*100 : 0;
+  const cpc  = clicks>0 ? spend/clicks : 0;
+  const cpa  = orders>0 ? spend/orders : 0;
+  const inr  = n => 'Rs.' + parseInt(n||0).toLocaleString('en-IN');
+
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  set('amz-revenue', inr(revenue));
+  set('amz-spend',   inr(spend));
+  set('amz-roas',    roas>0 ? roas.toFixed(2)+'x' : '--');
+  set('amz-orders',  orders);
+  set('amz-acos',    acos>0 ? acos.toFixed(1)+'%' : '--');
+  set('amz-clicks',  parseInt(clicks).toLocaleString('en-IN'));
+  set('amz-impr',    parseInt(impressions).toLocaleString('en-IN'));
+  set('amz-ctr',     ctr>0 ? ctr.toFixed(2)+'%' : '--');
+  set('amz-cpc',     cpc>0 ? inr(cpc) : '--');
+  set('amz-cpa',     cpa>0 ? inr(cpa) : '--');
+
+  // Campaign table — filter by date
+  const campMap = {};
+  keys.forEach(d => {
+    (_allDailyAmzn[d]?._campaigns || []).forEach(camp => {
+      if (!campMap[camp.name]) campMap[camp.name] = { name:camp.name, spend:0, revenue:0, orders:0, clicks:0, impressions:0 };
+      campMap[camp.name].spend       += camp.spend       || 0;
+      campMap[camp.name].revenue     += camp.revenue     || 0;
+      campMap[camp.name].orders      += camp.orders      || 0;
+      campMap[camp.name].clicks      += camp.clicks      || 0;
+      campMap[camp.name].impressions += camp.impressions || 0;
+    });
+  });
+
+  // Fall back to full period campaigns if no per-day campaign breakdown
+  const camps = Object.values(campMap).length > 0
+    ? Object.values(campMap).map(camp => ({ ...camp, roas: camp.spend>0&&camp.revenue>0?camp.revenue/camp.spend:0 })).sort((a,b)=>b.spend-a.spend)
+    : _amzCampaigns.slice(0,20);
+
+  const tbody = document.getElementById('amz-camp-tbody');
+  if (tbody) {
+    tbody.innerHTML = camps.length > 0
+      ? camps.map((camp, i) => {
+          const acos = camp.revenue>0 ? (camp.spend/camp.revenue*100).toFixed(1)+'%' : '--';
+          const roas = camp.roas>0 ? camp.roas.toFixed(2)+'x' : '--';
+          const rc   = camp.roas>=4?'badge-green':camp.roas>=2?'badge-blue':camp.roas>=1?'badge-amber':'badge-red';
+          return '<tr><td class="cm">'+(i+1)+'</td>'
+            +'<td style="font-weight:500">'+(camp.name||'').slice(0,35)+'</td>'
+            +'<td>'+inr(camp.spend)+'</td>'
+            +'<td>'+inr(camp.revenue)+'</td>'
+            +'<td><span class="badge '+rc+'">'+roas+'</span></td>'
+            +'<td>'+camp.orders+'</td>'
+            +'<td>'+acos+'</td>'
+            +'<td>'+parseInt(camp.clicks||0).toLocaleString('en-IN')+'</td>'
+            +'<td>'+parseInt(camp.impressions||0).toLocaleString('en-IN')+'</td></tr>';
+        }).join('')
+      : '<tr><td colspan="9" style="text-align:center;color:var(--t2);padding:16px">No campaign data for this period</td></tr>';
+  }
+
+  // Update charts
+  const dailyDates = keys.sort();
+  const spendArr   = dailyDates.map(d => parseFloat((_allDailyAmzn[d]||{}).spend||0).toFixed(0));
+  const revenueArr = dailyDates.map(d => parseFloat((_allDailyAmzn[d]||{}).revenue||0).toFixed(0));
+  const roasArr    = dailyDates.map(d => { const r=_allDailyAmzn[d]||{}; return r.spend>0&&r.revenue>0?(r.revenue/r.spend).toFixed(2):0; });
+
+  if (window._chartAmzRoas) {
+    window._chartAmzRoas.data.labels = dailyDates;
+    window._chartAmzRoas.data.datasets[0].data = roasArr;
+    window._chartAmzRoas.update();
+  }
+  if (window._chartAmzSpend) {
+    window._chartAmzSpend.data.labels = dailyDates;
+    window._chartAmzSpend.data.datasets[0].data = revenueArr;
+    window._chartAmzSpend.data.datasets[1].data = spendArr;
+    window._chartAmzSpend.update();
+  }
+}
+
 function renderMetaCreatives(from, to) {
   // Aggregate all ad rows in the selected date range
   const adMap = {};
@@ -3008,6 +3136,16 @@ async function checkLogin(){
 
 // ── AUTO-REFRESH every 5 minutes so dashboard stays live ────────────────────
 setInterval(()=>{ window.location.reload(); }, 5*60*1000);
+
+
+  // Amazon charts
+  if(document.getElementById('chartAmzRoas')) {
+    window._chartAmzRoas = new Chart(document.getElementById('chartAmzRoas'), { type:'line', data:{ labels:[], datasets:[{ label:'ROAS', data:[], borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.1)', tension:0.4, fill:true, pointRadius:3 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} }, scales:{ y:{ ticks:{ callback:v=>v+'x' } } } } });
+  }
+  if(document.getElementById('chartAmzSpend')) {
+    window._chartAmzSpend = new Chart(document.getElementById('chartAmzSpend'), { type:'bar', data:{ labels:[], datasets:[{ label:'Revenue', data:[], backgroundColor:'rgba(16,185,129,0.7)', borderRadius:3 },{ label:'Spend', data:[], backgroundColor:'rgba(99,102,241,0.5)', borderRadius:3 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:true} } } });
+  }
+  if(Object.keys(_allDailyAmzn).length > 0) { amzSetPreset('mtd'); }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 // Default to Day Detail view (Overview tab removed)
