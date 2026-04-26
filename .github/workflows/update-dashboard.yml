@@ -1,0 +1,41 @@
+name: Update RevNox Dashboard
+
+on:
+  schedule:
+    # Every 5 minutes — GitHub Actions minimum (closest to real-time)
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    # Also allows manual trigger from GitHub UI with one click
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run dashboard generator
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+        run: node run.js
+
+      - name: Commit & push updated dashboard
+        run: |
+          git config user.name  "RevNox Bot"
+          git config user.email "bot@revnoxmedia.com"
+          git add dashboard.html
+          git diff --cached --quiet || git commit -m "📊 Auto-update dashboard $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
