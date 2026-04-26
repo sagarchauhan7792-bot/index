@@ -2,10 +2,13 @@ name: Update RevNox Dashboard
 
 on:
   schedule:
-    # Every 5 minutes — GitHub Actions minimum (closest to real-time)
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
-    # Also allows manual trigger from GitHub UI with one click
+    - cron: '*/5 * * * *'   # Every 5 min
+    - cron: '0 * * * *'     # Top of every hour (keeps workflow "active" so cron doesn't get disabled)
+  push:
+    branches: [master]      # Re-runs after each self-commit → self-sustaining loop
+    paths:
+      - 'run.js'             # Only on code changes, not every dashboard.html push
+  workflow_dispatch:         # Manual trigger from GitHub UI
 
 permissions:
   contents: write
@@ -13,7 +16,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 8
 
     steps:
       - name: Checkout repo
@@ -33,6 +36,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_TOKEN }}
+          AMAZON_CLIENT_ID: ${{ secrets.AMAZON_CLIENT_ID }}
+          AMAZON_CLIENT_SECRET: ${{ secrets.AMAZON_CLIENT_SECRET }}
+          AMAZON_REFRESH_TOKEN: ${{ secrets.AMAZON_REFRESH_TOKEN }}
+          AMAZON_PROFILE_ID: ${{ secrets.AMAZON_PROFILE_ID }}
+          AMAZON_API_ENDPOINT: ${{ secrets.AMAZON_API_ENDPOINT }}
         run: node run.js
 
       - name: Commit & push updated dashboard
