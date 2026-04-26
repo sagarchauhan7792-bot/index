@@ -352,19 +352,7 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
   .funnel{grid-template-columns:1fr}
   .ac-grid{grid-template-columns:1fr}
 }
-/* ── LOGIN SCREEN ────────────────────────────────────────────────────── */
-#loginOverlay{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#020617 0%,#0f172a 50%,#1e1b4b 100%);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px)}
-#loginOverlay.hidden{display:none!important}
-.login-box{background:rgba(30,41,59,0.95);border:1px solid rgba(99,102,241,0.3);border-radius:24px;padding:48px 40px;width:360px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(99,102,241,0.1)}
-.login-logo{margin-bottom:24px}
-.login-title{font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:6px;letter-spacing:-0.5px}
-.login-sub{font-size:13px;color:#64748b;margin-bottom:32px}
-.login-inp{width:100%;background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:13px 16px;font-size:14px;color:#f8fafc;font-family:inherit;outline:none;transition:border-color .2s;margin-bottom:14px}
-.login-inp:focus{border-color:rgba(99,102,241,0.6)}
-.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:0.3px}
-.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(99,102,241,0.4)}
-.login-err{color:#ef4444;font-size:12px;margin-top:8px;min-height:16px}
-.login-hint{font-size:11px;color:#334155;margin-top:20px}
+
 /* ── END LOGIN SCREEN ───────────────────────────────────────────────── */
 /* ══════════════ MOBILE RESPONSIVE ══════════════════════════════════════ */
 @media(max-width:768px){
@@ -405,7 +393,6 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
   .sh-date-bar{flex-wrap:wrap!important;padding:10px 12px!important}
   .cw{height:200px!important}
   .cw.h280,.cw.h240{height:200px!important}
-  .login-box{width:90vw;padding:32px 24px}
   /* Period bar on mobile */
   div[style*="flex-wrap:nowrap"]{flex-wrap:wrap!important}
 }
@@ -2428,12 +2415,12 @@ function renderMetaDemo(from, to) {
     demoTbody.innerHTML = demoRows.length > 0
       ? demoRows.map((d,i) => {
           const cpa = d.purchases>0?d.spend/d.purchases:0;
-          return "<tr><td class="cm">"+(i+1)+"</td><td style="font-weight:600">"+d.label+"</td>"
-            +"<td>"+inr(d.spend)+"</td><td>"+inr(d.revenue)+"</td>"
-            +"<td><span class="badge "+roasCls(d.roas)+"">"+roasS(d.roas)+"</span></td>"
-            +"<td>"+d.purchases+"</td><td>"+(cpa>0?inr(cpa):"--")+"</td></tr>";
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+d.label+'</td>'
+            +'<td>'+inr(d.spend)+'</td><td>'+inr(d.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(d.roas)+'">'+roasS(d.roas)+'</span></td>'
+            +'<td>'+d.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
         }).join("")
-      : "<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No demographic data for this period</td></tr>";
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No demographic data for this period</td></tr>';
   }
   const ageRows = Object.values(ageMap).map(a => ({...a, roas: a.spend>0?a.revenue/a.spend:0})).sort((a,b)=>b.spend-a.spend);
   const ageTbody = document.getElementById("age-range-tbody");
@@ -2441,12 +2428,12 @@ function renderMetaDemo(from, to) {
     ageTbody.innerHTML = ageRows.length > 0
       ? ageRows.map((a,i) => {
           const cpa = a.purchases>0?a.spend/a.purchases:0;
-          return "<tr><td class="cm">"+(i+1)+"</td><td style="font-weight:600">"+a.age+"</td>"
-            +"<td>"+inr(a.spend)+"</td><td>"+inr(a.revenue)+"</td>"
-            +"<td><span class="badge "+roasCls(a.roas)+"">"+roasS(a.roas)+"</span></td>"
-            +"<td>"+a.purchases+"</td><td>"+(cpa>0?inr(cpa):"--")+"</td></tr>";
+          return '<tr><td class="cm">'+(i+1)+'</td><td style="font-weight:600">'+a.age+'</td>'
+            +'<td>'+inr(a.spend)+'</td><td>'+inr(a.revenue)+'</td>'
+            +'<td><span class="badge '+roasCls(a.roas)+'">'+roasS(a.roas)+'</span></td>'
+            +'<td>'+a.purchases+'</td><td>'+(cpa>0?inr(cpa):'--')+'</td></tr>';
         }).join("")
-      : "<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No age data for this period</td></tr>";
+      : '<tr><td colspan="7" style="text-align:center;color:var(--t2);padding:16px">No age data for this period</td></tr>';
   }
   const top8 = demoRows.slice(0,8);
   const labels = top8.map(d => d.label);
@@ -2487,22 +2474,22 @@ function renderMetaAudience(from, to) {
     });
     (t.lookalikes || []).forEach(ll => llSet.add(ll));
   });
-  const badge = s => "<span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-radius:4px;padding:1px 6px;font-size:10px;color:#a5b4fc;margin:1px">"+s+"</span>";
+  const badge = s => '<span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.25);border-radius:4px;padding:1px 6px;font-size:10px;color:#a5b4fc;margin:1px">'+s+'</span>';
   const topInt = Object.values(intMap).sort((a,b)=>b.count-a.count).slice(0,20);
   const topCa  = Object.values(caMap).sort((a,b)=>b.count-a.count).slice(0,20);
   const intTbody = document.getElementById("interest-tbody");
   if (intTbody) {
     intTbody.innerHTML = topInt.length > 0
-      ? topInt.map((int,i) => "<tr><td class="cm">"+(i+1)+"</td><td>"+int.name+"</td><td>"+int.adsets.slice(0,3).map(badge).join("")+(int.adsets.length>3?"<span style="color:var(--t2);font-size:10px"> +"+(int.adsets.length-3)+" more</span>":"")+"</td></tr>").join("")
-      : "<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No active interests in this period</td></tr>";
+      ? topInt.map((int,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+int.name+'</td><td>'+int.adsets.slice(0,3).map(badge).join('')+(int.adsets.length>3?'<span style="color:var(--t2);font-size:10px"> +'+(int.adsets.length-3)+' more</span>':'')+'</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No active interests in this period</td></tr>';
     const meta = document.getElementById("interest-meta");
     if (meta) meta.textContent = topInt.length + " unique interests across active adsets";
   }
   const caTbody = document.getElementById("custom-audience-tbody");
   if (caTbody) {
     caTbody.innerHTML = topCa.length > 0
-      ? topCa.map((ca,i) => "<tr><td class="cm">"+(i+1)+"</td><td>"+ca.name+"</td><td>"+ca.count+" adsets</td></tr>").join("")
-      : "<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No custom audiences in this period</td></tr>";
+      ? topCa.map((ca,i) => '<tr><td class="cm">'+(i+1)+'</td><td>'+ca.name+'</td><td>'+ca.count+' adsets</td></tr>').join('')
+      : '<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:12px">No custom audiences in this period</td></tr>';
   }
 }
 
@@ -2693,35 +2680,7 @@ function toggleTheme() {
 })();
 
 // ── PASSWORD PROTECTION ──────────────────────────────────────────────────────
-// SHA-256 hash of "revnox2026" — change password by updating this hash
-const _PW_HASH = '09bfb3f7c47ed64ee34b54fca122cd41e1ebf7971ca40c8d8bd0bd4c0ac9657c';
-async function sha256(msg){
-  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function checkLogin(){
-  const pw=document.getElementById('pwInput').value;
-  const err=document.getElementById('loginErr');
-  if(!pw){err.textContent='Please enter your password';return;}
-  const hash=await sha256(pw);
-  if(hash===_PW_HASH){
-    localStorage.setItem('rnx-auth',Date.now().toString());
-    document.getElementById('loginOverlay').classList.add('hidden');
-    err.textContent='';
-  } else {
-    err.textContent='Incorrect password. Please try again.';
-    document.getElementById('pwInput').value='';
-    document.getElementById('pwInput').focus();
-  }
-}
-(function initAuth(){
-  const ts=localStorage.getItem('rnx-auth');
-  const TWELVE_HOURS=12*60*60*1000;
-  if(ts && Date.now()-parseInt(ts)<TWELVE_HOURS){
-    document.getElementById('loginOverlay').classList.add('hidden');
-  }
-  // Show overlay if not authed
-})();
+
 
 // ── AUTO-REFRESH every 5 minutes so dashboard stays live ────────────────────
 setInterval(()=>{ window.location.reload(); }, 5*60*1000);
@@ -2732,29 +2691,5 @@ switchView('day');
 initStaticCharts();
 metaSetPreset('mtd'); // Apply MTD filter on load
 </script>
-<!-- ── LOGIN OVERLAY ──────────────────────────────────────────────────── -->
-<div id="loginOverlay">
-  <div class="login-box">
-    <div class="login-logo">
-      <svg width="140" height="38" viewBox="0 0 200 52" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#ef4444"/><stop offset="100%" style="stop-color:#dc2626"/></linearGradient></defs>
-        <text x="2" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">REVN</text>
-        <circle cx="147" cy="24" r="14" fill="none" stroke="url(#lg2)" stroke-width="3.5"/>
-        <circle cx="147" cy="24" r="5" fill="#ef4444"/>
-        <line x1="147" y1="6" x2="147" y2="42" stroke="#ef4444" stroke-width="2.5"/>
-        <line x1="129" y1="24" x2="165" y2="24" stroke="#ef4444" stroke-width="2.5"/>
-        <text x="163" y="40" font-family="'Arial Black',Arial,sans-serif" font-weight="900" font-size="40" fill="white" letter-spacing="-1">X</text>
-        <path d="M183 38 L196 10 L184 14 M196 10 L192 22" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <div class="login-title">Media Dashboard</div>
-    <div class="login-sub">Enter your access password to continue</div>
-    <input class="login-inp" id="pwInput" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkLogin()">
-    <button class="login-btn" onclick="checkLogin()">🔐 Access Dashboard</button>
-    <div class="login-err" id="loginErr"></div>
-    <div class="login-hint">Session stays active for 12 hours</div>
-  </div>
-</div>
-
 </body>
 </html>
