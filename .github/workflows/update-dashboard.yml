@@ -7,7 +7,7 @@ on:
   push:
     branches: [master]      # Re-runs after each self-commit → self-sustaining loop
     paths:
-      - 'run.js'             # Only on code changes, not every dashboard.html push
+      - 'run.js'             # Only on code data changes, not every dashboard.html push
   workflow_dispatch:         # Manual trigger from GitHub UI
 
 permissions:
