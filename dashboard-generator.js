@@ -5,6 +5,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// ── Inline live-data.js (Supabase live layer) ──────────────────────────────
+const _liveDataJsPath = path.join(__dirname, 'live-data.js');
+const _liveDataJs = fs.existsSync(_liveDataJsPath)
+  ? fs.readFileSync(_liveDataJsPath, 'utf8')
+  : '';
+
 function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
   const {
     dateStr, yesterdaySpend, accRevenue, accRoas, accPurchases, accCpa,
@@ -470,6 +476,8 @@ function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"><\/script>
+${_liveDataJs ? `<script>\n${_liveDataJs}\n<\\/script>` : ''}
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{

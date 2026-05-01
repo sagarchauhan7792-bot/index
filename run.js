@@ -554,9 +554,20 @@ const CORE_FIELDS = [
   'ad_name','ad_id','date_start','date_stop'
 ].join(',');
 
-async function metaFetch(level, breakdowns, datePreset, extraParams = '') {
+// Lighter field set for 30-day history — avoids "too much data" API errors
+// Only includes fields actually consumed by allDailyData in dashboard-generator
+const HIST_FIELDS = [
+  'spend','impressions','reach','frequency','clicks',
+  'ctr','cpc','cpm',
+  'actions','action_values',
+  'campaign_name','campaign_id','adset_name','adset_id',
+  'date_start','date_stop'
+].join(',');
+
+async function metaFetch(level, breakdowns, datePreset, extraParams = '', fieldsOverride = null) {
   let allData = [];
-  let url = `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/insights?access_token=${META_TOKEN}&fields=${CORE_FIELDS}&level=${level}${datePreset ? '&date_preset=' + datePreset : ''}&limit=500${breakdowns ? '&breakdowns=' + breakdowns : ''}${extraParams}`;
+  const fields = fieldsOverride || CORE_FIELDS;
+  let url = `https://graph.facebook.com/v21.0/${AD_ACCOUNT}/insights?access_token=${META_TOKEN}&fields=${fields}&level=${level}${datePreset ? '&date_preset=' + datePreset : ''}&limit=500${breakdowns ? '&breakdowns=' + breakdowns : ''}${extraParams}`;
   while (url) {
     const res = await httpsGet(url);
     if (res.error) { console.error('Meta API error:', res.error.message); break; }
@@ -1887,11 +1898,11 @@ async function main() {
   // Demo uses period total (no time_increment) to avoid "too much data" API error
   const histDemoRange = `&time_range={"since":"${HISTORY_START}","until":"${dateStr}"}&breakdowns=age,gender&fields=spend,action_values,actions&limit=500`;
   const [histAccData, histCampData, histAdsetData, histAdData, histDemoData] = await Promise.all([
-    metaFetch('account', '', null, histRange),
-    metaFetch('campaign', '', null, histRange),
-    metaFetch('adset', '', null, histRange),
-    metaFetch('ad', '', null, histAdRange).catch(() => []),
-    metaFetch('account', '', null, histDemoRange).catch(() => []),
+    metaFetch('account',  '', null, histRange,    HIST_FIELDS),
+    metaFetch('campaign', '', null, histRange,    HIST_FIELDS),
+    metaFetch('adset',    '', null, histRange,    HIST_FIELDS),
+    metaFetch('ad',       '', null, histAdRange,  null).catch(() => []),  // already uses custom fields
+    metaFetch('account',  '', null, histDemoRange, null).catch(() => []), // already uses custom fields
   ]);
   console.log(`✅ Historical: ${histAccData.length} days fetched, ${histAdData.length} ad-day rows`);
 
