@@ -7,8 +7,9 @@ const path = require('path');
 
 // ── Inline live-data.js (Supabase live layer) ──────────────────────────────
 const _liveDataJsPath = path.join(__dirname, 'live-data.js');
+// Escape </script> so the HTML parser doesn't prematurely close the inline <script> tag
 const _liveDataJs = fs.existsSync(_liveDataJsPath)
-  ? fs.readFileSync(_liveDataJsPath, 'utf8')
+  ? fs.readFileSync(_liveDataJsPath, 'utf8').replace(/<\/script>/gi, '<\\/script>')
   : '';
 
 function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
@@ -1026,7 +1027,7 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
 </div>
 
 <!-- AMAZON SUMMARY -->
-\${amzConnected || amzSpend > 0 ? \`
+${amzConnected || amzSpend > 0 ? `
 <div class="sec overview-only" id="amazon-kpis" style="margin-bottom:24px;">
   <div class="sec-head" style="margin-bottom:14px;padding-bottom:10px;">
     <div>
@@ -1037,23 +1038,23 @@ tbody tr:hover td{background:rgba(59,130,246,.08)}
   <div class="kpi-grid g4" style="margin-bottom:14px">
     <div class="kcard" style="border-top:3px solid #ff9900;">
       <div class="k-lbl">Amazon Spend</div>
-      <div class="k-val">\${dollar(amzSpend)}</div>
+      <div class="k-val">${dollar(amzSpend)}</div>
     </div>
     <div class="kcard" style="border-top:3px solid #ff9900;">
       <div class="k-lbl">Amazon Revenue</div>
-      <div class="k-val" style="color:var(--gl)">\${dollar(amzRevenue)}</div>
+      <div class="k-val" style="color:var(--gl)">${dollar(amzRevenue)}</div>
     </div>
     <div class="kcard" style="border-top:3px solid #ff9900;">
       <div class="k-lbl">Amazon ROAS</div>
-      <div class="k-val" style="color:var(--al)">\${roasS(amzRoas)}</div>
+      <div class="k-val" style="color:var(--al)">${roasS(amzRoas)}</div>
     </div>
     <div class="kcard" style="border-top:3px solid #ff9900;">
       <div class="k-lbl">Amazon Orders</div>
-      <div class="k-val">\${amzOrders}</div>
+      <div class="k-val">${amzOrders}</div>
     </div>
   </div>
 </div>
-\` : ''}
+` : ''}
 
 <!-- PERIOD KPI SUMMARY -->
 <div class="sec overview-only" id="period-kpis">
@@ -2622,7 +2623,7 @@ function renderMetaCampaigns(from, to) {
     avgFreq: camp._days>0 ? camp.freq/camp._days : 0,
   })).sort((a,b)=>b.spend-a.spend);
   if(camps.length===0) return;
-  const inr = n => 'Rs.'+parseInt(n||0).toLocaleString('en-IN');
+  const inr = n => '₹'+parseInt(n||0).toLocaleString('en-IN');
   const roasCls = r => r>=3?'badge-green':r>=2?'badge-blue':r>=1?'badge-amber':'badge-red';
   const roasS   = r => r>0?r.toFixed(2)+'x':'--';
   const sub = document.getElementById('campDayLabel');
@@ -2731,7 +2732,7 @@ function renderMetaDemo(from, to) {
       ageMap[age].purchases += row.purchases || 0;
     });
   });
-  const inr = n => "Rs." + parseInt(n||0).toLocaleString("en-IN");
+  const inr = n => "₹" + parseInt(n||0).toLocaleString("en-IN");
   const roasCls = r => r>=3?"badge-green":r>=2?"badge-blue":r>=1?"badge-amber":"badge-red";
   const roasS = r => r>0?r.toFixed(2)+"x":"--";
   const demoRows = Object.values(demoMap).map(d => ({...d, roas: d.spend>0?d.revenue/d.spend:0})).sort((a,b)=>b.spend-a.spend).slice(0,20);
@@ -2827,7 +2828,7 @@ function amzSetPreset(p) {
   if (p === 'today')     { from = to = today; }
   else if (p === '7d')   { const d=new Date(today); d.setDate(d.getDate()-6); from=d.toISOString().slice(0,10); to=today; }
   else if (p === '14d')  { const d=new Date(today); d.setDate(d.getDate()-13); from=d.toISOString().slice(0,10); to=today; }
-  else if (p === 'mtd')  { from=today.slice(0,7)+'-01'; to=today; }
+  else if (p === 'mtd')  { from='2026-04-01'; to=today; }
   else if (p === 'all')  { from=dates[0]||today; to=today; }
   const rf=document.getElementById('amz-from'), rt=document.getElementById('amz-to');
   if(rf) rf.value=from; if(rt) rt.value=to;
@@ -2860,7 +2861,7 @@ function renderAmazon() {
   const ctr  = impressions>0 ? clicks/impressions*100 : 0;
   const cpc  = clicks>0 ? spend/clicks : 0;
   const cpa  = orders>0 ? spend/orders : 0;
-  const inr  = n => 'Rs.' + parseInt(n||0).toLocaleString('en-IN');
+  const inr  = n => '₹' + parseInt(n||0).toLocaleString('en-IN');
 
   const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
   set('amz-revenue', inr(revenue));
@@ -3066,7 +3067,7 @@ function metaSetPreset(p){
   else if(p==='yesterday'){const y=new Date(d);y.setDate(y.getDate()-1);from=to=[y.getFullYear(),pad(y.getMonth()+1),pad(y.getDate())].join('-');}
   else if(p==='7d'){const s=new Date(d);s.setDate(s.getDate()-6);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=today;}
   else if(p==='14d'){const s=new Date(d);s.setDate(s.getDate()-13);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=today;}
-  else if(p==='mtd'){from=today.slice(0,7)+'-01';to=today;}
+  else if(p==='mtd'){from='2026-04-01';to=today;}
   else if(p==='all'){from=dates[0]||today;to=today;}
   const rf=document.getElementById('rangeFrom');const rt=document.getElementById('rangeTo');
   if(rf)rf.value=from;if(rt)rt.value=to;
