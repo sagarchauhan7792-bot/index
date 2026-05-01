@@ -478,7 +478,7 @@ function generateDashboard(data, outputPath, brandName = 'Meta Ads') {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"><\/script>
-${_liveDataJs ? `<script>\n${_liveDataJs}\n<\\/script>` : ''}
+${_liveDataJs ? '<script>\n' + _liveDataJs + '\n</' + 'script>' : ''}
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
