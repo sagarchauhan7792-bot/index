@@ -1,14 +1,9 @@
 name: Update RevNox Dashboard
+# AUTO-SCHEDULE DISABLED — dashboard is now served from Supabase live data (Edge Functions + Realtime)
+# Run manually from GitHub Actions UI if needed.
 
 on:
-  schedule:
-    - cron: '*/5 * * * *'   # Every 5 min
-    - cron: '0 * * * *'     # Top of every hour (keeps workflow "active" so cron doesn't get disabled)
-  push:
-    branches: [master]      # Re-runs after each self-commit → self-sustaining loop
-    paths:
-      - 'run.js'             # Only on code data changes, not every dashboard.html push
-  workflow_dispatch:         # Manual trigger from GitHub UI
+  workflow_dispatch:         # Manual trigger only
 
 permissions:
   contents: write
@@ -16,7 +11,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 10
 
     steps:
       - name: Checkout repo
@@ -42,11 +37,3 @@ jobs:
           AMAZON_PROFILE_ID: ${{ secrets.AMAZON_PROFILE_ID }}
           AMAZON_API_ENDPOINT: ${{ secrets.AMAZON_API_ENDPOINT }}
         run: node run.js
-
-      - name: Commit & push updated dashboard
-        run: |
-          git config user.name  "RevNox Bot"
-          git config user.email "bot@revnoxmedia.com"
-          git add dashboard.html
-          git diff --cached --quiet || git commit -m "📊 Auto-update dashboard $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
