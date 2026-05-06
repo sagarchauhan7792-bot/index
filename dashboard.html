@@ -2204,6 +2204,9 @@ function switchView(view, date) {
 
 function changeDate(d) {
   currentDate = d;
+  // Keep datePicker dropdown in sync
+  const _dp = document.getElementById('datePicker');
+  if(_dp && _dp.value !== d) _dp.value = d;
   renderDayDetail(d);
   window.scrollTo({top:54,behavior:'smooth'});
 }
@@ -3383,6 +3386,17 @@ function metaSetPreset(p){
   const rf=document.getElementById('rangeFrom');const rt=document.getElementById('rangeTo');
   if(rf)rf.value=from;if(rt)rt.value=to;
   document.querySelectorAll('.meta-preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===p));
+  // Sync date picker to end of selected period
+  const _dp=document.getElementById('datePicker');
+  if(_dp && to) {
+    // Add option if missing (e.g. today not in hardcoded list)
+    if(![..._dp.options].some(o=>o.value===to)){
+      const opt=document.createElement('option');opt.value=to;opt.textContent=to;
+      _dp.insertBefore(opt,_dp.firstChild);
+    }
+    _dp.value=to;
+  }
+  if(typeof changeDate==='function') changeDate(to);
   applyRange();
 }
 
