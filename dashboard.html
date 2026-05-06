@@ -3403,11 +3403,11 @@ function applyRange(){
   const aov=pur>0?rev/pur:0;
   const cpr=pur>0?sp/pur:0;
   [['kv-spend','₹'+parseInt(sp).toLocaleString('en-IN')],
-   ['kv-revenue','₹'+parseInt(rev).toLocaleString('en-IN')],
+   ['kv-rev','₹'+parseInt(rev).toLocaleString('en-IN')],
    ['kv-roas',roas.toFixed(2)+'x'],
-   ['kv-purchases',pur.toLocaleString('en-IN')],
+   ['kv-buys',pur.toLocaleString('en-IN')],
    ['kv-aov',aov>0?'₹'+aov.toFixed(2):'—'],
-   ['kv-cpr',cpr>0?'₹'+parseInt(cpr).toLocaleString('en-IN'):'—']
+   ['kv-cpa',cpr>0?'₹'+parseInt(cpr).toLocaleString('en-IN'):'—']
   ].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});  renderMetaCreatives(from, to);
   renderMetaCampaigns(from, to);
   renderMetaFunnel(from, to);
