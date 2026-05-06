@@ -2162,7 +2162,7 @@ function switchPlatform(p) {
       renderShopify(f,t);
     }, 50);
   }
-  if(p === 'amazon') { setTimeout(renderAmazon, 50); }
+  if(p === 'amazon') { setTimeout(function(){ amzSetPreset('mtd'); }, 50); }
   if(p === 'overall') {
     setTimeout(function(){
       const today = window._SH_DATE_MAX || new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
@@ -3028,32 +3028,44 @@ function renderOverall(from, to) {
 let _amzRoasChart=null, _amzSpendChart=null;
 
 function amzSetPreset(p) {
-  // Sync Amazon preset buttons with the nav-bar active state
+  // Highlight active button
   document.querySelectorAll('[id^=amzp-]').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('amzp-'+p);
   if(btn)btn.classList.add('active');
-  // Delegate date logic to Meta's preset (shares rangeFrom/rangeTo nav inputs)
-  if(typeof metaSetPreset==='function') {
-    metaSetPreset(p);      // sets rangeFrom/rangeTo + calls applyRange → renderAmazon fires via applyRange
-  } else {
-    renderAmazon();
+
+  // Compute date range from Amazon's own data — fully independent of Meta
+  const allAmzDates = (_AMZ_DAILY||[]).map(d=>d.date).sort();
+  const todayIST = new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
+  const latest = allAmzDates[allAmzDates.length-1] || todayIST;
+  const pad = n=>String(n).padStart(2,'0');
+  const dt = new Date(latest);
+  let from, to;
+  if(p==='today')     { from=latest; to=latest; }
+  else if(p==='yesterday') {
+    const y=new Date(dt); y.setDate(y.getDate()-1);
+    from=to=[y.getFullYear(),pad(y.getMonth()+1),pad(y.getDate())].join('-');
   }
+  else if(p==='7d')   { const s=new Date(dt);s.setDate(s.getDate()-6);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=latest; }
+  else if(p==='14d')  { const s=new Date(dt);s.setDate(s.getDate()-13);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-');to=latest; }
+  else if(p==='mtd')  { from=latest.slice(0,7)+'-01'; to=latest; }
+  else if(p==='all')  { from=allAmzDates[0]||latest; to=latest; }
+  else                { from=latest; to=latest; }
+
+  // Update display label
+  const rd=document.getElementById('amz-range-display');
+  if(rd) rd.textContent=from+' → '+to;
+
+  renderAmazon(from, to);
 }
 
-function renderAmazon() {
-  // Use the same nav-bar date range as Meta
-  const from = document.getElementById('rangeFrom')?.value || _AMZ_DATE_MIN || '2026-04-01';
-  const to   = document.getElementById('rangeTo')?.value   || _AMZ_DATE_MAX || '2026-04-29';
+function renderAmazon(fromOverride, toOverride) {
+  // Compute default range from Amazon data if no explicit override
+  const allAmzDates = (_AMZ_DAILY||[]).map(d=>d.date).sort();
+  const todayIST = new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
+  const latest = allAmzDates[allAmzDates.length-1] || todayIST;
+  const from = fromOverride || (latest.slice(0,7)+'-01');
+  const to   = toOverride   || latest;
   const days = (_AMZ_DAILY||[]).filter(d=>d.date>=from && d.date<=to);
-
-  // Mirror the Meta active preset onto Amazon preset buttons
-  const activeMetaBtn = document.querySelector('.meta-preset-btn.active');
-  if(activeMetaBtn) {
-    const ap = activeMetaBtn.dataset.p;
-    document.querySelectorAll('[id^=amzp-]').forEach(b=>b.classList.remove('active'));
-    const match = document.getElementById('amzp-'+ap);
-    if(match) match.classList.add('active');
-  }
 
   // Update the range display label
   const rd = document.getElementById('amz-range-display');
