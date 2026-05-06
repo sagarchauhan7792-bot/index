@@ -2058,14 +2058,15 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:10px 14px">
     <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
     <button onclick="ovSetPreset('today')" id="ovp-today" class="sh-qbtn">Today</button>
+    <button onclick="ovSetPreset('yesterday')" id="ovp-yesterday" class="sh-qbtn">Yesterday</button>
     <button onclick="ovSetPreset('7d')" id="ovp-7d" class="sh-qbtn">7 Days</button>
     <button onclick="ovSetPreset('14d')" id="ovp-14d" class="sh-qbtn">14 Days</button>
     <button onclick="ovSetPreset('mtd')" id="ovp-mtd" class="sh-qbtn active">MTD</button>
     <button onclick="ovSetPreset('all')" id="ovp-all" class="sh-qbtn">All Time</button>
     <div style="width:1px;height:20px;background:rgba(255,255,255,0.08);margin:0 4px"></div>
-    <input type="date" id="ov-from" value="2026-04-01" min="2026-04-01" onchange="renderOverall()" style="background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 8px;color:#94a3b8;font-size:12px">
+    <input type="date" id="ov-from" value="2026-05-01" min="2026-04-01" onchange="renderOverall()" style="background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 8px;color:#94a3b8;font-size:12px">
     <span style="color:#475569;font-size:12px">→</span>
-    <input type="date" id="ov-to" value="2026-04-29" min="2026-04-01" onchange="renderOverall()" style="background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 8px;color:#94a3b8;font-size:12px">
+    <input type="date" id="ov-to" value="2026-05-06" min="2026-04-01" onchange="renderOverall()" style="background:rgba(15,23,42,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:4px 8px;color:#94a3b8;font-size:12px">
     <span style="font-size:12px;color:#475569;margin-left:6px" id="ov-day-count"></span>
   </div>
 
@@ -2898,15 +2899,27 @@ window._OV_META_TODAY = window._OV_META_TODAY || { spend:85482.75, revenue:14685
 let _ovSpendChart=null, _ovRoasChart=null, _ovChannelChart=null, _ovOrdersChart=null, _ovCacChart=null;
 
 function ovSetPreset(p) {
-  const today = _SH_DATE_MAX || '2026-04-29';
-  const map = { today:[today,today], '7d':[shGetIST(6),today], '14d':[shGetIST(13),today], mtd:[shGetMTDStart(),today], all:[_SH_DATE_MIN,today] };
-  const [f,t] = map[p]||map.mtd;
-  document.getElementById('ov-from').value=f;
-  document.getElementById('ov-to').value=t;
+  // Anchor ALL date math to the latest date that has actual data
+  const latest = _SH_DATE_MAX || new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
+  const pad = n=>String(n).padStart(2,'0');
+  const d = new Date(latest);
+  let from, to = latest;
+  if(p==='today')     { from=latest; }
+  else if(p==='yesterday') {
+    const y=new Date(d); y.setDate(y.getDate()-1);
+    from=to=[y.getFullYear(),pad(y.getMonth()+1),pad(y.getDate())].join('-');
+  }
+  else if(p==='7d')   { const s=new Date(d);s.setDate(s.getDate()-6); from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-'); }
+  else if(p==='14d')  { const s=new Date(d);s.setDate(s.getDate()-13);from=[s.getFullYear(),pad(s.getMonth()+1),pad(s.getDate())].join('-'); }
+  else if(p==='mtd')  { from=latest.slice(0,7)+'-01'; }
+  else if(p==='all')  { from=_SH_DATE_MIN||'2026-04-01'; }
+  else                { from=latest.slice(0,7)+'-01'; }
+  document.getElementById('ov-from').value=from;
+  document.getElementById('ov-to').value=to;
   document.querySelectorAll('[id^=ovp-]').forEach(b=>b.classList.remove('active'));
   const btn=document.getElementById('ovp-'+p);
   if(btn)btn.classList.add('active');
-  renderOverall(f,t);
+  renderOverall(from,to);
 }
 
 function renderAmzOverview(from, to) {
