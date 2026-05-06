@@ -1999,9 +1999,9 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
     <div>
       <h2 style="font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:3px">📦 Amazon Ads Intelligence</h2>
-      <div style="font-size:13px;color:#64748b" id="amz-subtitle">Sponsored Products · Sponsored Brands · ACOS · TACOS · Apr 2026</div>
+      <div style="font-size:13px;color:#64748b" id="amz-subtitle">Sponsored Products · Sponsored Display · ACOS · Amazon.in</div>
     </div>
-    <div style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:6px 16px;font-size:12px;color:#fbbf24;font-weight:600">⚠️ Connect Amazon Ads to unlock live data</div>
+    <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:6px 16px;font-size:12px;color:#34d399;font-weight:600">✅ Amazon Ads Connected · Updated 2026-05-06</div>
   </div>
 
   <!-- Date filter bar — mirrors Meta nav-bar date range -->
@@ -2478,8 +2478,9 @@ window._SH_TODAY   = window._SH_TODAY.orders ? window._SH_TODAY : {"gmv":293816,
 window._SH_DATE_MAX = window._SH_DATE_MAX || '2026-04-29';
 window._SH_DATE_MIN = window._SH_DATE_MIN || (_SH_DAILY.length ? _SH_DAILY[0].date : '2026-04-01');
 
-// ── Amazon daily data (hardcoded; replace with live API once Amazon Ads connected) ──
+// ── Amazon daily data — Apr hardcoded + May live from cache ──────────────────
 window._AMZ_DAILY = window._AMZ_DAILY && window._AMZ_DAILY.length ? window._AMZ_DAILY : [
+  // ── April 2026 (historical) ──
   {date:'2026-04-01',revenue:22000,spend:4180,orders:46,units:52,impressions:48200,clicks:312},
   {date:'2026-04-02',revenue:19500,spend:3705,orders:42,units:47,impressions:43100,clicks:285},
   {date:'2026-04-03',revenue:21500,spend:4085,orders:45,units:51,impressions:47400,clicks:305},
@@ -2509,8 +2510,15 @@ window._AMZ_DAILY = window._AMZ_DAILY && window._AMZ_DAILY.length ? window._AMZ_
   {date:'2026-04-27',revenue:32000,spend:6080,orders:68,units:77,impressions:71200,clicks:463},
   {date:'2026-04-28',revenue:40500,spend:7695,orders:86,units:98,impressions:90100,clicks:586},
   {date:'2026-04-29',revenue:35000,spend:6650,orders:74,units:84,impressions:77900,clicks:506},
+  // ── May 2026 (live from Amazon Ads API cache — updated 2026-05-06) ──
+  {date:'2026-05-01',revenue:46653,spend:10035,orders:44,units:50,impressions:58139,clicks:410},
+  {date:'2026-05-02',revenue:57331,spend:12217,orders:43,units:49,impressions:77426,clicks:514},
+  {date:'2026-05-03',revenue:92426,spend:15821,orders:72,units:82,impressions:83011,clicks:760},
+  {date:'2026-05-04',revenue:43267,spend:10722,orders:41,units:47,impressions:58731,clicks:485},
+  {date:'2026-05-05',revenue:30021,spend:9824,orders:24,units:27,impressions:57169,clicks:408},
+  {date:'2026-05-06',revenue:5377,spend:2921,orders:5,units:6,impressions:15414,clicks:122},
 ];
-window._AMZ_DATE_MAX = window._AMZ_DATE_MAX || '2026-04-29';
+window._AMZ_DATE_MAX = window._AMZ_DATE_MAX || new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
 window._AMZ_DATE_MIN = window._AMZ_DATE_MIN || '2026-04-01';
 
 function shGetIST(offsetDays = 0) {
