@@ -169,7 +169,7 @@ async function _loadShopifyData() {
     // Find peak hour
     let peakHour = null
     let peakOrders = 0
-    Object.entries(hourlyMap).forEach(([h, v]) => {
+    Object.entries(hourlyAllMap[todayStr] || window._SH_HOURLY || {}).forEach(([h, v]) => {
       if (v.orders > peakOrders) {
         peakOrders = v.orders
         peakHour = { hour: h, orders: v.orders, revenue: v.revenue }
