@@ -115,12 +115,16 @@ async function _loadShopifyData() {
   }
 
   // Products
-  window._SH_PRODUCTS = (products.data || []).map(p => ({
-    title:   p.title,
-    units:   p.units,
-    revenue: parseFloat(p.revenue),
-    orders:  p.orders,
-  }))
+  // Merge products by title (same product can have multiple Shopify IDs for different bundles)
+  const _prodMap = {};
+  ;(products.data || []).forEach(p => {
+    const key = (p.title || '').trim();
+    if (!_prodMap[key]) _prodMap[key] = { title: key, units: 0, revenue: 0, orders: 0 };
+    _prodMap[key].units   += p.units   || 0;
+    _prodMap[key].revenue += parseFloat(p.revenue) || 0;
+    _prodMap[key].orders  += p.orders  || 0;
+  });
+  window._SH_PRODUCTS = Object.values(_prodMap).sort((a, b) => b.revenue - a.revenue);
 
   // States
   window._SH_STATES = (states.data || []).map(s => ({
@@ -3285,7 +3289,8 @@ window._allDaily = Object.keys(window._allDaily||{}).length ? window._allDaily :
 // ═══ CAMPAIGN TABLE — date-reactive ═══════════════════════════════════════
 function renderMetaCampaigns(from, to) {
   const campMap = {};
-  Object.entries(_allDaily).forEach(([date, dayData]) => {
+  const _src = Object.assign({}, _allDaily, window._OV_META_DAILY || {});
+  Object.entries(_src).forEach(([date, dayData]) => {
     if(date < from || date > to) return;
     (dayData.campaigns || []).forEach(camp => {
       const k = camp.id || camp.name;
@@ -3354,10 +3359,11 @@ function renderMetaCampaigns(from, to) {
 
 // ═══ FUNNEL METRICS — date-reactive ════════════════════════════════════════
 function renderMetaFunnel(from, to) {
-  const keys = Object.keys(_allDaily).filter(d=>d>=from&&d<=to);
+  const _fSrc = Object.assign({}, _allDaily, window._OV_META_DAILY || {});
+  const keys = Object.keys(_fSrc).filter(d=>d>=from&&d<=to);
   let sp=0,rev=0,pur=0,impr=0,clks=0,atc=0,checkout=0,lpv=0;
   keys.forEach(d=>{
-    const a=_allDaily[d]?.account||{};
+    const a=_fSrc[d]?.account||{};
     sp+=a.spend||0;rev+=a.revenue||0;pur+=a.purchases||0;
     impr+=a.impressions||0;clks+=a.clicks||0;atc+=a.atc||0;
     checkout+=a.checkout||0;lpv+=a.lpv||0;
@@ -3388,8 +3394,9 @@ function renderMetaFunnel(from, to) {
 
 // ═══ HOURLY — dim and note when not today ═════════════════════════════════
 function updateHourlyVisibility(from, to) {
-  const dates=Object.keys(_allDaily).sort();
-  const today=dates[dates.length-1];
+  const _hSrc=Object.assign({},_allDaily,window._OV_META_DAILY||{});
+  const dates=Object.keys(_hSrc).sort();
+  const today=window._SH_DATE_MAX||dates[dates.length-1];
   const sec=document.getElementById('hourly');
   if(!sec)return;
   const isToday=(to===today);
@@ -3410,7 +3417,8 @@ function updateDeviceNote(from, to) {
 function renderMetaCreatives(from, to) {
   // Aggregate all ad rows in the selected date range
   const adMap = {};
-  Object.entries(_allDaily).forEach(([date, dayData]) => {
+  const _cSrc = Object.assign({}, _allDaily, window._OV_META_DAILY || {});
+  Object.entries(_cSrc).forEach(([date, dayData]) => {
     if(date < from || date > to) return;
     (dayData.ads || []).forEach(a => {
       const k = a.id || a.name;
@@ -3484,9 +3492,10 @@ const _dateMax = '2026-04-26';
 function openCompare(){document.getElementById('compareModal').classList.add('open');}
 function closeCompare(){document.getElementById('compareModal').classList.remove('open');}
 function _sumRange(from,to){
-  const keys=Object.keys(_allDaily).filter(d=>d>=from&&d<=to);
+  const src=Object.assign({},_allDaily,window._OV_META_DAILY||{});
+  const keys=Object.keys(src).filter(d=>d>=from&&d<=to);
   const r={spend:0,revenue:0,purchases:0,impressions:0,clicks:0,days:keys.length};
-  keys.forEach(d=>{const a=_allDaily[d]?.account||{};r.spend+=a.spend||0;r.revenue+=a.revenue||0;r.purchases+=a.purchases||0;r.impressions+=a.impressions||0;r.clicks+=a.clicks||0;});
+  keys.forEach(d=>{const a=src[d]?.account||{};r.spend+=a.spend||0;r.revenue+=a.revenue||0;r.purchases+=a.purchases||0;r.impressions+=a.impressions||0;r.clicks+=a.clicks||0;});
   r.roas=r.spend>0&&r.revenue>0?r.revenue/r.spend:0;
   r.cpa=r.purchases>0?r.spend/r.purchases:0;
   r.aov=r.purchases>0?r.revenue/r.purchases:0;
