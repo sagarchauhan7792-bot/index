@@ -3562,7 +3562,10 @@ function metaSetPreset(p){
     }
     _dp.value=to;
   }
-  if(typeof changeDate==='function') changeDate(to);
+  // For single-day presets, render day detail; for multi-day let applyRange() handle all KPIs
+  if(p==='today'||p==='yesterday'){
+    if(typeof changeDate==='function') changeDate(to);
+  }
   applyRange();
 }
 
@@ -3575,20 +3578,33 @@ function applyRange(){
   // Update Age x Gender date label
   const demoLbl=document.getElementById('demo-date-label');
   if(demoLbl)demoLbl.textContent=from===to?from:from+' → '+to;
-  // Recompute and update period KPI cards in sidebar
-  const keys=Object.keys(_allDaily).filter(d=>d>=from&&d<=to);
-  let sp=0,rev=0,pur=0;
-  keys.forEach(d=>{const a=_allDaily[d]?.account||{};sp+=a.spend||0;rev+=a.revenue||0;pur+=a.purchases||0;});
+  // Merge hardcoded April history + live Supabase data (live wins on overlap)
+  const src=Object.assign({},_allDaily,window._OV_META_DAILY||{});
+  const keys=Object.keys(src).filter(d=>d>=from&&d<=to);
+  let sp=0,rev=0,pur=0,impr=0,clk=0,reach=0;
+  keys.forEach(d=>{const a=src[d]?.account||{};sp+=a.spend||0;rev+=a.revenue||0;pur+=a.purchases||0;impr+=a.impressions||0;clk+=a.clicks||0;reach+=a.reach||impr;});
   const roas=sp>0&&rev>0?rev/sp:0;
   const aov=pur>0?rev/pur:0;
   const cpr=pur>0?sp/pur:0;
+  const ctr=impr>0?clk/impr*100:0;
+  const cpc=clk>0?sp/clk:0;
+  const freq=reach>0?impr/reach:1;
   [['kv-spend','₹'+parseInt(sp).toLocaleString('en-IN')],
    ['kv-rev','₹'+parseInt(rev).toLocaleString('en-IN')],
    ['kv-roas',roas.toFixed(2)+'x'],
    ['kv-buys',pur.toLocaleString('en-IN')],
    ['kv-aov',aov>0?'₹'+aov.toFixed(2):'—'],
-   ['kv-cpa',cpr>0?'₹'+parseInt(cpr).toLocaleString('en-IN'):'—']
-  ].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});  renderMetaCreatives(from, to);
+   ['kv-cpa',cpr>0?'₹'+parseInt(cpr).toLocaleString('en-IN'):'—'],
+   ['kv-ctr',ctr>0?ctr.toFixed(1)+'%':'—'],
+   ['kv-cpc',cpc>0?'₹'+cpc.toFixed(2):'—'],
+   ['kv-freq',freq>1?freq.toFixed(2):'—'],
+   ['kv-impr',impr>0?impr.toLocaleString('en-IN'):'—']
+  ].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+  // Color coding for period view
+  const roasEl=document.getElementById('kv-roas');if(roasEl)roasEl.style.color=roas>=2?'var(--g)':roas>=1?'var(--a)':'var(--r)';
+  const ctrEl=document.getElementById('kv-ctr');if(ctrEl)ctrEl.style.color=ctr>=1.5?'var(--g)':ctr>=0.8?'var(--a)':'var(--r)';
+  const freqEl=document.getElementById('kv-freq');if(freqEl)freqEl.style.color=freq>3.5?'var(--r)':freq>2.5?'var(--a)':'var(--t)';
+  renderMetaCreatives(from, to);
   renderMetaCampaigns(from, to);
   renderMetaFunnel(from, to);
   updateHourlyVisibility(from, to);
