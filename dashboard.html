@@ -384,8 +384,10 @@ async function _loadMetaData() {
     if (_lastSpend && typeof currentDate !== 'undefined') {
       const _hardcodedLatest = typeof LATEST !== 'undefined' ? LATEST : '2026-04-26'
       if (currentDate === 'LATEST' || currentDate === _hardcodedLatest || !ALL_DATA[currentDate]) {
-        if (typeof changeDate === 'function') changeDate(_lastSpend)
-        else _dp.value = _lastSpend
+        try {
+          if (typeof changeDate === 'function') changeDate(_lastSpend)
+          else _dp.value = _lastSpend
+        } catch(e) { console.warn('changeDate skip (chart conflict):', e.message) }
       }
     }
   }
