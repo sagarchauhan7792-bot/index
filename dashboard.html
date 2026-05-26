@@ -415,6 +415,11 @@ async function _loadMetaData() {
     initiate_checkout: parseFloat(row.initiate_checkout) || 0,
   }))
   console.log(`   Meta: ${Object.keys(fresh).length} days loaded (${sortedDates[0]} → ${sortedDates[sortedDates.length-1]}), ${window._META_ADS_DAILY.length} ad rows`)
+
+  // ── Re-render Creatives tab if it's active (handles initial load race condition) ──
+  if (document.querySelector('#ptab-creatives.active') && typeof crSetPreset === 'function') {
+    crSetPreset('mtd')
+  }
 }
 
 // ── Subscribe to Realtime changes ─────────────────────────────
@@ -2210,14 +2215,14 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
     <div style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:4px">📉 Frequency Fatigue Tracker</div>
       <div style="font-size:12px;color:#64748b;margin-bottom:16px">Daily frequency for top 5 ads by spend · 🔴 >3.5 = fatigue zone</div>
-      <canvas id="cr-fatigue-chart" height="220"></canvas>
+      <div style="position:relative;height:220px"><canvas id="cr-fatigue-chart"></canvas></div>
     </div>
 
     <!-- Video Metrics Breakdown -->
     <div style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:4px">🎬 Video Funnel by Ad</div>
       <div style="font-size:12px;color:#64748b;margin-bottom:16px">Thumbstop · 30s Hold · Thruplay — top 8 ads by impressions</div>
-      <canvas id="cr-video-chart" height="220"></canvas>
+      <div style="position:relative;height:220px"><canvas id="cr-video-chart"></canvas></div>
     </div>
   </div>
 
@@ -2228,7 +2233,7 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
     <div style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#f1f5f9;margin-bottom:4px">💰 Spend Concentration</div>
       <div style="font-size:12px;color:#64748b;margin-bottom:16px">Top 5 ads vs rest</div>
-      <canvas id="cr-spend-donut" height="200"></canvas>
+      <div style="position:relative;height:200px"><canvas id="cr-spend-donut"></canvas></div>
       <div id="cr-spend-legend" style="margin-top:12px;font-size:11px;color:#94a3b8"></div>
     </div>
 
