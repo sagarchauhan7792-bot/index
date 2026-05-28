@@ -4079,10 +4079,69 @@ metaSetPreset('mtd'); // Apply MTD filter on load
 let _crFatigueChart = null;
 let _crVideoChart   = null;
 let _crSpendDonut   = null;
+let _crTrendChart   = null;
 let _crSortCol      = 'spend';
 let _crSortAsc      = false;
 let _crRankBy       = 'roas';
-let _crAllAds       = [];   // aggregated ads for current period — used by sort/filter
+let _crActionFilter = '';      // '', 'scale', 'solid', 'optimize', 'kill'
+let _crAllAds       = [];      // aggregated ads for current period — used by sort/filter
+
+// ── Classify ad into action bucket ──────────────────────────────
+function _classifyAd(a) {
+  // Order for sorting: kill=0, optimize=1, solid=2, scale=3 (descending = best on top)
+  if (a.roas >= 2.5 && a.frequency < 2.5 && a.spend > 2000) return { action:'scale',    label:'🚀 Scale',    color:'#10b981', order:3 };
+  if (a.roas < 0.7  && a.spend > 1500)                       return { action:'kill',     label:'🛑 Kill',     color:'#ef4444', order:0 };
+  if (a.roas < 1.5  || a.frequency > 3.5)                    return { action:'optimize', label:'⚠️ Optimize', color:'#f59e0b', order:1 };
+  return                                                            { action:'solid',    label:'✓ Solid',     color:'#60a5fa', order:2 };
+}
+
+// ── Extract theme prefix from ad name (e.g. "GLASS_REEL_UGC_InHouse_..." → "GLASS_REEL_UGC") ──
+function _extractTheme(name) {
+  if (!name) return 'Other';
+  // Split on underscore, dash, or pipe; take first 3 segments
+  const parts = name.split(/[_\-|]+/).filter(p => p.length > 0);
+  if (parts.length === 0) return 'Other';
+  return parts.slice(0, 3).join('_').slice(0, 30);
+}
+
+// ── Build campaign-level aggregate ──────────────────────────────
+function _buildCampaignAgg(ads) {
+  const map = {};
+  ads.forEach(a => {
+    const k = a.campaign_name || 'Unknown';
+    if (!map[k]) map[k] = { name:k, spend:0, revenue:0, purchases:0, impressions:0, clicks:0, count:0 };
+    map[k].spend       += a.spend;
+    map[k].revenue     += a.revenue;
+    map[k].purchases   += a.purchases;
+    map[k].impressions += a.impressions;
+    map[k].clicks      += a.clicks;
+    map[k].count       += 1;
+  });
+  return Object.values(map).map(c => ({
+    ...c,
+    roas: c.spend>0 && c.revenue>0 ? c.revenue/c.spend : 0,
+    ctr:  c.impressions>0 ? c.clicks/c.impressions*100 : 0,
+  })).sort((a,b) => b.spend - a.spend);
+}
+
+// ── Build creative-theme aggregate ──────────────────────────────
+function _buildThemeAgg(ads) {
+  const map = {};
+  ads.forEach(a => {
+    const k = _extractTheme(a.ad_name);
+    if (!map[k]) map[k] = { name:k, spend:0, revenue:0, impressions:0, video_3s:0, count:0 };
+    map[k].spend       += a.spend;
+    map[k].revenue     += a.revenue;
+    map[k].impressions += a.impressions;
+    map[k].video_3s    += a.video_3s;
+    map[k].count       += 1;
+  });
+  return Object.values(map).map(t => ({
+    ...t,
+    roas: t.spend>0 && t.revenue>0 ? t.revenue/t.spend : 0,
+    thumbstop: t.impressions>0 ? t.video_3s/t.impressions*100 : 0,
+  })).sort((a,b) => b.spend - a.spend);
+}
 
 function crSetPreset(p) {
   const latest = window._SH_DATE_MAX || new Date(Date.now()+5.5*3600000).toISOString().slice(0,10);
@@ -4149,10 +4208,17 @@ function _buildAdAggregates(from, to) {
     const ctr       = m.impressions > 0 ? m.clicks / m.impressions * 100 : 0;
     const cpc       = m.clicks > 0 ? m.spend / m.clicks : 0;
     const cpm       = m.impressions > 0 ? m.spend / m.impressions * 1000 : 0;
+    const cpa       = m.purchases > 0 ? m.spend / m.purchases : 0;
     const thumbstop = m.impressions > 0 ? m.video_3s / m.impressions * 100 : 0;
     const hold_rate = m.video_3s > 0 ? m.thruplay / m.video_3s * 100 : 0;
     const frequency = m.freq_days > 0 ? m.freq_sum / m.freq_days : 1;
-    return { ...m, roas, ctr, cpc, cpm, thumbstop, hold_rate, frequency };
+    const out = { ...m, roas, ctr, cpc, cpm, cpa, thumbstop, hold_rate, frequency };
+    const cls = _classifyAd(out);
+    out.action       = cls.action;
+    out.action_label = cls.label;
+    out.action_color = cls.color;
+    out.action_order = cls.order;
+    return out;
   }).sort((a,b) => b.spend - a.spend);
 }
 
@@ -4163,54 +4229,285 @@ function renderCreatives(from, to) {
 
   if (ads.length === 0) {
     document.getElementById('cr-ad-tbody').innerHTML =
-      '<tr><td colspan="11" style="text-align:center;padding:40px;color:#64748b">No ad data found for this period. Meta sync runs every 15 min.</td></tr>';
+      '<tr><td colspan="14" style="text-align:center;padding:40px;color:#64748b">No ad data found for this period. Meta sync runs every 15 min.</td></tr>';
     return;
   }
 
-  // ── KPIs ──────────────────────────────────────────────────────
+  // ── Totals ────────────────────────────────────────────────────
   const tot = ads.reduce((acc,a) => {
-    acc.spend+=a.spend; acc.impressions+=a.impressions;
-    acc.v3+=a.video_3s; acc.tp+=a.thruplay; acc.revenue+=a.revenue; acc.purchases+=a.purchases;
+    acc.spend+=a.spend; acc.impressions+=a.impressions; acc.reach+=a.reach;
+    acc.clicks+=a.clicks; acc.v3+=a.video_3s; acc.tp+=a.thruplay;
+    acc.revenue+=a.revenue; acc.purchases+=a.purchases;
     return acc;
-  }, {spend:0,impressions:0,v3:0,tp:0,revenue:0,purchases:0});
-  const avgRoas = tot.spend>0&&tot.revenue>0 ? tot.revenue/tot.spend : 0;
-  const avgTs   = tot.impressions>0 ? tot.v3/tot.impressions*100 : 0;
-  const avgHr   = tot.v3>0 ? tot.tp/tot.v3*100 : 0;
-  const avgCtr  = ads.length>0 ? ads.reduce((s,a)=>s+a.ctr,0)/ads.length : 0;
-  const avgFreq = ads.length>0 ? ads.reduce((s,a)=>s+a.frequency,0)/ads.length : 1;
+  }, {spend:0,impressions:0,reach:0,clicks:0,v3:0,tp:0,revenue:0,purchases:0});
+  const blendedRoas = tot.spend>0&&tot.revenue>0 ? tot.revenue/tot.spend : 0;
+  const blendedCpa  = tot.purchases>0 ? tot.spend/tot.purchases : 0;
+  const blendedCtr  = tot.impressions>0 ? tot.clicks/tot.impressions*100 : 0;
+  const avgTs       = tot.impressions>0 ? tot.v3/tot.impressions*100 : 0;
+  const avgHr       = tot.v3>0 ? tot.tp/tot.v3*100 : 0;
+  const avgFreq     = ads.length>0 ? ads.reduce((s,a)=>s+a.frequency,0)/ads.length : 1;
+  const campCount   = new Set(ads.map(a=>a.campaign_name)).size;
 
   const sv = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
-  sv('cr-kv-spend', '₹'+Math.round(tot.spend).toLocaleString('en-IN'));
-  sv('cr-kv-impr',  tot.impressions>0 ? tot.impressions.toLocaleString('en-IN') : '—');
-  sv('cr-kv-ctr',   avgCtr>0 ? avgCtr.toFixed(2)+'%' : '—');
-  sv('cr-kv-ts',    avgTs>0 ? avgTs.toFixed(1)+'%' : '—');
-  sv('cr-kv-hr',    avgHr>0 ? avgHr.toFixed(1)+'%' : '—');
-  sv('cr-kv-roas',  avgRoas>0 ? avgRoas.toFixed(2)+'x' : '—');
-  sv('cr-kv-freq',  avgFreq.toFixed(2));
-  sv('cr-kv-ads',   ads.length);
+  const svh = (id,v) => { const el=document.getElementById(id); if(el) el.innerHTML=v; };
 
-  // Color freq KPI
-  const freqEl = document.getElementById('cr-kv-freq');
-  if (freqEl) freqEl.style.color = avgFreq>3.5?'var(--r)':avgFreq>2.5?'var(--a)':'var(--g)';
-  // Color thumbstop KPI
-  const tsEl = document.getElementById('cr-kv-ts');
-  if (tsEl) tsEl.style.color = avgTs>=25?'var(--g)':avgTs>=15?'var(--a)':'var(--r)';
+  // KPIs
+  sv('cr-kv-spend',     '₹'+Math.round(tot.spend).toLocaleString('en-IN'));
+  sv('cr-kv-spend-sub', ads.length+' ads · '+campCount+' campaigns');
+  sv('cr-kv-rev',       '₹'+Math.round(tot.revenue).toLocaleString('en-IN'));
+  sv('cr-kv-rev-sub',   tot.purchases>0 ? ('AOV: ₹'+Math.round(tot.revenue/tot.purchases).toLocaleString('en-IN')) : '—');
+  sv('cr-kv-roas',      blendedRoas>0 ? blendedRoas.toFixed(2)+'x' : '—');
+  sv('cr-kv-pur',       Math.round(tot.purchases).toLocaleString('en-IN'));
+  sv('cr-kv-cpa-sub',   blendedCpa>0 ? 'CPA: ₹'+Math.round(blendedCpa).toLocaleString('en-IN') : 'CPA: —');
+  sv('cr-kv-impr',      tot.impressions>0 ? tot.impressions.toLocaleString('en-IN') : '—');
+  sv('cr-kv-reach-sub', tot.reach>0 ? 'Reach: '+tot.reach.toLocaleString('en-IN') : 'Reach: —');
+  sv('cr-kv-ctr',       blendedCtr>0 ? blendedCtr.toFixed(2)+'%' : '—');
+  sv('cr-kv-ts',        avgTs>0 ? avgTs.toFixed(1)+'%' : '—');
+  sv('cr-kv-hr',        avgHr>0 ? avgHr.toFixed(1)+'%' : '—');
+  sv('cr-kv-freq',      avgFreq.toFixed(2));
+  sv('cr-kv-ads',       ads.length);
+  sv('cr-kv-camp-sub',  campCount+' campaigns');
 
-  // ── Fatigue chart (top 5 by spend — frequency over time) ─────
+  // Colored KPIs
+  const colorMap = [
+    ['cr-kv-roas', blendedRoas>=2?'var(--g)':blendedRoas>=1?'var(--a)':'var(--r)'],
+    ['cr-kv-ctr',  blendedCtr>=1?'var(--g)':blendedCtr>=0.5?'var(--a)':'var(--r)'],
+    ['cr-kv-ts',   avgTs>=25?'var(--g)':avgTs>=15?'var(--a)':'var(--r)'],
+    ['cr-kv-hr',   avgHr>=30?'var(--g)':avgHr>=20?'var(--a)':'var(--r)'],
+    ['cr-kv-freq', avgFreq>3.5?'var(--r)':avgFreq>2.5?'var(--a)':'var(--g)'],
+  ];
+  colorMap.forEach(([id,c]) => { const el=document.getElementById(id); if(el) el.style.color=c; });
+
+  // ── Action Scorecard ──────────────────────────────────────────
+  _crRenderActionScorecard(ads);
+
+  // ── Auto-generated Insights ───────────────────────────────────
+  _crRenderInsights(ads, tot, blendedRoas, avgFreq, avgTs);
+
+  // ── Daily Trend Chart ─────────────────────────────────────────
+  _crRenderTrendChart(from, to);
+
+  // ── Fatigue + Video Funnel ────────────────────────────────────
   _crRenderFatigueChart(from, to, ads.slice(0,5));
+  _crRenderVideoChart([...ads].sort((a,b)=>b.impressions-a.impressions).slice(0,8));
 
-  // ── Video funnel chart (top 8 by impressions) ─────────────────
-  _crRenderVideoChart(ads.sort((a,b)=>b.impressions-a.impressions).slice(0,8));
-  ads.sort((a,b)=>b.spend-a.spend); // re-sort by spend for rest
+  // ── Campaign + Theme Rollups ──────────────────────────────────
+  _crRenderCampaignTable(ads);
+  _crRenderThemeTable(ads);
 
-  // ── Spend donut (top 5 vs rest) ───────────────────────────────
+  // ── Spend donut + Top5 / Bottom5 ──────────────────────────────
   _crRenderSpendDonut(ads);
-
-  // ── Top5 / Bottom5 ────────────────────────────────────────────
   _crRenderRanks(ads);
 
-  // ── Table ─────────────────────────────────────────────────────
+  // ── Full Ad Table ─────────────────────────────────────────────
   crRenderTable(ads);
+}
+
+// ── ACTION SCORECARD ────────────────────────────────────────────
+function _crRenderActionScorecard(ads) {
+  const groups = { scale:[], solid:[], optimize:[], kill:[] };
+  ads.forEach(a => { groups[a.action].push(a); });
+  const fmt = n => '₹'+Math.round(n).toLocaleString('en-IN');
+  const avgRoas = arr => {
+    const sp = arr.reduce((s,a)=>s+a.spend,0);
+    const rv = arr.reduce((s,a)=>s+a.revenue,0);
+    return sp>0 && rv>0 ? (rv/sp).toFixed(2)+'x' : '—';
+  };
+  const sumSp = arr => arr.reduce((s,a)=>s+a.spend,0);
+
+  const sv = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+
+  sv('cr-sc-count',  groups.scale.length);
+  sv('cr-sc-spend',  fmt(sumSp(groups.scale)));
+  sv('cr-sc-roas',   avgRoas(groups.scale));
+  sv('cr-so-count',  groups.solid.length);
+  sv('cr-so-spend',  fmt(sumSp(groups.solid)));
+  sv('cr-so-roas',   avgRoas(groups.solid));
+  sv('cr-op-count',  groups.optimize.length);
+  sv('cr-op-spend',  fmt(sumSp(groups.optimize)));
+  sv('cr-op-roas',   avgRoas(groups.optimize));
+  sv('cr-ki-count',  groups.kill.length);
+  sv('cr-ki-spend',  fmt(sumSp(groups.kill)));
+  sv('cr-ki-roas',   avgRoas(groups.kill));
+
+  // Visual feedback on active filter
+  ['scale','solid','optimize','kill'].forEach(a => {
+    const el = document.getElementById('cr-action-'+a);
+    if (!el) return;
+    el.style.opacity = (_crActionFilter==='' || _crActionFilter===a) ? '1' : '0.45';
+  });
+}
+
+// ── AUTO INSIGHTS ───────────────────────────────────────────────
+function _crRenderInsights(ads, tot, roas, freq, ts) {
+  const banner = document.getElementById('cr-insights-banner');
+  const content = document.getElementById('cr-insights-content');
+  if (!banner || !content) return;
+
+  const insights = [];
+
+  // Find top ROAS ad
+  const topRoas = [...ads].filter(a=>a.spend>500).sort((a,b)=>b.roas-a.roas)[0];
+  if (topRoas && topRoas.roas > 0) {
+    insights.push(`🏆 <b>Top performer:</b> "${topRoas.ad_name.slice(0,40)}" delivered <b style="color:#10b981">${topRoas.roas.toFixed(2)}x ROAS</b> on ₹${Math.round(topRoas.spend).toLocaleString('en-IN')} spend (${Math.round(topRoas.purchases)} purchases).`);
+  }
+
+  // Find worst money waster
+  const worstAd = [...ads].filter(a=>a.spend>1500).sort((a,b)=>a.roas-b.roas)[0];
+  if (worstAd && worstAd.roas < 0.7) {
+    insights.push(`🛑 <b>Money pit:</b> "${worstAd.ad_name.slice(0,40)}" spent ₹${Math.round(worstAd.spend).toLocaleString('en-IN')} at only <b style="color:#ef4444">${worstAd.roas.toFixed(2)}x</b>. Consider killing.`);
+  }
+
+  // Total kill-candidate spend (wasted)
+  const killSpend = ads.filter(a=>a.action==='kill').reduce((s,a)=>s+a.spend,0);
+  const killRev   = ads.filter(a=>a.action==='kill').reduce((s,a)=>s+a.revenue,0);
+  if (killSpend > 5000) {
+    insights.push(`💸 <b>Spend waste:</b> ₹${Math.round(killSpend).toLocaleString('en-IN')} on Kill candidates generated only ₹${Math.round(killRev).toLocaleString('en-IN')} — reclaim & reallocate to Scale tier.`);
+  }
+
+  // Frequency fatigue warning
+  const fatigueAds = ads.filter(a=>a.frequency>3.5 && a.spend>1000);
+  if (fatigueAds.length > 0) {
+    const fSpend = fatigueAds.reduce((s,a)=>s+a.spend,0);
+    insights.push(`📉 <b>Fatigue alert:</b> ${fatigueAds.length} ad(s) past frequency 3.5 (spending ₹${Math.round(fSpend).toLocaleString('en-IN')}). Refresh creative or expand audience.`);
+  }
+
+  // Thumbstop benchmark
+  if (ts > 0 && ts < 20) {
+    insights.push(`🎬 <b>Hook weakness:</b> Avg thumbstop ${ts.toFixed(1)}% is below 25% benchmark — first 3 seconds aren't gripping. Test new opening hooks.`);
+  } else if (ts >= 30) {
+    insights.push(`🎬 <b>Strong hooks:</b> Avg thumbstop ${ts.toFixed(1)}% beats 25% benchmark — your openings are working.`);
+  }
+
+  // Theme winner
+  const themes = _buildThemeAgg(ads);
+  const topTheme = themes.filter(t=>t.spend>3000 && t.roas>0).sort((a,b)=>b.roas-a.roas)[0];
+  if (topTheme && topTheme.roas > roas*1.2) {
+    insights.push(`🎯 <b>Winning angle:</b> "${topTheme.name}" theme averages <b style="color:#10b981">${topTheme.roas.toFixed(2)}x</b> across ${topTheme.count} ads — double down on this style.`);
+  }
+
+  // Spend concentration
+  const top5Spend = ads.slice(0,5).reduce((s,a)=>s+a.spend,0);
+  const concentration = tot.spend>0 ? top5Spend/tot.spend*100 : 0;
+  if (concentration > 70) {
+    insights.push(`⚠️ <b>High concentration:</b> Top 5 ads consume ${concentration.toFixed(0)}% of spend — vulnerability if any fatigue. Diversify.`);
+  }
+
+  if (insights.length > 0) {
+    content.innerHTML = insights.map(i => `<div style="margin-bottom:6px">• ${i}</div>`).join('');
+    banner.style.display = 'block';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// ── DAILY TREND CHART ───────────────────────────────────────────
+function _crRenderTrendChart(from, to) {
+  const canvas = document.getElementById('cr-trend-chart');
+  if (!canvas) return;
+  if (_crTrendChart) { _crTrendChart.destroy(); _crTrendChart = null; }
+
+  // Aggregate by date
+  const byDate = {};
+  (window._META_ADS_DAILY || []).forEach(row => {
+    if (row.date < from || row.date > to) return;
+    if (!byDate[row.date]) byDate[row.date] = { spend:0, revenue:0, purchases:0, impressions:0 };
+    byDate[row.date].spend       += row.spend;
+    byDate[row.date].revenue     += row.revenue;
+    byDate[row.date].purchases   += row.purchases;
+    byDate[row.date].impressions += row.impressions;
+  });
+
+  // Build date sequence
+  const dates = [];
+  const d = new Date(from+'T00:00:00');
+  const endD = new Date(to+'T00:00:00');
+  while (d <= endD) { dates.push(d.toISOString().slice(0,10)); d.setDate(d.getDate()+1); }
+
+  const spendArr   = dates.map(dt => Math.round(byDate[dt]?.spend   || 0));
+  const revenueArr = dates.map(dt => Math.round(byDate[dt]?.revenue || 0));
+  const roasArr    = dates.map(dt => {
+    const x = byDate[dt];
+    return x && x.spend>0 && x.revenue>0 ? parseFloat((x.revenue/x.spend).toFixed(2)) : null;
+  });
+
+  _crTrendChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: dates.map(dt => dt.slice(5)),
+      datasets: [
+        { label:'Spend',   data:spendArr,   backgroundColor:'rgba(239,68,68,0.55)',  borderRadius:3, yAxisID:'y',  order:2 },
+        { label:'Revenue', data:revenueArr, backgroundColor:'rgba(16,185,129,0.55)', borderRadius:3, yAxisID:'y',  order:1 },
+        { label:'ROAS',    data:roasArr,    type:'line', borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.15)', fill:false, borderWidth:2.5, pointRadius:3, tension:0.3, yAxisID:'y1', spanGaps:true, order:0 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { position:'bottom', labels:{ color:'#94a3b8', font:{size:11}, boxWidth:14 } },
+        tooltip: { callbacks: { label: c => c.dataset.label==='ROAS'
+          ? ' ROAS: '+(c.raw==null?'—':c.raw+'x')
+          : ' '+c.dataset.label+': ₹'+(c.raw||0).toLocaleString('en-IN') } },
+      },
+      scales: {
+        x: { ticks:{color:'#64748b',font:{size:10},maxTicksLimit:15}, grid:{display:false} },
+        y: { position:'left', beginAtZero:true, ticks:{color:'#64748b',font:{size:10},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}, grid:{color:'rgba(255,255,255,0.04)'}, title:{display:true,text:'₹ Spend / Revenue',color:'#64748b',font:{size:10}} },
+        y1:{ position:'right', beginAtZero:true, ticks:{color:'#f59e0b',font:{size:10},callback:v=>v+'x'}, grid:{display:false}, title:{display:true,text:'ROAS',color:'#f59e0b',font:{size:10}} },
+      }
+    }
+  });
+}
+
+// ── CAMPAIGN ROLLUP TABLE ───────────────────────────────────────
+function _crRenderCampaignTable(ads) {
+  const tbody = document.getElementById('cr-campaign-tbody');
+  if (!tbody) return;
+  const camps = _buildCampaignAgg(ads);
+  if (camps.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#64748b">No data</td></tr>'; return; }
+  tbody.innerHTML = camps.slice(0,40).map(c => {
+    const roasColor = c.roas>=2?'#10b981':c.roas>=1?'#f59e0b':'#ef4444';
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+      <td style="padding:7px 8px;color:#e2e8f0;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${c.name}">${c.name}</td>
+      <td style="text-align:right;padding:7px 8px;color:#94a3b8">${c.count}</td>
+      <td style="text-align:right;padding:7px 8px;color:#f1f5f9;font-weight:600">₹${Math.round(c.spend).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:7px 8px;color:#94a3b8">₹${Math.round(c.revenue).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:7px 8px;font-weight:700;color:${roasColor}">${c.roas>0?c.roas.toFixed(2)+'x':'—'}</td>
+      <td style="text-align:right;padding:7px 8px;color:#94a3b8">${Math.round(c.purchases)||0}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── CREATIVE THEME TABLE ────────────────────────────────────────
+function _crRenderThemeTable(ads) {
+  const tbody = document.getElementById('cr-theme-tbody');
+  if (!tbody) return;
+  const themes = _buildThemeAgg(ads);
+  if (themes.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#64748b">No data</td></tr>'; return; }
+  tbody.innerHTML = themes.slice(0,40).map(t => {
+    const roasColor = t.roas>=2?'#10b981':t.roas>=1?'#f59e0b':'#ef4444';
+    const tsColor   = t.thumbstop>=25?'#10b981':t.thumbstop>=15?'#f59e0b':'#ef4444';
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+      <td style="padding:7px 8px;color:#e2e8f0;font-weight:600;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${t.name}">${t.name}</td>
+      <td style="text-align:right;padding:7px 8px;color:#94a3b8">${t.count}</td>
+      <td style="text-align:right;padding:7px 8px;color:#f1f5f9;font-weight:600">₹${Math.round(t.spend).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:7px 8px;color:#94a3b8">₹${Math.round(t.revenue).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:7px 8px;font-weight:700;color:${roasColor}">${t.roas>0?t.roas.toFixed(2)+'x':'—'}</td>
+      <td style="text-align:right;padding:7px 8px;font-weight:600;color:${tsColor}">${t.thumbstop>0?t.thumbstop.toFixed(1)+'%':'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── FILTER BY ACTION CARD ───────────────────────────────────────
+function crFilterByAction(action) {
+  // Toggle: clicking same card again clears filter
+  _crActionFilter = (_crActionFilter === action) ? '' : action;
+  const dd = document.getElementById('cr-action-filter');
+  if (dd) dd.value = _crActionFilter;
+  _crRenderActionScorecard(_crAllAds);
+  crRenderTable(_crAllAds);
+  // Scroll to the table
+  document.getElementById('cr-ad-table')?.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function _crRenderFatigueChart(from, to, topAds) {
@@ -4337,10 +4634,16 @@ function _crRenderSpendDonut(ads) {
 }
 
 function _crRenderRanks(ads) {
-  const sorted = [...ads].sort((a,b) => {
+  // For CPA, lower is better — so we invert for "top" ranking. Bottom = highest CPA.
+  // Also filter out ads with no purchases for CPA ranking.
+  let working = [...ads];
+  if (_crRankBy === 'cpa') working = working.filter(a => a.purchases >= 1);
+
+  const sorted = working.sort((a,b) => {
     if (_crRankBy === 'roas')  return b.roas      - a.roas;
     if (_crRankBy === 'spend') return b.spend     - a.spend;
     if (_crRankBy === 'ts')    return b.thumbstop - a.thumbstop;
+    if (_crRankBy === 'cpa')   return a.cpa       - b.cpa;   // ascending = best CPA first
     return b.roas - a.roas;
   });
   const top5    = sorted.slice(0,5);
@@ -4349,6 +4652,7 @@ function _crRenderRanks(ads) {
   function adCard(a, isTop) {
     const val = _crRankBy==='roas'  ? a.roas.toFixed(2)+'x'
               : _crRankBy==='spend' ? '₹'+Math.round(a.spend).toLocaleString('en-IN')
+              : _crRankBy==='cpa'   ? (a.cpa>0?'₹'+Math.round(a.cpa).toLocaleString('en-IN'):'—')
               :                       a.thumbstop.toFixed(1)+'%';
     const color = isTop ? '#10b981' : '#ef4444';
     const freq  = a.frequency;
@@ -4371,7 +4675,7 @@ function _crRenderRanks(ads) {
 function crToggleRankBy(by) {
   _crRankBy = by;
   // Update button styles
-  ['roas','spend','ts'].forEach(k => {
+  ['roas','spend','ts','cpa'].forEach(k => {
     const btn = document.getElementById('cr-rank-'+k);
     if (!btn) return;
     if (k === by) {
@@ -4387,6 +4691,10 @@ function crRenderTable(ads) {
   const tbody = document.getElementById('cr-ad-tbody');
   if (!tbody) return;
 
+  // Sync action filter from dropdown
+  const dd = document.getElementById('cr-action-filter');
+  if (dd) _crActionFilter = dd.value || '';
+
   const sorted = [...ads].sort((a,b) => {
     const va = a[_crSortCol] ?? 0;
     const vb = b[_crSortCol] ?? 0;
@@ -4394,31 +4702,48 @@ function crRenderTable(ads) {
     return _crSortAsc ? va - vb : vb - va;
   });
 
-  const filter = (document.getElementById('cr-search')?.value||'').toLowerCase();
-  const rows = sorted.filter(a => !filter || a.ad_name.toLowerCase().includes(filter));
+  const search = (document.getElementById('cr-search')?.value||'').toLowerCase();
+  const rows = sorted.filter(a => {
+    if (search && !a.ad_name.toLowerCase().includes(search)) return false;
+    if (_crActionFilter && a.action !== _crActionFilter) return false;
+    return true;
+  });
+
+  // Update count badge
+  const countEl = document.getElementById('cr-table-count');
+  if (countEl) countEl.textContent = `${rows.length} ad${rows.length===1?'':'s'}${_crActionFilter?' · '+_crActionFilter:''}`;
+
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:40px;color:#64748b">No ads match the current filters.</td></tr>';
+    return;
+  }
 
   tbody.innerHTML = rows.map(a => {
     const fatigueColor = a.frequency>3.5?'color:#ef4444':a.frequency>2.5?'color:#f59e0b':'color:#10b981';
     const roasColor    = a.roas>=2?'color:#10b981':a.roas>=1?'color:#f59e0b':'color:#ef4444';
     const tsColor      = a.thumbstop>=25?'color:#10b981':a.thumbstop>=15?'color:#f59e0b':'color:#ef4444';
-    const fatigueBadge = a.frequency>3.5?`<span style="font-size:9px;background:rgba(239,68,68,0.15);color:#ef4444;border-radius:3px;padding:1px 4px;margin-left:4px">FATIGUE</span>`:'';
+    const hrColor      = a.hold_rate>=30?'color:#10b981':a.hold_rate>=20?'color:#f59e0b':'color:#ef4444';
+    const actionBg = a.action==='scale'?'rgba(16,185,129,0.18)':a.action==='solid'?'rgba(59,130,246,0.18)':a.action==='optimize'?'rgba(245,158,11,0.18)':'rgba(239,68,68,0.18)';
     return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s"
               onmouseenter="this.style.background='rgba(99,102,241,0.06)'"
               onmouseleave="this.style.background=''">
-      <td style="padding:9px 10px;color:#e2e8f0;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-        ${a.ad_name}${fatigueBadge}
-        <div style="font-size:10px;color:#475569">${a.campaign_name.slice(0,40)}</div>
+      <td style="padding:9px 8px;white-space:nowrap"><span style="font-size:10px;font-weight:700;background:${actionBg};color:${a.action_color};border-radius:5px;padding:3px 7px">${a.action_label}</span></td>
+      <td style="padding:9px 8px;color:#e2e8f0;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.ad_name}">
+        ${a.ad_name}
+        <div style="font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis">${a.campaign_name.slice(0,40)}</div>
       </td>
-      <td style="text-align:right;padding:9px 10px;color:#f1f5f9;font-weight:600">₹${Math.round(a.spend).toLocaleString('en-IN')}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${a.impressions.toLocaleString('en-IN')}</td>
-      <td style="text-align:right;padding:9px 10px;font-weight:700;${roasColor}">${a.roas>0?a.roas.toFixed(2)+'x':'—'}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${Math.round(a.purchases)||0}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${a.ctr>0?a.ctr.toFixed(2)+'%':'—'}</td>
-      <td style="text-align:right;padding:9px 10px;font-weight:600;${tsColor}">${a.thumbstop>0?a.thumbstop.toFixed(1)+'%':'—'}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${a.hold_rate>0?a.hold_rate.toFixed(1)+'%':'—'}</td>
-      <td style="text-align:right;padding:9px 10px;font-weight:600;${fatigueColor}">${a.frequency.toFixed(2)}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${a.cpc>0?'₹'+a.cpc.toFixed(2):'—'}</td>
-      <td style="text-align:right;padding:9px 10px;color:#94a3b8">${a.cpm>0?'₹'+a.cpm.toFixed(0):'—'}</td>
+      <td style="text-align:right;padding:9px 8px;color:#f1f5f9;font-weight:600">₹${Math.round(a.spend).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">₹${Math.round(a.revenue).toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:9px 8px;font-weight:700;${roasColor}">${a.roas>0?a.roas.toFixed(2)+'x':'—'}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${Math.round(a.purchases)||0}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${a.cpa>0?'₹'+Math.round(a.cpa).toLocaleString('en-IN'):'—'}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${a.impressions.toLocaleString('en-IN')}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${a.ctr>0?a.ctr.toFixed(2)+'%':'—'}</td>
+      <td style="text-align:right;padding:9px 8px;font-weight:600;${tsColor}">${a.thumbstop>0?a.thumbstop.toFixed(1)+'%':'—'}</td>
+      <td style="text-align:right;padding:9px 8px;font-weight:600;${hrColor}">${a.hold_rate>0?a.hold_rate.toFixed(1)+'%':'—'}</td>
+      <td style="text-align:right;padding:9px 8px;font-weight:600;${fatigueColor}">${a.frequency.toFixed(2)}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${a.cpc>0?'₹'+a.cpc.toFixed(2):'—'}</td>
+      <td style="text-align:right;padding:9px 8px;color:#94a3b8">${a.cpm>0?'₹'+a.cpm.toFixed(0):'—'}</td>
     </tr>`;
   }).join('');
 }
