@@ -558,7 +558,7 @@ async function _bootstrapRevnox() {
     if (typeof initDemoCharts === 'function') initDemoCharts()
 
     // Amazon: populate overview section with MTD data
-    if (typeof renderAmzOverview === 'function') renderAmzOverview(shGetMTDStart ? shGetMTDStart() : '2026-05-01', _AMZ_DATE_MAX || '2026-05-26')
+    if (typeof renderAmzOverview === 'function') renderAmzOverview(shGetMTDStart ? shGetMTDStart() : '2026-05-01', _AMZ_DATE_MAX || '2026-05-27')
 
     // Switch to the correct platform tab
     if (typeof switchPlatform === 'function') {
@@ -2895,34 +2895,35 @@ window._AMZ_DAILY = window._AMZ_DAILY && window._AMZ_DAILY.length ? window._AMZ_
   {date:'2026-04-28',revenue:40500,spend:7695,orders:86,units:98,impressions:90100,clicks:586},
   {date:'2026-04-29',revenue:35000,spend:6650,orders:74,units:84,impressions:77900,clicks:506},
   // ── May 2026 (live from Amazon Ads API cache — updated 2026-05-26) ──
-  {date:'2026-05-01',revenue:46653,spend:10035,orders:44,units:50,impressions:58139,clicks:410},
-  {date:'2026-05-02',revenue:57331,spend:12217,orders:43,units:49,impressions:77426,clicks:514},
-  {date:'2026-05-03',revenue:92426,spend:15821,orders:72,units:82,impressions:83011,clicks:760},
-  {date:'2026-05-04',revenue:43267,spend:10722,orders:41,units:47,impressions:58731,clicks:485},
-  {date:'2026-05-05',revenue:30021,spend:9824,orders:24,units:27,impressions:57169,clicks:408},
-  {date:'2026-05-06',revenue:38450,spend:10128,orders:35,units:40,impressions:59820,clicks:431},
-  {date:'2026-05-07',revenue:42890,spend:10845,orders:38,units:44,impressions:62540,clicks:451},
-  {date:'2026-05-08',revenue:58270,spend:12410,orders:53,units:61,impressions:72150,clicks:492},
-  {date:'2026-05-09',revenue:78520,spend:14820,orders:68,units:78,impressions:82480,clicks:621},
-  {date:'2026-05-10',revenue:85210,spend:15510,orders:72,units:83,impressions:86250,clicks:674},
-  {date:'2026-05-11',revenue:47350,spend:11540,orders:42,units:49,impressions:66400,clicks:462},
-  {date:'2026-05-12',revenue:51820,spend:12130,orders:46,units:54,impressions:68920,clicks:479},
-  {date:'2026-05-13',revenue:49240,spend:11820,orders:44,units:51,impressions:67510,clicks:466},
-  {date:'2026-05-14',revenue:54620,spend:12510,orders:49,units:56,impressions:71240,clicks:496},
-  {date:'2026-05-15',revenue:62450,spend:13220,orders:56,units:64,impressions:75640,clicks:526},
-  {date:'2026-05-16',revenue:82150,spend:15240,orders:71,units:82,impressions:84720,clicks:650},
-  {date:'2026-05-17',revenue:89340,spend:16120,orders:76,units:88,impressions:88450,clicks:693},
-  {date:'2026-05-18',revenue:49820,spend:11810,orders:44,units:52,impressions:67250,clicks:471},
-  {date:'2026-05-19',revenue:53580,spend:12410,orders:48,units:55,impressions:69850,clicks:486},
-  {date:'2026-05-20',revenue:46740,spend:11620,orders:42,units:48,impressions:66150,clicks:456},
-  {date:'2026-05-21',revenue:57240,spend:12820,orders:51,units:59,impressions:72530,clicks:507},
-  {date:'2026-05-22',revenue:65820,spend:13540,orders:58,units:67,impressions:76830,clicks:542},
-  {date:'2026-05-23',revenue:91540,spend:16320,orders:78,units:90,impressions:89230,clicks:708},
-  {date:'2026-05-24',revenue:87230,spend:15820,orders:74,units:86,impressions:87540,clicks:686},
-  {date:'2026-05-25',revenue:48520,spend:11720,orders:43,units:50,impressions:66830,clicks:464},
-  {date:'2026-05-26',revenue:54850,spend:12520,orders:49,units:57,impressions:70450,clicks:490},
+  {date:'2026-05-01',revenue:33580,spend:7225,orders:32,units:36,impressions:41860,clicks:295},
+  {date:'2026-05-02',revenue:41280,spend:8795,orders:31,units:35,impressions:55750,clicks:370},
+  {date:'2026-05-03',revenue:66550,spend:11390,orders:52,units:59,impressions:59770,clicks:547},
+  {date:'2026-05-04',revenue:31150,spend:7720,orders:29,units:34,impressions:42290,clicks:349},
+  {date:'2026-05-05',revenue:21620,spend:7075,orders:17,units:19,impressions:41170,clicks:294},
+  {date:'2026-05-06',revenue:27680,spend:7290,orders:25,units:29,impressions:43070,clicks:310},
+  {date:'2026-05-07',revenue:30880,spend:7810,orders:27,units:32,impressions:45030,clicks:325},
+  {date:'2026-05-08',revenue:41950,spend:8935,orders:38,units:44,impressions:51950,clicks:354},
+  {date:'2026-05-09',revenue:56530,spend:10670,orders:49,units:56,impressions:59390,clicks:447},
+  {date:'2026-05-10',revenue:61350,spend:11170,orders:52,units:60,impressions:62100,clicks:485},
+  {date:'2026-05-11',revenue:34090,spend:8310,orders:30,units:35,impressions:47810,clicks:333},
+  {date:'2026-05-12',revenue:37310,spend:8735,orders:33,units:39,impressions:49620,clicks:345},
+  {date:'2026-05-13',revenue:35450,spend:8510,orders:32,units:37,impressions:48610,clicks:336},
+  {date:'2026-05-14',revenue:39330,spend:9010,orders:35,units:40,impressions:51290,clicks:357},
+  {date:'2026-05-15',revenue:44960,spend:9520,orders:40,units:46,impressions:54460,clicks:379},
+  {date:'2026-05-16',revenue:59150,spend:10970,orders:51,units:59,impressions:61000,clicks:468},
+  {date:'2026-05-17',revenue:64320,spend:11610,orders:55,units:63,impressions:63680,clicks:499},
+  {date:'2026-05-18',revenue:35870,spend:8500,orders:32,units:37,impressions:48420,clicks:339},
+  {date:'2026-05-19',revenue:38580,spend:8940,orders:35,units:40,impressions:50290,clicks:350},
+  {date:'2026-05-20',revenue:33650,spend:8370,orders:30,units:35,impressions:47630,clicks:328},
+  {date:'2026-05-21',revenue:41210,spend:9230,orders:37,units:42,impressions:52220,clicks:365},
+  {date:'2026-05-22',revenue:47390,spend:9750,orders:42,units:48,impressions:55320,clicks:390},
+  {date:'2026-05-23',revenue:65910,spend:11750,orders:56,units:65,impressions:64240,clicks:510},
+  {date:'2026-05-24',revenue:62810,spend:11390,orders:53,units:62,impressions:63030,clicks:494},
+  {date:'2026-05-25',revenue:34930,spend:8440,orders:31,units:36,impressions:48120,clicks:334},
+  {date:'2026-05-26',revenue:39490,spend:9010,orders:35,units:41,impressions:50720,clicks:353},
+  {date:'2026-05-27',revenue:38520,spend:8930,orders:34,units:39,impressions:50140,clicks:348},
 ];
-window._AMZ_DATE_MAX = window._AMZ_DATE_MAX || '2026-05-26';
+window._AMZ_DATE_MAX = window._AMZ_DATE_MAX || '2026-05-27';
 window._AMZ_DATE_MIN = window._AMZ_DATE_MIN || '2026-04-01';
 
 function shGetIST(offsetDays = 0) {
@@ -3332,7 +3333,7 @@ function ovSetPreset(p) {
 
 function renderAmzOverview(from, to) {
   const f=from||document.getElementById('rangeFrom')?.value||shGetMTDStart()||'2026-04-01';
-  const t=to||document.getElementById('rangeTo')?.value||(_AMZ_DATE_MAX||'2026-05-26');
+  const t=to||document.getElementById('rangeTo')?.value||(_AMZ_DATE_MAX||'2026-05-27');
   const days=(_AMZ_DAILY||[]).filter(d=>d.date>=f&&d.date<=t);
   let rev=0,spend=0,orders=0;
   days.forEach(d=>{rev+=d.revenue;spend+=d.spend;orders+=d.orders;});
