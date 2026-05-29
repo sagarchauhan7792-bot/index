@@ -210,14 +210,32 @@ async function _loadShopifyData() {
 }
 
 // ── Fetch Meta data from Supabase ─────────────────────────────
+// Paginate any Supabase query that may exceed the 1000-row REST cap.
+// Pulls 1000-row windows in parallel until a window returns < 1000 rows.
+async function _sbPaginate(buildQuery, pageSize = 1000) {
+  const all = []
+  for (let i = 0; i < 20; i++) {              // hard ceiling 20K rows
+    const from = i * pageSize, to = from + pageSize - 1
+    const { data, error } = await buildQuery().range(from, to)
+    if (error) throw error
+    if (!data || data.length === 0) break
+    all.push(...data)
+    if (data.length < pageSize) break          // last page
+  }
+  return all
+}
+
 async function _loadMetaData() {
-  // Fetch daily metrics + campaigns + demographics + ads in parallel
-  const [dailyRes, campaignsRes, demoRes, adsRes] = await Promise.all([
+  // Fetch daily metrics + campaigns + demographics + ads in parallel.
+  // meta_ads is paginated because ad-level rows easily exceed 1000.
+  const [dailyRes, campaignsRes, demoRes, adsRows] = await Promise.all([
     _sb.from('meta_daily').select('*').order('date', { ascending: true }),
     _sb.from('meta_campaigns').select('*').order('date', { ascending: true }),
     _sb.from('meta_demographics').select('*').order('spend', { ascending: false }),
-    _sb.from('meta_ads').select('*').order('date', { ascending: true }),
+    _sbPaginate(() => _sb.from('meta_ads').select('*').order('date', { ascending: true })),
   ])
+  // Wrap paginated array in a Supabase-style {data, error} for downstream uniformity
+  const adsRes = { data: adsRows, error: null }
 
   if (dailyRes.error) throw new Error('meta_daily: ' + dailyRes.error.message)
 
@@ -2181,7 +2199,7 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div>
       <h2 style="font-size:22px;font-weight:700;color:#f1f5f9;margin:0">🎨 Creative Intelligence · Meta Ads Analysis</h2>
-      <p style="font-size:13px;color:#64748b;margin:4px 0 0">Real-time ad-level performance · Action scorecard · Spend waste · Theme & campaign rollups</p>
+      <p style="font-size:13px;color:#64748b;margin:4px 0 0">Live Meta Ads — creatives auto-merged across adsets · Action scorecard · vs previous period · Spend waste · Theme rollups</p>
     </div>
     <!-- Date range -->
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -2196,6 +2214,14 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
       <input type="date" id="cr-to" style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;padding:6px 10px;border-radius:8px;font-size:13px">
       <button onclick="renderCreatives(document.getElementById('cr-from').value,document.getElementById('cr-to').value)" style="background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);color:#a5b4fc;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer">Apply</button>
     </div>
+  </div>
+
+  <!-- ── 📅 Period Comparison Bar ─────────────────────────────── -->
+  <div id="cr-period-bar" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:14px;padding:10px 16px;background:rgba(30,41,59,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:10px">
+    <div><span style="color:#64748b">Current:</span> <span id="cr-period-curr" style="color:#a5b4fc;font-weight:600">—</span></div>
+    <div style="color:#475569">↔</div>
+    <div><span style="color:#64748b">vs Previous:</span> <span id="cr-period-prev" style="color:#94a3b8;font-weight:600">—</span></div>
+    <div style="margin-left:auto;color:#64748b;font-size:11px">All deltas below are vs the previous equivalent period</div>
   </div>
 
   <!-- ── 🧠 Insights Banner ────────────────────────────────────── -->
@@ -2246,7 +2272,7 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
     <div class="kpi-card"><div class="kl">Thumbstop</div><div class="kv" id="cr-kv-ts">—</div><div class="ks" style="font-size:10px;color:#64748b">benchmark 25%+</div></div>
     <div class="kpi-card"><div class="kl">Hold Rate</div><div class="kv" id="cr-kv-hr">—</div><div class="ks" style="font-size:10px;color:#64748b">benchmark 30%+</div></div>
     <div class="kpi-card"><div class="kl">Avg Frequency</div><div class="kv" id="cr-kv-freq">—</div><div class="ks" style="font-size:10px;color:#64748b">fatigue &gt; 3.5</div></div>
-    <div class="kpi-card"><div class="kl">Active Ads</div><div class="kv" id="cr-kv-ads">—</div><div class="ks" id="cr-kv-camp-sub" style="font-size:10px;color:#64748b">— campaigns</div></div>
+    <div class="kpi-card"><div class="kl">Unique Creatives</div><div class="kv" id="cr-kv-ads">—</div><div class="ks" id="cr-kv-camp-sub" style="font-size:10px;color:#64748b">— campaigns</div></div>
   </div>
 
   <!-- ── 📈 Daily Trend Chart ──────────────────────────────────── -->
@@ -2345,8 +2371,8 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
   <div style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
       <div>
-        <div style="font-size:14px;font-weight:600;color:#f1f5f9">📋 All Ads Performance</div>
-        <div style="font-size:12px;color:#64748b">Click column header to sort · Action badge = AI classification · <span id="cr-table-count" style="color:#a5b4fc">— ads</span></div>
+        <div style="font-size:14px;font-weight:600;color:#f1f5f9">📋 All Creatives Performance</div>
+        <div style="font-size:12px;color:#64748b">Same creative across multiple adsets is merged into one row (<span style="background:rgba(99,102,241,0.18);color:#a5b4fc;border-radius:3px;padding:1px 4px;font-weight:600">×N</span> badge shows merge count) · Click headers to sort · <span id="cr-table-count" style="color:#a5b4fc">— ads</span></div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <select id="cr-action-filter" onchange="crFilterTable()" style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;padding:6px 10px;border-radius:8px;font-size:12px">
@@ -4169,24 +4195,56 @@ function crSetPreset(p) {
   renderCreatives(from, to);
 }
 
+// Normalize an ad name so the SAME CREATIVE used in multiple adsets/campaigns
+// collapses to one key. Strips:
+//   • duplicate suffixes:  " - Copy", " (1)", " Copy 2"
+//   • Meta auto-numbering: " 2", " 3" at the very end (rare but happens)
+//   • leading/trailing whitespace, double underscores
+//   • case differences (matches case-insensitively)
+function _normalizeAdName(name) {
+  if (!name) return '__unnamed__';
+  let n = String(name).trim();
+  // strip "Copy", "Copy 2", "(Copy)", "(1)", "(2)" etc — anywhere
+  n = n.replace(/\s*[-–—]?\s*\(?\s*Copy(\s*\d+)?\s*\)?\s*$/i, '');
+  n = n.replace(/\s*\(\d+\)\s*$/, '');
+  // collapse repeated whitespace / underscores / dashes
+  n = n.replace(/\s+/g, ' ').replace(/_{2,}/g, '_').trim();
+  return n.toLowerCase();
+}
+
 function _buildAdAggregates(from, to) {
   const map = {};
   (window._META_ADS_DAILY || []).forEach(row => {
     if (row.date < from || row.date > to) return;
-    const k = row.ad_id;
+    // ── KEY BY NORMALIZED AD NAME ──
+    // Same creative deployed across multiple adsets/campaigns shares an ad_name;
+    // grouping by name (not ad_id) merges them into a single creative row.
+    const k = _normalizeAdName(row.ad_name);
     if (!map[k]) {
       map[k] = {
-        ad_id: k, ad_name: row.ad_name, adset_name: row.adset_name,
-        campaign_name: row.campaign_name,
+        // Display values come from the FIRST row encountered (deterministic since
+        // _META_ADS_DAILY is date-ascending). We keep originals — not normalized.
+        norm_key:       k,
+        ad_id:          row.ad_id,
+        ad_name:        row.ad_name,
+        adset_name:     row.adset_name,
+        campaign_name:  row.campaign_name,
+        ad_id_set:      new Set(),
+        adset_set:      new Set(),
+        campaign_set:   new Set(),
         spend:0, impressions:0, reach:0, clicks:0,
         purchases:0, revenue:0, add_to_cart:0, initiate_checkout:0,
         thruplay:0, video_3s:0, video_30s:0,
-        freq_sum:0, freq_days:0,
+        // For merged-ad daily freq: store impressions & reach per date, derive freq later
+        impr_by_date:   {},
+        reach_by_date:  {},
         dates: [],
-        freq_by_date: {},
       };
     }
     const m = map[k];
+    m.ad_id_set.add(row.ad_id);
+    if (row.adset_name)    m.adset_set.add(row.adset_name);
+    if (row.campaign_name) m.campaign_set.add(row.campaign_name);
     m.spend            += row.spend;
     m.impressions      += row.impressions;
     m.reach            += row.reach;
@@ -4198,9 +4256,11 @@ function _buildAdAggregates(from, to) {
     m.thruplay         += row.thruplay;
     m.video_3s         += row.video_3s;
     m.video_30s        += row.video_30s;
-    if (row.frequency > 0) { m.freq_sum += row.frequency; m.freq_days++; }
-    m.dates.push(row.date);
-    m.freq_by_date[row.date] = row.frequency;
+    // Accumulate per-date impressions/reach across all merged ad_ids on this date,
+    // then frequency = impressions / reach per date (handles merged ads cleanly)
+    m.impr_by_date[row.date]  = (m.impr_by_date[row.date]  || 0) + row.impressions;
+    m.reach_by_date[row.date] = (m.reach_by_date[row.date] || 0) + row.reach;
+    if (m.dates.indexOf(row.date) === -1) m.dates.push(row.date);
   });
 
   return Object.values(map).map(m => {
@@ -4211,8 +4271,27 @@ function _buildAdAggregates(from, to) {
     const cpa       = m.purchases > 0 ? m.spend / m.purchases : 0;
     const thumbstop = m.impressions > 0 ? m.video_3s / m.impressions * 100 : 0;
     const hold_rate = m.video_3s > 0 ? m.thruplay / m.video_3s * 100 : 0;
-    const frequency = m.freq_days > 0 ? m.freq_sum / m.freq_days : 1;
-    const out = { ...m, roas, ctr, cpc, cpm, cpa, thumbstop, hold_rate, frequency };
+    // Lifetime frequency = total impressions / total reach across all merged ads
+    const frequency = m.reach > 0 ? m.impressions / m.reach : 1;
+    // Per-date frequency for the fatigue chart
+    const freq_by_date = {};
+    m.dates.forEach(d => {
+      const i = m.impr_by_date[d] || 0;
+      const r = m.reach_by_date[d] || 0;
+      freq_by_date[d] = r > 0 ? i / r : null;
+    });
+    const merged_count = m.ad_id_set.size;
+    const adset_count  = m.adset_set.size;
+    const camp_count   = m.campaign_set.size;
+    const out = {
+      ...m,
+      ad_ids:        Array.from(m.ad_id_set),
+      adset_names:   Array.from(m.adset_set),
+      campaign_names:Array.from(m.campaign_set),
+      merged_count, adset_count, camp_count,
+      roas, ctr, cpc, cpm, cpa, thumbstop, hold_rate, frequency,
+      freq_by_date,
+    };
     const cls = _classifyAd(out);
     out.action       = cls.action;
     out.action_label = cls.label;
@@ -4220,6 +4299,33 @@ function _buildAdAggregates(from, to) {
     out.action_order = cls.order;
     return out;
   }).sort((a,b) => b.spend - a.spend);
+}
+
+// Compute previous-period range (same length, immediately prior to current range)
+function _crPrevRange(from, to) {
+  const fromD = new Date(from+'T00:00:00');
+  const toD   = new Date(to+'T00:00:00');
+  const daysInRange = Math.round((toD - fromD) / 86400000) + 1;
+  const prevTo   = new Date(fromD); prevTo.setDate(prevTo.getDate() - 1);
+  const prevFrom = new Date(prevTo); prevFrom.setDate(prevFrom.getDate() - (daysInRange - 1));
+  return {
+    prevFrom: prevFrom.toISOString().slice(0,10),
+    prevTo:   prevTo.toISOString().slice(0,10),
+    days:     daysInRange,
+  };
+}
+
+// Format a delta % as "▲ 12.4%" (green) or "▼ 5.1%" (red); empty if 0/no prev data
+function _crFmtDelta(curr, prev, invertColor) {
+  if (!prev || prev === 0) return '';
+  const pct = ((curr - prev) / prev) * 100;
+  if (!isFinite(pct)) return '';
+  const arrow = pct >= 0 ? '▲' : '▼';
+  const sign  = pct >= 0 ? '+' : '';
+  // invertColor: true for metrics where lower is better (CPA, Frequency)
+  const isGood = invertColor ? pct < 0 : pct >= 0;
+  const color = Math.abs(pct) < 0.5 ? '#64748b' : isGood ? '#10b981' : '#ef4444';
+  return `<span style="color:${color};font-weight:600">${arrow} ${sign}${pct.toFixed(1)}%</span>`;
 }
 
 function renderCreatives(from, to) {
@@ -4248,25 +4354,73 @@ function renderCreatives(from, to) {
   const avgFreq     = ads.length>0 ? ads.reduce((s,a)=>s+a.frequency,0)/ads.length : 1;
   const campCount   = new Set(ads.map(a=>a.campaign_name)).size;
 
+  // ── Previous period for delta comparison ──────────────────────
+  const { prevFrom, prevTo, days } = _crPrevRange(from, to);
+  const prevAds = _buildAdAggregates(prevFrom, prevTo);
+  const prev = prevAds.reduce((acc,a) => {
+    acc.spend+=a.spend; acc.revenue+=a.revenue; acc.purchases+=a.purchases;
+    acc.impressions+=a.impressions; acc.clicks+=a.clicks;
+    acc.v3+=a.video_3s; acc.tp+=a.thruplay;
+    return acc;
+  }, {spend:0,revenue:0,purchases:0,impressions:0,clicks:0,v3:0,tp:0});
+  const prevRoas = prev.spend>0 && prev.revenue>0 ? prev.revenue/prev.spend : 0;
+  const prevCpa  = prev.purchases>0 ? prev.spend/prev.purchases : 0;
+  const prevCtr  = prev.impressions>0 ? prev.clicks/prev.impressions*100 : 0;
+  const prevTs   = prev.impressions>0 ? prev.v3/prev.impressions*100 : 0;
+  const prevHr   = prev.v3>0 ? prev.tp/prev.v3*100 : 0;
+  const prevFreq = prevAds.length>0 ? prevAds.reduce((s,a)=>s+a.frequency,0)/prevAds.length : 0;
+  const hasPrev  = prev.spend > 0;
+
+  // Period comparison bar
+  const pCurr = document.getElementById('cr-period-curr');
+  const pPrev = document.getElementById('cr-period-prev');
+  if (pCurr) pCurr.textContent = `${from} → ${to} (${days}d)`;
+  if (pPrev) pPrev.textContent = hasPrev ? `${prevFrom} → ${prevTo} (${days}d)` : 'No prior data';
+
   const sv = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
   const svh = (id,v) => { const el=document.getElementById(id); if(el) el.innerHTML=v; };
 
-  // KPIs
+  // KPIs — main values
   sv('cr-kv-spend',     '₹'+Math.round(tot.spend).toLocaleString('en-IN'));
-  sv('cr-kv-spend-sub', ads.length+' ads · '+campCount+' campaigns');
   sv('cr-kv-rev',       '₹'+Math.round(tot.revenue).toLocaleString('en-IN'));
-  sv('cr-kv-rev-sub',   tot.purchases>0 ? ('AOV: ₹'+Math.round(tot.revenue/tot.purchases).toLocaleString('en-IN')) : '—');
   sv('cr-kv-roas',      blendedRoas>0 ? blendedRoas.toFixed(2)+'x' : '—');
   sv('cr-kv-pur',       Math.round(tot.purchases).toLocaleString('en-IN'));
-  sv('cr-kv-cpa-sub',   blendedCpa>0 ? 'CPA: ₹'+Math.round(blendedCpa).toLocaleString('en-IN') : 'CPA: —');
   sv('cr-kv-impr',      tot.impressions>0 ? tot.impressions.toLocaleString('en-IN') : '—');
-  sv('cr-kv-reach-sub', tot.reach>0 ? 'Reach: '+tot.reach.toLocaleString('en-IN') : 'Reach: —');
   sv('cr-kv-ctr',       blendedCtr>0 ? blendedCtr.toFixed(2)+'%' : '—');
   sv('cr-kv-ts',        avgTs>0 ? avgTs.toFixed(1)+'%' : '—');
   sv('cr-kv-hr',        avgHr>0 ? avgHr.toFixed(1)+'%' : '—');
   sv('cr-kv-freq',      avgFreq.toFixed(2));
   sv('cr-kv-ads',       ads.length);
-  sv('cr-kv-camp-sub',  campCount+' campaigns');
+
+  // KPI subtitles with period-over-period deltas (when previous period has data)
+  const aov = tot.purchases>0 ? Math.round(tot.revenue/tot.purchases) : 0;
+  if (hasPrev) {
+    svh('cr-kv-spend-sub', ads.length+' ads · '+_crFmtDelta(tot.spend, prev.spend, false));
+    svh('cr-kv-rev-sub',   (aov>0?'AOV: ₹'+aov.toLocaleString('en-IN')+' · ':'')+_crFmtDelta(tot.revenue, prev.revenue, false));
+    svh('cr-kv-cpa-sub',   (blendedCpa>0?'CPA: ₹'+Math.round(blendedCpa).toLocaleString('en-IN')+' · ':'CPA: — · ')+_crFmtDelta(blendedCpa, prevCpa, true));
+    svh('cr-kv-reach-sub', (tot.reach>0?'Reach: '+tot.reach.toLocaleString('en-IN')+' · ':'')+_crFmtDelta(tot.impressions, prev.impressions, false));
+    const totalAdIds = ads.reduce((s,a)=>s+a.merged_count,0);
+    svh('cr-kv-camp-sub',  campCount+' campaigns · '+totalAdIds+' raw ad_ids · '+_crFmtDelta(ads.length, prevAds.length, false));
+    // ROAS / CTR / Thumb / Hold / Freq deltas appended to their own subtitle text
+    const setKvSub = (kvId, baseTxt, curr, prev, invert) => {
+      const el = document.getElementById(kvId);
+      if (!el) return;
+      const ks = el.parentNode.querySelector('.ks');
+      if (ks) ks.innerHTML = baseTxt + ' · ' + _crFmtDelta(curr, prev, invert);
+    };
+    setKvSub('cr-kv-roas',  'target ≥ 2x',         blendedRoas, prevRoas, false);
+    setKvSub('cr-kv-ctr',   'benchmark 1%+',       blendedCtr,  prevCtr,  false);
+    setKvSub('cr-kv-ts',    'benchmark 25%+',      avgTs,       prevTs,   false);
+    setKvSub('cr-kv-hr',    'benchmark 30%+',      avgHr,       prevHr,   false);
+    setKvSub('cr-kv-freq',  'fatigue > 3.5',       avgFreq,     prevFreq, true);
+  } else {
+    sv('cr-kv-spend-sub', ads.length+' ads · '+campCount+' campaigns');
+    sv('cr-kv-rev-sub',   aov>0 ? 'AOV: ₹'+aov.toLocaleString('en-IN') : '—');
+    sv('cr-kv-cpa-sub',   blendedCpa>0 ? 'CPA: ₹'+Math.round(blendedCpa).toLocaleString('en-IN') : 'CPA: —');
+    sv('cr-kv-reach-sub', tot.reach>0 ? 'Reach: '+tot.reach.toLocaleString('en-IN') : 'Reach: —');
+    const totalAdIds = ads.reduce((s,a)=>s+a.merged_count,0);
+    sv('cr-kv-camp-sub',  campCount+' campaigns · '+totalAdIds+' raw ad_ids');
+  }
 
   // Colored KPIs
   const colorMap = [
@@ -4657,12 +4811,13 @@ function _crRenderRanks(ads) {
     const color = isTop ? '#10b981' : '#ef4444';
     const freq  = a.frequency;
     const fatigueTag = freq>3.5 ? `<span style="font-size:9px;background:rgba(239,68,68,0.2);color:#ef4444;border-radius:4px;padding:1px 5px;margin-left:4px">FATIGUE</span>` : '';
+    const mergeBadge = a.merged_count > 1 ? `<span title="${a.merged_count} ad_ids merged across ${a.adset_count} adsets" style="font-size:9px;background:rgba(99,102,241,0.18);color:#a5b4fc;border-radius:4px;padding:1px 5px;margin-left:4px">×${a.merged_count}</span>` : '';
     return `<div style="background:rgba(30,41,59,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;margin-bottom:8px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <span style="font-size:11px;color:#f1f5f9;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${a.ad_name}${fatigueTag}</span>
+        <span style="font-size:11px;color:#f1f5f9;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${a.ad_name}${mergeBadge}${fatigueTag}</span>
         <span style="font-size:13px;font-weight:700;color:${color};flex-shrink:0;margin-left:4px">${val}</span>
       </div>
-      <div style="font-size:10px;color:#64748b">${a.campaign_name.slice(0,30)} · Freq ${freq.toFixed(1)}</div>
+      <div style="font-size:10px;color:#64748b">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} camps` : a.campaign_name.slice(0,30)} · Freq ${freq.toFixed(1)}</div>
     </div>`;
   }
 
@@ -4728,9 +4883,9 @@ function crRenderTable(ads) {
               onmouseenter="this.style.background='rgba(99,102,241,0.06)'"
               onmouseleave="this.style.background=''">
       <td style="padding:9px 8px;white-space:nowrap"><span style="font-size:10px;font-weight:700;background:${actionBg};color:${a.action_color};border-radius:5px;padding:3px 7px">${a.action_label}</span></td>
-      <td style="padding:9px 8px;color:#e2e8f0;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.ad_name}">
-        ${a.ad_name}
-        <div style="font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis">${a.campaign_name.slice(0,40)}</div>
+      <td style="padding:9px 8px;color:#e2e8f0;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.ad_name} · ${a.merged_count} ad_id(s), ${a.adset_count} adset(s), ${a.camp_count} campaign(s)">
+        ${a.ad_name}${a.merged_count>1 ? `<span style="font-size:9px;background:rgba(99,102,241,0.18);color:#a5b4fc;border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:600">×${a.merged_count}</span>` : ''}
+        <div style="font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} campaigns` : a.campaign_name.slice(0,50)}</div>
       </td>
       <td style="text-align:right;padding:9px 8px;color:#f1f5f9;font-weight:600">₹${Math.round(a.spend).toLocaleString('en-IN')}</td>
       <td style="text-align:right;padding:9px 8px;color:#94a3b8">₹${Math.round(a.revenue).toLocaleString('en-IN')}</td>
