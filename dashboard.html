@@ -2206,11 +2206,12 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
     </div>
     <!-- Date range -->
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <div style="display:flex;gap:6px">
-        <button class="sh-qbtn" id="crp-7d"  onclick="crSetPreset('7d')">7 Days</button>
-        <button class="sh-qbtn" id="crp-14d" onclick="crSetPreset('14d')">14 Days</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="sh-qbtn" id="crp-today" onclick="crSetPreset('today')" title="Yesterday only — daily view">Daily</button>
+        <button class="sh-qbtn" id="crp-7d"   onclick="crSetPreset('7d')"    title="Last 7 days — weekly view">Weekly</button>
+        <button class="sh-qbtn" id="crp-30d"  onclick="crSetPreset('30d')"   title="Last 30 days — monthly view">Monthly</button>
+        <button class="sh-qbtn" id="crp-14d"  onclick="crSetPreset('14d')">14 Days</button>
         <button class="sh-qbtn active" id="crp-mtd" onclick="crSetPreset('mtd')">MTD</button>
-        <button class="sh-qbtn" id="crp-30d" onclick="crSetPreset('30d')">30 Days</button>
       </div>
       <input type="date" id="cr-from" style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;padding:6px 10px;border-radius:8px;font-size:13px">
       <span style="color:#64748b;font-size:13px">→</span>
@@ -2366,6 +2367,62 @@ tbody tr:hover{border-left-color:rgba(99,102,241,0.5)}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div><div style="font-size:11px;color:#10b981;font-weight:600;margin-bottom:8px">🏆 TOP 5</div><div id="cr-top5"></div></div>
         <div><div style="font-size:11px;color:#ef4444;font-weight:600;margin-bottom:8px">⚠️ BOTTOM 5</div><div id="cr-bottom5"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 🎬 CREATIVE DEEP-DIVE — 3-BUCKET ANALYSIS ──────────── -->
+  <div style="background:linear-gradient(135deg,rgba(168,85,247,0.05),rgba(15,23,42,0.7));border:1px solid rgba(168,85,247,0.2);border-radius:16px;padding:22px 24px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div>
+        <div style="font-size:17px;font-weight:800;color:#f3e8ff">🎬 Creative Deep-Dive · 3-Bucket Analysis</div>
+        <div style="font-size:12px;color:#94a3b8;margin-top:3px">Each video graded by hook · hold · CTR · ROAS · explained with 5–10 actionable pointers — <b style="color:#c4b5fd">what worked, what failed, what to do next</b></div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:11px;color:#64748b">Show top</span>
+        <select id="cr-bucket-size" onchange="renderCreatives(document.getElementById('cr-from').value,document.getElementById('cr-to').value)" style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;padding:4px 10px;border-radius:6px;font-size:11px">
+          <option value="3">3 per bucket</option>
+          <option value="5" selected>5 per bucket</option>
+          <option value="10">10 per bucket</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px">
+      <!-- TOP BUCKET -->
+      <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(16,185,129,0.3);border-radius:14px;padding:18px;border-top:3px solid #10b981">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#34d399;letter-spacing:0.3px">🏆 TOP PERFORMERS</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px" id="cr-bucket-top-stats">—</div>
+          </div>
+          <div style="font-size:9px;color:#64748b;text-align:right;line-height:1.4">ROAS ≥ 1.3× portfolio<br>Impr &gt; 5K</div>
+        </div>
+        <div id="cr-bucket-top" style="display:flex;flex-direction:column;gap:14px"></div>
+      </div>
+
+      <!-- AVERAGE BUCKET -->
+      <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(59,130,246,0.3);border-radius:14px;padding:18px;border-top:3px solid #60a5fa">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#60a5fa;letter-spacing:0.3px">⚖️ AVERAGE PERFORMERS</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px" id="cr-bucket-avg-stats">—</div>
+          </div>
+          <div style="font-size:9px;color:#64748b;text-align:right;line-height:1.4">ROAS 0.7×–1.3×<br>portfolio avg</div>
+        </div>
+        <div id="cr-bucket-avg" style="display:flex;flex-direction:column;gap:14px"></div>
+      </div>
+
+      <!-- BOTTOM BUCKET -->
+      <div style="background:rgba(15,23,42,0.6);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:18px;border-top:3px solid #ef4444">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#f87171;letter-spacing:0.3px">📉 BOTTOM PERFORMERS</div>
+            <div style="font-size:11px;color:#94a3b8;margin-top:2px" id="cr-bucket-bot-stats">—</div>
+          </div>
+          <div style="font-size:9px;color:#64748b;text-align:right;line-height:1.4">ROAS &lt; 0.7× portfolio<br>Spend &gt; ₹1.5K</div>
+        </div>
+        <div id="cr-bucket-bot" style="display:flex;flex-direction:column;gap:14px"></div>
       </div>
     </div>
   </div>
@@ -4348,7 +4405,8 @@ function crSetPreset(p) {
   const d   = new Date(latest + 'T00:00:00');
   let from, to = latest;
 
-  if (p === '7d')  { const s=new Date(d); s.setDate(s.getDate()-6); from=s.toISOString().slice(0,10); }
+  if (p === 'today') { from = latest; }
+  else if (p === '7d')  { const s=new Date(d); s.setDate(s.getDate()-6); from=s.toISOString().slice(0,10); }
   else if (p === '14d') { const s=new Date(d); s.setDate(s.getDate()-13); from=s.toISOString().slice(0,10); }
   else if (p === '30d') { const s=new Date(d); s.setDate(s.getDate()-29); from=s.toISOString().slice(0,10); }
   else if (p === 'mtd') { from = latest.slice(0,7)+'-01'; }
@@ -4360,7 +4418,7 @@ function crSetPreset(p) {
   if (toEl)   toEl.value   = to;
 
   // Highlight active button
-  ['7d','14d','mtd','30d'].forEach(k => {
+  ['today','7d','14d','mtd','30d'].forEach(k => {
     const btn = document.getElementById('crp-'+k);
     if (btn) btn.classList.toggle('active', k === p);
   });
@@ -4626,6 +4684,9 @@ function renderCreatives(from, to) {
   _crRenderSpendDonut(ads);
   _crRenderRanks(ads);
 
+  // ── Creative Deep-Dive Bucket Analysis ────────────────────────
+  _crRenderBucketAnalysis(ads, { roas:blendedRoas, ctr:blendedCtr, thumbstop:avgTs, hold_rate:avgHr });
+
   // ── Full Ad Table ─────────────────────────────────────────────
   crRenderTable(ads);
 }
@@ -4823,6 +4884,280 @@ function _crRenderThemeTable(ads) {
       <td style="text-align:right;padding:7px 8px;font-weight:600;color:${tsColor}">${t.thumbstop>0?t.thumbstop.toFixed(1)+'%':'—'}</td>
     </tr>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── 🎬 CREATIVE BUCKET ANALYSIS (Top / Average / Bottom) ─────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// For each creative, infers concept from ad_name + generates 5-10 actionable
+// pointers based on metric strengths/weaknesses
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Infer creative concept/script style from ad_name patterns
+function _crInferConcept(name) {
+  if (!name) return { format:'Unknown', style:'Unknown', tone:'Unknown', hooks:[] };
+  const n = name.toUpperCase();
+  const concept = { format:[], style:[], tone:[], theme:[], hooks:[], audio:[], language:'English' };
+
+  // Format detection
+  if (/REEL|REELS/.test(n))                  concept.format.push('Short-form Reel');
+  else if (/STATIC|IMAGE/.test(n))           concept.format.push('Static Image');
+  else if (/CAROUSEL/.test(n))               concept.format.push('Carousel');
+  else if (/VIDEO/.test(n))                  concept.format.push('Long-form Video');
+  else                                       concept.format.push('Video');
+
+  // Production style
+  if (/UGC/.test(n))                         concept.style.push('UGC (User-Generated style)');
+  if (/IN[\s_-]?HOUSE|INHOUSE/.test(n))      concept.style.push('In-house produced');
+  if (/COLLAB|INFLUENCER/.test(n))           concept.style.push('Influencer collaboration');
+  if (/DEMO/.test(n))                        concept.style.push('Product demonstration');
+  if (/TESTIMONIAL|REVIEW/.test(n))          concept.style.push('Customer testimonial');
+  if (concept.style.length === 0)            concept.style.push('Brand-produced');
+
+  // Audio
+  if (/WITHOUT[\s_]VOICE|NO[\s_]VOICE|SILENT/.test(n))  concept.audio.push('Silent / text-only (no voice-over)');
+  else if (/WITH[\s_]VOICE|VOICEOVER|VO/.test(n))       concept.audio.push('Voice-over narration');
+  else                                                   concept.audio.push('Likely has audio (default)');
+
+  // Theme/Product detection
+  if (/GLASS/.test(n))    concept.theme.push('Glass cleaning');
+  if (/SHOWER/.test(n))   concept.theme.push('Shower/bathroom');
+  if (/HARD[\s_]?WATER/.test(n)) concept.theme.push('Hard water stains');
+  if (/SOFA/.test(n))     concept.theme.push('Sofa care');
+  if (/LEATHER/.test(n))  concept.theme.push('Leather care');
+  if (/KITCHEN/.test(n))  concept.theme.push('Kitchen');
+  if (/TILE/.test(n))     concept.theme.push('Tile cleaning');
+  if (/G&T|GTH|GTHWS/.test(n)) concept.theme.push('Glass & Tile (G&THWS)');
+
+  // Hook style inferred from ad name keywords
+  if (/WANT[\s_]TO[\s_]SEE|HAVE[\s_]YOU/.test(n))                concept.hooks.push('Curiosity question hook');
+  if (/MAGICALLY|TRANSFORM|AMAZING|UNBELIEVABLE/.test(n))       concept.hooks.push('Transformation reveal hook');
+  if (/NO[\s_]MORE|STOP|TIRED[\s_]OF|END/.test(n))              concept.hooks.push('Pain-point / agitation hook');
+  if (/HACK|TRICK|SECRET/.test(n))                              concept.hooks.push('Curiosity / hack hook');
+  if (/SAME.*BUT|VS|COMPARE/.test(n))                           concept.hooks.push('Comparison / before-after');
+  if (/PANI|ROZ|GHAR|SAAF/.test(n)) { concept.hooks.push('Hindi/Hinglish relatable scene'); concept.language = 'Hindi/Hinglish'; }
+  if (/DROPLET|STAIN|DIRT|SPOT/.test(n))                        concept.hooks.push('Problem-focused visual hook');
+  if (concept.hooks.length === 0)                               concept.hooks.push('Standard intro (no obvious hook pattern)');
+
+  return concept;
+}
+
+// Score concept richness — how many specific concept elements we identified
+function _crConceptSummary(concept) {
+  const parts = [];
+  parts.push(concept.format[0]);
+  if (concept.style.length) parts.push(concept.style.join(' · '));
+  if (concept.theme.length) parts.push('Theme: ' + concept.theme.join(', '));
+  if (concept.audio.length) parts.push(concept.audio[0]);
+  if (concept.hooks.length) parts.push('Hook: ' + concept.hooks.join(', '));
+  parts.push('Language: ' + concept.language);
+  return parts;
+}
+
+// Generate 5-10 detailed pointers per creative based on bucket + metrics + concept
+function _crGeneratePointers(ad, bucket, port, concept) {
+  const pts = [];
+  const ts   = ad.thumbstop;
+  const hr   = ad.hold_rate;
+  const ctr  = ad.ctr;
+  const roas = ad.roas;
+  const freq = ad.frequency;
+  const cpa  = ad.cpa;
+
+  const isTop = bucket === 'top';
+  const isBot = bucket === 'bottom';
+  const isAvg = bucket === 'average';
+
+  // 1. HOOK ANALYSIS (thumbstop)
+  if (ts >= 25) {
+    pts.push(`<b>🎯 Strong hook (${ts.toFixed(1)}% thumbstop):</b> First 3 seconds nail it. ${concept.hooks[0]} pattern is working — viewers stop scrolling. <u>Replicate:</u> open with same archetype (${concept.hooks[0].toLowerCase()}) in next ad.`);
+  } else if (ts >= 15) {
+    pts.push(`<b>🎯 Hook works but not great (${ts.toFixed(1)}%):</b> Above 25% is gold-standard — yours is mid-tier. ${isBot?'This is killing performance.':'Easy upgrade target.'} <u>Action:</u> first frame should pattern-interrupt (close-up of stain/product/face), not show brand logo.`);
+  } else if (ts > 0) {
+    pts.push(`<b>🛑 Hook is failing (${ts.toFixed(1)}% thumbstop · target 25%+):</b> Most viewers swipe past in &lt;3 seconds. ${concept.hooks[0]==='Standard intro (no obvious hook pattern)'?'No clear hook pattern detected from name — likely opens with brand intro or slow setup.':concept.hooks[0]+' isn\'t landing'}. <u>Fix:</u> recut first 1.5s with a bold visual question, sudden movement, or shocking before-shot.`);
+  } else {
+    pts.push(`<b>⚠️ No video-view data:</b> Either static creative or no 3-second view tracking — can't diagnose hook.`);
+  }
+
+  // 2. HOLD / RETENTION ANALYSIS
+  if (hr >= 30) {
+    pts.push(`<b>✅ Excellent retention (${hr.toFixed(1)}% hold rate):</b> Viewers who started watching stayed to thruplay. ${concept.style[0]?.includes('UGC')?'UGC authenticity is keeping them.':concept.style[0]?.includes('Demo')?'Product reveal arc holds attention.':'Storyline is paced right.'} <u>Replicate:</u> keep same edit pacing (no dead air, payoff before 15s mark).`);
+  } else if (hr >= 18) {
+    pts.push(`<b>⚖️ OK retention (${hr.toFixed(1)}% hold):</b> Mid-pack. Likely loses ~70% of viewers in middle. <u>Fix:</u> tighten mid-section, add visual progression every 3-4s, move CTA earlier to ~15s mark.`);
+  } else if (hr > 0) {
+    pts.push(`<b>📉 Severe drop-off (${hr.toFixed(1)}% hold · target 30%+):</b> Viewers hook in but bail before thruplay. <u>Diagnose:</u> mid-section likely has dead air, slow product explanation, or unclear story arc. <u>Fix:</u> cut 20% of mid-section, layer text overlays for skim-watchers, end with strong CTA + benefit recap.`);
+  }
+
+  // 3. CTR / CTA ANALYSIS
+  if (ctr >= 1.5) {
+    pts.push(`<b>🎯 Strong CTR (${ctr.toFixed(2)}%):</b> CTA & offer convinces. People who watch want to click. <u>Replicate:</u> keep this CTA style (likely direct: "Get yours", "Try now") and offer framing.`);
+  } else if (ctr >= 0.8) {
+    pts.push(`<b>⚖️ Average CTR (${ctr.toFixed(2)}%):</b> Click intent is OK but not viral. <u>Test:</u> A/B the CTA endcard — try urgency ("limited stock", "today only") or social proof ("10K+ households").`);
+  } else if (ctr > 0) {
+    pts.push(`<b>🛑 Weak CTR (${ctr.toFixed(2)}% · target 1%+):</b> Even hooked viewers don't click. Either: (a) offer isn't clear, (b) CTA visual is weak, (c) audience-message mismatch. <u>Fix:</u> show product + price on screen for last 3s, replace generic "Learn More" with specific outcome ("Get sparkle-clean tiles in 60s").`);
+  }
+
+  // 4. ROAS / PURCHASE INTENT
+  if (roas >= 2.5) {
+    pts.push(`<b>💰 Profitable winner (${roas.toFixed(2)}x ROAS):</b> Strong product-message fit. Click → purchase conversion is high. <u>Action:</u> scale this creative aggressively to new audiences (lookalikes, broad). The creative-product-promise alignment is locked in.`);
+  } else if (roas >= 1.5) {
+    pts.push(`<b>📊 Solid ROAS (${roas.toFixed(2)}x):</b> Profitable but room to grow. ${ad.purchases<10?'Low purchase volume — may need bigger sample size before scaling.':'Volume is there, just push more budget gradually.'}`);
+  } else if (roas >= 0.7) {
+    pts.push(`<b>⚠️ Marginal ROAS (${roas.toFixed(2)}x):</b> Treading water. Either landing page is leaking conversions, or creative promise doesn't match product reality. <u>Test:</u> show product-in-action shot at 80% of ad runtime (anchors purchase intent).`);
+  } else if (ad.spend > 1500) {
+    pts.push(`<b>🛑 Loss-making (${roas.toFixed(2)}x):</b> ₹${Math.round(ad.spend).toLocaleString('en-IN')} spent for ₹${Math.round(ad.revenue).toLocaleString('en-IN')} revenue. <u>Pause and diagnose:</u> is it (a) wrong audience, (b) wrong product positioning, or (c) landing page broken? Check Shopify conversion rate from this ad's UTM.`);
+  }
+
+  // 5. FREQUENCY / FATIGUE
+  if (freq > 4) {
+    pts.push(`<b>🔄 Heavy fatigue (freq ${freq.toFixed(2)}):</b> Same people seeing this 4+ times. Performance has likely declined recently. <u>Fix WITHOUT new creative:</u> duplicate this ad into a fresh lookalike or untouched interest audience — frequency resets to ~1.`);
+  } else if (freq > 2.5) {
+    pts.push(`<b>⏱️ Approaching fatigue (freq ${freq.toFixed(2)}):</b> Still safe but plan a refresh in 5-7 days. <u>Pre-empt:</u> queue duplicate adsets with new audiences now.`);
+  } else if (isTop) {
+    pts.push(`<b>🌱 Fresh audience reach (freq ${freq.toFixed(2)}):</b> Lots of headroom — scale aggressively before fatigue hits.`);
+  }
+
+  // 6. CONCEPT REPLICATION (top bucket) or FIX RECIPE (bottom bucket)
+  if (isTop) {
+    const recipe = [];
+    if (concept.style.includes('UGC (User-Generated style)'))  recipe.push('keep UGC authenticity (handheld phone shot, real environment)');
+    if (concept.style.includes('Product demonstration'))       recipe.push('lead with product demo within first 3s');
+    if (concept.audio[0]?.includes('Silent'))                  recipe.push('keep text-overlay-only (works for sound-off scrollers)');
+    if (concept.audio[0]?.includes('Voice'))                   recipe.push('preserve voice-over pacing and tone');
+    if (concept.hooks.some(h=>h.includes('Hindi')))            recipe.push('keep Hinglish/Hindi for cultural resonance');
+    if (concept.hooks.some(h=>h.includes('Transformation')))   recipe.push('show before→after transformation arc clearly');
+    if (concept.hooks.some(h=>h.includes('Problem')))          recipe.push('agitate the pain-point in first 5s');
+    if (concept.theme.length)                                   recipe.push(`stay in the ${concept.theme[0]} theme — your audience responds to it`);
+    if (recipe.length > 0) {
+      pts.push(`<b>🧬 To replicate this winner:</b> ${recipe.slice(0,4).map(r=>'• '+r).join(' &nbsp; ')}`);
+    }
+  } else if (isBot) {
+    const fixes = [];
+    if (ts < 15)  fixes.push('rewrite opening 3 seconds (visual pattern-interrupt, no logo, no slow intro)');
+    if (hr < 18 && hr > 0)  fixes.push('cut mid-section by 25%, add text overlay for sound-off viewers');
+    if (ctr < 0.8) fixes.push('rework CTA: show product+price on screen, urgency framing');
+    if (roas < 0.7) fixes.push('audit landing page — check if Shopify product page matches ad promise');
+    if (cpa > port.cpa*1.5 && port.cpa>0) fixes.push(`CPA ₹${Math.round(cpa).toLocaleString('en-IN')} is ${(cpa/port.cpa).toFixed(1)}× portfolio avg — narrow targeting or lower bid`);
+    if (concept.style.includes('Brand-produced') && !concept.style.includes('UGC (User-Generated style)')) {
+      fixes.push('try UGC variant — same script but shot by real customer/influencer (typically lifts engagement 2×)');
+    }
+    if (fixes.length > 0) {
+      pts.push(`<b>🛠️ Fix recipe (no new content needed if possible):</b> ${fixes.slice(0,5).map(f=>'• '+f).join(' &nbsp; ')}`);
+    }
+  } else if (isAvg) {
+    pts.push(`<b>🧪 Test variation to push into Top bucket:</b> Pick the weakest metric above. If thumbstop is the gap → recut first 3s with a stronger hook. If hold rate is the gap → tighten mid-section. Iterate on ONE variable at a time so you know what moved the needle.`);
+  }
+
+  // 7. AUDIENCE / REACH SIGNAL
+  if (ad.merged_count > 1) {
+    pts.push(`<b>🌐 Cross-adset performer (deployed in ${ad.adset_count} adsets):</b> This creative travels well across audiences. ${isTop?'Strong signal to scale into broad targeting.':'Diversified placement is masking which audience actually works — try isolating.'}`);
+  }
+
+  // 8. SPEND/SAMPLE-SIZE SANITY
+  if (ad.purchases < 10 && ad.spend < 3000) {
+    pts.push(`<b>⏳ Small sample warning:</b> Only ${Math.round(ad.purchases)} purchases on ₹${Math.round(ad.spend).toLocaleString('en-IN')} — metrics are noisy. ${isTop?'Confirm with more spend before declaring this a winner.':'Don\'t kill yet — give 5K more impressions to verify.'}`);
+  }
+
+  // 9. CONCEPT-SPECIFIC INSIGHT
+  if (concept.style.includes('UGC (User-Generated style)') && isTop) {
+    pts.push(`<b>📱 UGC angle is winning:</b> Your audience trusts real-people content over polished brand ads. Brief: shoot more vertical phone-quality UGC with relatable everyday settings (kitchen, bathroom).`);
+  } else if (concept.style.includes('Brand-produced') && isBot && ts < 20) {
+    pts.push(`<b>🏢 Brand-produced ad underperforming:</b> Polished brand-aesthetic ads need exceptional hooks to compete with UGC on Reels feed. <u>Action:</u> A/B the same script as a UGC-style shoot.`);
+  }
+
+  // 10. FINAL ACTION
+  if (isTop) {
+    pts.push(`<b>🚀 Next move:</b> (1) Increase daily budget +40% staggered over 3 days. (2) Duplicate into 2 new adsets — one broad audience, one new lookalike. (3) Brief 2 variations using the same hook + theme for portfolio resilience.`);
+  } else if (isBot) {
+    pts.push(`<b>🛑 Next move:</b> Pause within 48h to stop bleed. Archive the creative file — don't delete (may work with different audience/landing page later).`);
+  } else {
+    pts.push(`<b>📊 Next move:</b> Hold budget steady, test 1 variation per week. Track which lever (hook/hold/CTA) moves it up.`);
+  }
+
+  return pts;
+}
+
+// Render a single creative card with concept + pointers
+function _crRenderBucketCard(ad, bucket, port) {
+  const concept = _crInferConcept(ad.ad_name);
+  const pointers = _crGeneratePointers(ad, bucket, port, concept);
+  const conceptLines = _crConceptSummary(concept);
+
+  const accent = bucket==='top'?'#10b981':bucket==='bottom'?'#ef4444':'#60a5fa';
+  const mergeBadge = ad.merged_count > 1 ? `<span style="font-size:9px;background:rgba(99,102,241,0.18);color:#a5b4fc;border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:600">×${ad.merged_count}</span>` : '';
+
+  return `<div style="background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px 16px;border-left:3px solid ${accent}">
+    <div style="display:flex;align-items:start;justify-content:space-between;gap:8px;margin-bottom:8px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12.5px;font-weight:700;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${ad.ad_name.replace(/"/g,'&quot;')}">${ad.ad_name}${mergeBadge}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;padding:8px;background:rgba(15,23,42,0.5);border-radius:7px;font-size:10px">
+      <div style="text-align:center"><div style="color:#64748b;text-transform:uppercase;font-size:8.5px">Hook</div><div style="color:${ad.thumbstop>=25?'#10b981':ad.thumbstop>=15?'#f59e0b':'#ef4444'};font-weight:700;font-size:11px">${ad.thumbstop>0?ad.thumbstop.toFixed(1)+'%':'—'}</div></div>
+      <div style="text-align:center"><div style="color:#64748b;text-transform:uppercase;font-size:8.5px">Hold</div><div style="color:${ad.hold_rate>=30?'#10b981':ad.hold_rate>=20?'#f59e0b':'#ef4444'};font-weight:700;font-size:11px">${ad.hold_rate>0?ad.hold_rate.toFixed(1)+'%':'—'}</div></div>
+      <div style="text-align:center"><div style="color:#64748b;text-transform:uppercase;font-size:8.5px">CTR</div><div style="color:${ad.ctr>=1?'#10b981':ad.ctr>=0.5?'#f59e0b':'#ef4444'};font-weight:700;font-size:11px">${ad.ctr.toFixed(2)}%</div></div>
+      <div style="text-align:center"><div style="color:#64748b;text-transform:uppercase;font-size:8.5px">ROAS</div><div style="color:${ad.roas>=2?'#10b981':ad.roas>=1?'#f59e0b':'#ef4444'};font-weight:700;font-size:11px">${ad.roas.toFixed(2)}x</div></div>
+      <div style="text-align:center"><div style="color:#64748b;text-transform:uppercase;font-size:8.5px">Spend</div><div style="color:#cbd5e1;font-weight:700;font-size:11px">₹${(ad.spend/1000).toFixed(0)}K</div></div>
+    </div>
+    <details style="margin-bottom:8px">
+      <summary style="cursor:pointer;font-size:10.5px;color:${accent};font-weight:600;letter-spacing:0.3px;text-transform:uppercase">📋 Detected Concept & Script Style</summary>
+      <div style="margin-top:6px;padding:8px 10px;background:rgba(15,23,42,0.6);border-radius:6px;font-size:10.5px;color:#94a3b8;line-height:1.6">
+        ${conceptLines.map(l=>'• '+l).join('<br>')}
+      </div>
+    </details>
+    <div style="font-size:11px;color:#cbd5e1;line-height:1.65">
+      ${pointers.map((p,i)=>`<div style="margin-bottom:6px;display:flex;gap:6px"><span style="color:${accent};font-weight:700;flex-shrink:0;min-width:18px">${i+1}.</span><span>${p}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// Main bucket analysis renderer — classifies all ads, renders top/avg/bot
+function _crRenderBucketAnalysis(ads, port) {
+  const sizeSel = document.getElementById('cr-bucket-size');
+  const N = sizeSel ? parseInt(sizeSel.value) : 5;
+
+  // Bucket classification (relative to portfolio ROAS)
+  const portRoas = port.roas || 0;
+  const topThreshold = Math.max(portRoas * 1.3, 1.5);
+  const botThreshold = Math.max(portRoas * 0.7, 0.7);
+
+  // TOP: high ROAS + meaningful impressions (filters out flukes)
+  const topAds = ads.filter(a => a.roas >= topThreshold && a.impressions > 5000 && a.spend > 500)
+                    .sort((a,b) => b.roas - a.roas).slice(0, N);
+  // BOTTOM: low ROAS + material spend (filters out untested)
+  const botAds = ads.filter(a => a.roas < botThreshold && a.spend > 1500)
+                    .sort((a,b) => a.roas - b.roas).slice(0, N);
+  // AVERAGE: in between, sorted by spend (most material first)
+  const avgAds = ads.filter(a => a.roas >= botThreshold && a.roas < topThreshold && a.spend > 1000)
+                    .sort((a,b) => b.spend - a.spend).slice(0, N);
+
+  // Stats subtitles
+  const sumStats = (arr) => {
+    const sp = arr.reduce((s,a)=>s+a.spend,0);
+    const rv = arr.reduce((s,a)=>s+a.revenue,0);
+    const ro = sp>0?rv/sp:0;
+    return `${arr.length} creatives · ₹${Math.round(sp).toLocaleString('en-IN')} spend · ${ro.toFixed(2)}x avg ROAS`;
+  };
+  const t = document.getElementById('cr-bucket-top-stats');
+  const a = document.getElementById('cr-bucket-avg-stats');
+  const b = document.getElementById('cr-bucket-bot-stats');
+  if (t) t.textContent = sumStats(topAds);
+  if (a) a.textContent = sumStats(avgAds);
+  if (b) b.textContent = sumStats(botAds);
+
+  // Render cards
+  const topEl = document.getElementById('cr-bucket-top');
+  const avgEl = document.getElementById('cr-bucket-avg');
+  const botEl = document.getElementById('cr-bucket-bot');
+  if (topEl) topEl.innerHTML = topAds.length === 0
+    ? '<div style="color:#64748b;text-align:center;padding:20px;font-size:11px">No top performers yet — need ads with ROAS &gt; '+topThreshold.toFixed(2)+'x and impressions &gt; 5K</div>'
+    : topAds.map(ad => _crRenderBucketCard(ad, 'top', port)).join('');
+  if (avgEl) avgEl.innerHTML = avgAds.length === 0
+    ? '<div style="color:#64748b;text-align:center;padding:20px;font-size:11px">No average-tier ads in range</div>'
+    : avgAds.map(ad => _crRenderBucketCard(ad, 'average', port)).join('');
+  if (botEl) botEl.innerHTML = botAds.length === 0
+    ? '<div style="color:#10b981;text-align:center;padding:20px;font-size:11px">✅ No bleeders — your floor is clean</div>'
+    : botAds.map(ad => _crRenderBucketCard(ad, 'bottom', port)).join('');
 }
 
 // ── FILTER BY ACTION CARD ───────────────────────────────────────
