@@ -3193,13 +3193,15 @@ window._AMZ_DAILY = window._AMZ_DAILY && window._AMZ_DAILY.length ? window._AMZ_
   const nowIST   = new Date(Date.now() + 5.5*3600000);
   const todayStr = nowIST.toISOString().slice(0,10);
   const lastStr  = window._AMZ_DAILY[window._AMZ_DAILY.length-1].date;
-  let d = new Date(lastStr + 'T00:00:00');
-  const end = new Date(todayStr + 'T00:00:00');
+  // Parse as UTC ('Z') so toISOString() round-trips dates exactly regardless
+  // of the viewer's local timezone.
+  let d = new Date(lastStr + 'T00:00:00Z');
+  const end = new Date(todayStr + 'T00:00:00Z');
   while (d < end) {
-    d.setDate(d.getDate() + 1);
+    d.setUTCDate(d.getUTCDate() + 1);
     const ds  = d.toISOString().slice(0,10);
     const rnd = seededRand(ds);
-    const dow = d.getDay();                                    // 0=Sun … 6=Sat
+    const dow = d.getUTCDay();                                 // 0=Sun … 6=Sat
     const wkBoost  = (dow===0 || dow===6) ? 1.5 + rnd()*0.15 : (dow===5 ? 1.12 + rnd()*0.08 : 0.92 + rnd()*0.18);
     // Today: scale by hours elapsed so the partial day looks live, not inflated
     const dayFrac  = ds === todayStr ? Math.max(0.04, nowIST.getUTCHours()/24) : 1;
