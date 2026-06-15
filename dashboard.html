@@ -48,6 +48,7 @@ window._SH_TODAY     = { gmv:0, orders:0, aov:0, netRev:0, units:0, discount:0,
 window._OV_META_DAILY = {}
 window._META_DEMOGRAPHICS = []   // populated by _loadMetaData(); used by initDemoCharts()
 window._META_ADS_DAILY    = []   // populated by _loadMetaData(); ad-level rows from meta_ads
+window._META_BREAKDOWNS   = []   // per-day device/platform/age_gender rows from meta_breakdowns
 
 // Single source of truth for "today" in IST — use everywhere instead of new Date().toISOString()
 // (a bare UTC date drifts to the previous day before 05:30 IST).
@@ -253,6 +254,16 @@ async function _loadMetaData() {
   window._META_DEMOGRAPHICS = (demoRes.data || []).filter(r =>
     r.breakdown_value && !r.breakdown_value.includes('_unknown') && !r.breakdown_value.startsWith('Unknown_')
   )
+
+  // Per-day breakdowns (device / platform / age_gender). Graceful if the table
+  // doesn't exist yet — Device/Platform/Age×Gender then keep their fallback charts.
+  try {
+    const bk = await _sbPaginate(() => _sb.from('meta_breakdowns').select('*').order('date', { ascending: true }))
+    window._META_BREAKDOWNS = bk || []
+  } catch (e) {
+    window._META_BREAKDOWNS = window._META_BREAKDOWNS || []
+    console.warn('meta_breakdowns not available yet:', e.message)
+  }
 
   // Group campaigns by date
   const campaignsByDate = {}
@@ -3032,6 +3043,46 @@ function initStaticCharts() {
   charts.platform = new Chart(document.getElementById('chartPlatform'),{type:'doughnut',data:{labels:platformLabels.length?platformLabels:['No data'],datasets:[{data:platformSpends.length?platformSpends:[1],backgroundColor:PALETTE.slice(0,platformLabels.length||1),borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{position:'right',labels:{usePointStyle:true,padding:10,font:{size:10}}},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}}}});
 }
 
+// ── DATE-REACTIVE DEVICE / PLATFORM / AGE×GENDER (from meta_breakdowns) ────────
+// Replaces the hardcoded device/platform doughnuts and the rolling-30d demo charts
+// with per-day data filtered to the selected range. If meta_breakdowns has no rows
+// for the range (e.g. table not deployed/backfilled yet), it leaves the existing
+// fallback charts untouched.
+function renderMetaBreakdowns(from, to){
+  if(typeof Chart==='undefined') return;
+  const all = window._META_BREAKDOWNS || [];
+  if(!all.length) return;
+  const inRange = all.filter(r => r.date>=from && r.date<=to);
+  if(!inRange.length) return;
+  const PALETTE=['#3b82f6','#047857','#b45309','#dc2626','#6366f1','#8b5cf6','#06b6d4','#f97316'];
+  function agg(type){
+    const m={};
+    inRange.filter(r=>r.breakdown_type===type).forEach(r=>{ const v=r.breakdown_value||'unknown'; m[v]=(m[v]||0)+(parseFloat(r.spend)||0); });
+    const e=Object.entries(m).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+    return {labels:e.map(x=>x[0]), data:e.map(x=>x[1])};
+  }
+  function doughnut(id,key){
+    const a=agg(key); const el=document.getElementById(id);
+    if(!el || !a.labels.length) return;
+    if(charts[id==='chartDevice'?'device':'platform']) charts[id==='chartDevice'?'device':'platform'].destroy();
+    charts[id==='chartDevice'?'device':'platform']=new Chart(el,{type:'doughnut',data:{labels:a.labels,datasets:[{data:a.data,backgroundColor:PALETTE.slice(0,a.labels.length),borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{position:'right',labels:{usePointStyle:true,padding:10,font:{size:10}}},tooltip:{padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}}}});
+  }
+  doughnut('chartDevice','device');
+  doughnut('chartPlatform','platform');
+  // Age × Gender → feed initDemoCharts with aggregated, date-filtered rows
+  const agm={};
+  inRange.filter(r=>r.breakdown_type==='age_gender').forEach(r=>{
+    const k=r.breakdown_value; if(!agm[k]) agm[k]={breakdown_value:k,spend:0,revenue:0};
+    agm[k].spend+=parseFloat(r.spend)||0; agm[k].revenue+=parseFloat(r.revenue)||0;
+  });
+  const demoRows=Object.values(agm).map(o=>({breakdown_value:o.breakdown_value,breakdown_type:'age_gender',spend:o.spend,revenue:o.revenue,roas:o.spend>0?o.revenue/o.spend:0})).sort((a,b)=>b.spend-a.spend);
+  if(demoRows.length && typeof initDemoCharts==='function'){
+    initDemoCharts(demoRows);
+    const demoLbl=document.getElementById('demo-date-label');
+    if(demoLbl) demoLbl.textContent = (from===to?from:from+' → '+to);
+  }
+}
+
 // ── HOURLY SPEND / REVENUE / ROAS CHARTS — live data ──────────────────────────
 // Called from applyRange(from, to) so they update on every date change.
 // Revenue = Shopify hourly GMV from _SH_HOURLY_ALL.
@@ -3103,9 +3154,10 @@ function renderHourlyCharts(toDate) {
 }
 
 // ── AUDIENCE INTELLIGENCE CHARTS (real data from meta_demographics) ──────────
-function initDemoCharts() {
-  // Use live Supabase data if available; fall back to graceful empty state
-  const raw = (window._META_DEMOGRAPHICS || []).filter(r =>
+function initDemoCharts(rows) {
+  // Use date-filtered rows when provided (from meta_breakdowns), else the
+  // rolling-30d meta_demographics aggregate. Fall back to graceful empty state.
+  const raw = (rows || window._META_DEMOGRAPHICS || []).filter(r =>
     r.breakdown_value && !r.breakdown_value.includes('_unknown') && !r.breakdown_value.startsWith('Unknown_')
   );
 
@@ -4274,6 +4326,9 @@ function applyRange(){
   updateDeviceNote(from, to);
   // Audience charts — always re-render so they show on any period change
   if(typeof initDemoCharts==='function') initDemoCharts();
+  // Device / Platform / Age×Gender from per-day meta_breakdowns (overrides the
+  // fallback charts above when data exists for the range)
+  if(typeof renderMetaBreakdowns==='function') renderMetaBreakdowns(from, to);
   // Hourly charts — re-render for the "to" date of the selected range
   if(typeof renderHourlyCharts==='function') renderHourlyCharts(to);
 
