@@ -2783,12 +2783,37 @@ function switchView(view, date) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// Destroy whatever Chart.js instance currently owns a canvas, regardless of which
+// variable holds it. renderDayDetail and renderMetaCampaigns share the same
+// campaign canvases but tracked them in different vars, causing "Canvas already
+// in use" crashes when both ran (e.g. on date change). This is the safe guard.
+function _killChart(canvasId){
+  try {
+    const el = document.getElementById(canvasId);
+    if(el && window.Chart && Chart.getChart){
+      const ex = Chart.getChart(el);
+      if(ex) ex.destroy();
+    }
+  } catch(e){}
+}
+
 function changeDate(d) {
   currentDate = d;
   // Keep datePicker dropdown in sync
   const _dp = document.getElementById('datePicker');
   if(_dp && _dp.value !== d) _dp.value = d;
   renderDayDetail(d);
+  // Picking a single day must ALSO refresh every period-driven section (trend
+  // charts, campaigns, creatives, device/platform/age-gender) for that day —
+  // previously only the day-detail KPI Scorecard + Funnel updated, so the rest
+  // looked frozen on date change. Sync the range to [d,d] and re-run applyRange.
+  const rf = document.getElementById('rangeFrom');
+  const rt = document.getElementById('rangeTo');
+  if(rf && rt && typeof applyRange === 'function' && !window._changeDateSyncing){
+    window._changeDateSyncing = true;   // guard against any re-entrancy
+    rf.value = d; rt.value = d;
+    try { applyRange(); } finally { window._changeDateSyncing = false; }
+  }
   window.scrollTo({top:54,behavior:'smooth'});
 }
 
@@ -2864,11 +2889,11 @@ function renderDayDetail(date) {
   const cColors= cRoas.map(r=>r>=2?'#047857':r>=1?'#b45309':'#dc2626');
   const cBg    = cRoas.map(r=>r>=2?'rgba(16,185,129,0.7)':r>=1?'rgba(245,158,11,0.7)':'rgba(239,68,68,0.7)');
 
-  if(charts.campRoas) charts.campRoas.destroy();
+  _killChart('chartCampRoas');
   const cr = document.getElementById('chartCampRoas').getContext('2d');
   window._chartCampRoas = charts.campRoas = new Chart(cr,{type:'bar',data:{labels:cNames,datasets:[{label:'ROAS',data:cRoas,backgroundColor:cBg,borderColor:cColors,borderWidth:1.5,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' '+parseFloat(c.raw).toFixed(2)+'x ROAS'}}},scales:{x:{grid:{color:'rgba(26,26,46,0.04)'},ticks:{callback:v=>v+'x'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#4a4a6a'}}}}});
 
-  if(charts.campRevSpend) charts.campRevSpend.destroy();
+  _killChart('chartCampRevSpend');
   const crv = document.getElementById('chartCampRevSpend').getContext('2d');
   window._chartCampRevSpend = charts.campRevSpend = new Chart(crv,{type:'bar',data:{labels:cNames,datasets:[{label:'Revenue',data:cRevs,backgroundColor:'rgba(16,185,129,0.7)',borderColor:'#047857',borderWidth:1,borderRadius:4},{label:'Spend',data:cSpends,backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3b82f6',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{usePointStyle:true,padding:12,color:'#4a4a6a',font:{size:10}}},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{grid:{color:'rgba(26,26,46,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(0)+'L':v>=1000?(v/1000).toFixed(0)+'K':v),color:'#4a4a6a'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#4a4a6a'}}}}});
 
@@ -4040,13 +4065,13 @@ function renderMetaCampaigns(from, to) {
   const cBorder  = cRoasD.map(r=>r>=2?'#047857':r>=1?'#b45309':'#dc2626');
 
   // Always destroy & recreate so period changes always reflect
-  if(window._chartCampRoas){window._chartCampRoas.destroy();window._chartCampRoas=null;}
+  _killChart('chartCampRoas'); window._chartCampRoas=null;
   const crEl=document.getElementById('chartCampRoas');
   if(crEl){
     window._chartCampRoas=new Chart(crEl.getContext('2d'),{type:'bar',data:{labels:cLabels,datasets:[{label:'ROAS',data:cRoasD,backgroundColor:cBg,borderColor:cBorder,borderWidth:1.5,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' '+parseFloat(c.raw).toFixed(2)+'x ROAS'}}},scales:{x:{grid:{color:'rgba(26,26,46,0.04)'},ticks:{callback:v=>v+'x',color:'#4a4a6a'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#4a4a6a'}}}}});
   }
 
-  if(window._chartCampRevSpend){window._chartCampRevSpend.destroy();window._chartCampRevSpend=null;}
+  _killChart('chartCampRevSpend'); window._chartCampRevSpend=null;
   const crvEl=document.getElementById('chartCampRevSpend');
   if(crvEl){
     window._chartCampRevSpend=new Chart(crvEl.getContext('2d'),{type:'bar',data:{labels:cLabels,datasets:[{label:'Revenue',data:cRevD,backgroundColor:'rgba(16,185,129,0.7)',borderColor:'#047857',borderWidth:1,borderRadius:4},{label:'Spend',data:cSpendD,backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3b82f6',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{usePointStyle:true,padding:12,color:'#4a4a6a',font:{size:10}}},tooltip:{backgroundColor:'#1e2d4a',padding:10,cornerRadius:8,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{grid:{color:'rgba(26,26,46,0.04)'},ticks:{callback:v=>'₹'+(v>=100000?(v/100000).toFixed(0)+'L':v>=1000?(v/1000).toFixed(0)+'K':v),color:'#4a4a6a'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#4a4a6a'}}}}});
