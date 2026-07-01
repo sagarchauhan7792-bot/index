@@ -63,9 +63,9 @@ window._SH_DATE_MIN  = _istToday()
 function _showLoadingBanner() {
   const el = document.getElementById('sh-true-roas-banner')
   if (el) el.innerHTML = `
-    <div style="background:rgba(30,41,59,0.4);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:12px">
+    <div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:12px">
       <div style="width:20px;height:20px;border:2px solid #3b82f6;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div>
-      <span style="font-size:13px;color:#5c5c78">Loading live data from Supabase...</span>
+      <span style="font-size:13px;color:#3a3a56">Loading live data from Supabase...</span>
     </div>`
 }
 
@@ -547,7 +547,7 @@ function _showLiveOrderToast(data) {
   const toast = document.createElement('div')
   toast.style.cssText = `
     position:fixed;bottom:24px;right:24px;z-index:9999;
-    background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(30,41,59,0.95));
+    background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(26,26,46,0.04));
     border:1px solid rgba(16,185,129,0.4);border-radius:12px;
     padding:12px 18px;min-width:220px;
     box-shadow:0 8px 32px rgba(0,0,0,0.4);
@@ -556,8 +556,8 @@ function _showLiveOrderToast(data) {
   `
   toast.innerHTML = `
     <div style="font-size:11px;color:#047857;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">🛒 New Order</div>
-    <div style="font-size:15px;font-weight:700;color:#f8fafc">Today: ${orders} orders · ₹${parseInt(gmv).toLocaleString('en-IN')}</div>
-    <div style="font-size:11px;color:#5c5c78;margin-top:2px">Live update · Supabase Realtime</div>
+    <div style="font-size:15px;font-weight:700;color:#1a1a2e">Today: ${orders} orders · ₹${parseInt(gmv).toLocaleString('en-IN')}</div>
+    <div style="font-size:11px;color:#3a3a56;margin-top:2px">Live update · Supabase Realtime</div>
   `
   document.body.appendChild(toast)
   setTimeout(() => toast.remove(), 4000)
@@ -725,7 +725,7 @@ a{text-decoration:none}
   box-shadow:0 0 16px rgba(6,214,160,0.2),inset 0 1px 0 rgba(26,26,46,0.07);
 }
 .ptab.active.shopify-tab{background:rgba(168,85,247,0.15);color:#1a1a2e;border-color:rgba(168,85,247,0.35);box-shadow:0 0 16px rgba(168,85,247,0.2)}
-.ptab.active.amazon-tab{background:rgba(245,158,11,0.12);color:#fef3c7;border-color:rgba(245,158,11,0.3);box-shadow:0 0 16px rgba(245,158,11,0.15)}
+.ptab.active.amazon-tab{background:rgba(245,158,11,0.12);color:#b45309;border-color:rgba(245,158,11,0.3);box-shadow:0 0 16px rgba(245,158,11,0.15)}
 .ptab.active.overall-tab{background:rgba(16,185,129,0.12);color:#1a1a2e;border-color:rgba(16,185,129,0.3);box-shadow:0 0 16px rgba(16,185,129,0.15)}
 .ptab.active.creatives-tab{background:rgba(168,85,247,0.12);color:#1a1a2e;border-color:rgba(168,85,247,0.3);box-shadow:0 0 16px rgba(168,85,247,0.15)}
 .ptab.active.deep-tab{background:rgba(236,72,153,0.12);color:#1a1a2e;border-color:rgba(236,72,153,0.3);box-shadow:0 0 16px rgba(236,72,153,0.15)}
@@ -783,7 +783,7 @@ a{text-decoration:none}
   transform:translateY(-1px);box-shadow:0 4px 14px rgba(6,214,160,0.2);
 }
 .nav-sheet{
-  background:rgba(255,253,246,0.6);border:1px solid var(--b);color:var(--bl);
+  background:rgba(255,253,246,0.6);border:1px solid var(--b);color:var(--blue);
   padding:5px 13px;border-radius:var(--rads);font-size:11px;font-weight:600;
   display:flex;align-items:center;gap:5px;transition:all .2s ease;backdrop-filter:blur(10px);
 }
@@ -869,7 +869,7 @@ a{text-decoration:none}
 .sec-sub{font-size:12px;color:var(--t3);margin-top:4px;font-weight:400}
 .sec-badge{
   background:rgba(255,253,246,0.7);border:1px solid var(--b);
-  padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;color:var(--bl);backdrop-filter:blur(8px);
+  padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);backdrop-filter:blur(8px);
 }
 
 /* ── ALERTS ── */
@@ -887,15 +887,15 @@ a{text-decoration:none}
 }
 .alert-icon{font-size:20px}
 .alert-body{font-size:13px;flex:1;line-height:1.5}
-.alert-body strong{color:var(--rl);font-weight:700}
-.alert.success .alert-body strong{color:var(--gl)}
+.alert-body strong{color:var(--r);font-weight:700}
+.alert.success .alert-body strong{color:var(--g)}
 .alert-btn{
-  background:rgba(239,68,68,0.18);color:var(--rl);border:1px solid rgba(239,68,68,0.28);
+  background:rgba(239,68,68,0.18);color:var(--r);border:1px solid rgba(239,68,68,0.28);
   padding:5px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
   white-space:nowrap;transition:all .2s;font-family:inherit;
 }
 .alert-btn:hover{background:var(--r);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,0.4);transform:translateY(-1px)}
-.alert.success .alert-btn{background:rgba(16,185,129,0.18);color:var(--gl);border-color:rgba(16,185,129,0.28)}
+.alert.success .alert-btn{background:rgba(16,185,129,0.18);color:var(--g);border-color:rgba(16,185,129,0.28)}
 .alert.success .alert-btn:hover{background:var(--g);color:#fff;box-shadow:0 4px 16px rgba(16,185,129,0.4)}
 
 /* ── KPI CARDS ── */
@@ -950,28 +950,28 @@ a{text-decoration:none}
   font-variant-numeric:tabular-nums;
 }
 .k-val.gv{
-  background:linear-gradient(135deg,var(--gl),var(--cy));
+  background:linear-gradient(135deg,var(--g),var(--ind));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   filter:drop-shadow(0 0 10px rgba(16,185,129,0.35));
 }
-.k-val.av{color:var(--al);text-shadow:0 0 20px rgba(251,191,36,0.18)}
-.k-val.rv{color:var(--rl)}
+.k-val.av{color:var(--a);text-shadow:0 0 20px rgba(251,191,36,0.18)}
+.k-val.rv{color:var(--r)}
 .k-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .kbadge{
   display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;
   padding:3px 10px;border-radius:100px;backdrop-filter:blur(4px);border:1px solid;
 }
-.kbadge.up{background:rgba(16,185,129,.12);color:var(--gl);border-color:rgba(16,185,129,.25)}
-.kbadge.down{background:rgba(239,68,68,.12);color:var(--rl);border-color:rgba(239,68,68,.25)}
+.kbadge.up{background:rgba(16,185,129,.12);color:var(--g);border-color:rgba(16,185,129,.25)}
+.kbadge.down{background:rgba(239,68,68,.12);color:var(--r);border-color:rgba(239,68,68,.25)}
 .kbadge.flat{background:rgba(26,26,46,.04);color:var(--t2);border-color:var(--b)}
 .k-bench{font-size:11px;color:var(--t3);font-weight:500}
 .k-status{
   position:absolute;top:16px;right:16px;font-size:10px;font-weight:800;
   padding:3px 10px;border-radius:100px;letter-spacing:0.5px;text-transform:uppercase;border:1px solid;
 }
-.ks-good{background:rgba(16,185,129,.12);color:var(--gl);border-color:rgba(16,185,129,.25)}
-.ks-warn{background:rgba(245,158,11,.12);color:var(--al);border-color:rgba(245,158,11,.25)}
-.ks-bad{background:rgba(239,68,68,.12);color:var(--rl);border-color:rgba(239,68,68,.25)}
+.ks-good{background:rgba(16,185,129,.12);color:var(--g);border-color:rgba(16,185,129,.25)}
+.ks-warn{background:rgba(245,158,11,.12);color:var(--a);border-color:rgba(245,158,11,.25)}
+.ks-bad{background:rgba(239,68,68,.12);color:var(--r);border-color:rgba(239,68,68,.25)}
 
 /* ── COMPARE ROW ── */
 .cmp-row{
@@ -999,8 +999,8 @@ a{text-decoration:none}
 }
 .cmp-arrow{font-size:28px;margin-bottom:10px;z-index:1}
 .cmp-diff{font-size:13px;font-weight:800;text-align:center;padding:4px 12px;border-radius:100px;background:rgba(26,26,46,0.06);z-index:1;border:1px solid}
-.cmp-diff.up{color:var(--gl);border-color:rgba(16,185,129,0.2)}
-.cmp-diff.down{color:var(--rl);border-color:rgba(239,68,68,0.2)}
+.cmp-diff.up{color:var(--g);border-color:rgba(16,185,129,0.2)}
+.cmp-diff.down{color:var(--r);border-color:rgba(239,68,68,0.2)}
 .cmp-diff.flat{color:var(--t2);border-color:var(--b)}
 
 /* ── INSIGHT CARDS ── */
@@ -1015,10 +1015,10 @@ a{text-decoration:none}
   width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;
   font-size:20px;flex-shrink:0;box-shadow:inset 0 1px 3px rgba(26,26,46,0.08),0 4px 12px rgba(0,0,0,0.2);
 }
-.ins-icon.bl{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(59,130,246,.04));border:1px solid rgba(59,130,246,.25);color:var(--bl)}
-.ins-icon.g{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.04));border:1px solid rgba(16,185,129,.25);color:var(--gl)}
-.ins-icon.a{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25);color:var(--al)}
-.ins-icon.r{background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(239,68,68,.04));border:1px solid rgba(239,68,68,.25);color:var(--rl)}
+.ins-icon.bl{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(59,130,246,.04));border:1px solid rgba(59,130,246,.25);color:var(--blue)}
+.ins-icon.g{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.04));border:1px solid rgba(16,185,129,.25);color:var(--g)}
+.ins-icon.a{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25);color:var(--a)}
+.ins-icon.r{background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(239,68,68,.04));border:1px solid rgba(239,68,68,.25);color:var(--r)}
 .ins-icon.p{background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(139,92,246,.04));border:1px solid rgba(139,92,246,.25);color:#7c4dcc}
 .ins-kicker{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:4px}
 .ins-main{font-size:15px;font-weight:800;color:var(--t);margin-bottom:4px;line-height:1.3}
@@ -1082,9 +1082,9 @@ a{text-decoration:none}
 .f-stage{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:8px}
 .f-val{font-size:22px;font-weight:800;color:var(--t);margin-bottom:8px;font-variant-numeric:tabular-nums}
 .f-rate{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:100px;display:inline-block;margin-bottom:10px;border:1px solid}
-.f-rate.g{background:rgba(16,185,129,.1);color:var(--gl);border-color:rgba(16,185,129,.2)}
-.f-rate.a{background:rgba(245,158,11,.1);color:var(--al);border-color:rgba(245,158,11,.2)}
-.f-rate.r{background:rgba(239,68,68,.1);color:var(--rl);border-color:rgba(239,68,68,.2)}
+.f-rate.g{background:rgba(16,185,129,.1);color:var(--g);border-color:rgba(16,185,129,.2)}
+.f-rate.a{background:rgba(245,158,11,.1);color:var(--a);border-color:rgba(245,158,11,.2)}
+.f-rate.r{background:rgba(239,68,68,.1);color:var(--r);border-color:rgba(239,68,68,.2)}
 .f-rate.n{background:rgba(26,26,46,0.06);color:var(--t2);border-color:var(--b)}
 .f-bar{height:5px;border-radius:3px;background:rgba(26,26,46,0.12);overflow:hidden}
 .f-fill{
@@ -1142,20 +1142,20 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   font-size:11px;font-weight:800;white-space:nowrap;backdrop-filter:blur(4px);border:1px solid;
   font-variant-numeric:tabular-nums;
 }
-.badge-green{background:rgba(16,185,129,.12);color:var(--gl);border-color:rgba(16,185,129,.25)}
-.badge-amber{background:rgba(245,158,11,.12);color:var(--al);border-color:rgba(245,158,11,.25)}
-.badge-red{background:rgba(239,68,68,.12);color:var(--rl);border-color:rgba(239,68,68,.25)}
-.badge-blue{background:rgba(59,130,246,.12);color:var(--bl);border-color:rgba(59,130,246,.25)}
+.badge-green{background:rgba(16,185,129,.12);color:var(--g);border-color:rgba(16,185,129,.25)}
+.badge-amber{background:rgba(245,158,11,.12);color:var(--a);border-color:rgba(245,158,11,.25)}
+.badge-red{background:rgba(239,68,68,.12);color:var(--r);border-color:rgba(239,68,68,.25)}
+.badge-blue{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.25)}
 .badge-gray{background:rgba(26,26,46,.04);color:var(--t2);border-color:var(--b)}
 .action-badge{
   display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;
   font-size:10px;font-weight:800;white-space:nowrap;backdrop-filter:blur(4px);
   text-transform:uppercase;letter-spacing:0.5px;border:1px solid;
 }
-.ab-pause{background:rgba(239,68,68,.12);color:var(--rl);border-color:rgba(239,68,68,.25)}
-.ab-scale{background:rgba(16,185,129,.12);color:var(--gl);border-color:rgba(16,185,129,.25);box-shadow:0 0 8px rgba(16,185,129,0.08)}
-.ab-warn{background:rgba(245,158,11,.12);color:var(--al);border-color:rgba(245,158,11,.25)}
-.ab-ok{background:rgba(59,130,246,.12);color:var(--bl);border-color:rgba(59,130,246,.25)}
+.ab-pause{background:rgba(239,68,68,.12);color:var(--r);border-color:rgba(239,68,68,.25)}
+.ab-scale{background:rgba(16,185,129,.12);color:var(--g);border-color:rgba(16,185,129,.25);box-shadow:0 0 8px rgba(16,185,129,0.08)}
+.ab-warn{background:rgba(245,158,11,.12);color:var(--a);border-color:rgba(245,158,11,.25)}
+.ab-ok{background:rgba(59,130,246,.12);color:var(--blue);border-color:rgba(59,130,246,.25)}
 .ab-test{background:rgba(139,92,246,.12);color:#7c4dcc;border-color:rgba(139,92,246,.25)}
 .cn{max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
 .cm{color:var(--t3);font-size:12px}
@@ -1173,21 +1173,21 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
 .ac-card.cu{border-left-color:var(--r)}.ac-card.cs{border-left-color:var(--g)}
 .ac-card.cw{border-left-color:var(--a)}.ac-card.ci{border-left-color:var(--blue)}
 .ac-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.aci-r{background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(239,68,68,.04));border:1px solid rgba(239,68,68,.25);color:var(--rl)}
-.aci-g{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.04));border:1px solid rgba(16,185,129,.25);color:var(--gl)}
-.aci-a{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25);color:var(--al)}
-.aci-b{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(59,130,246,.04));border:1px solid rgba(59,130,246,.25);color:var(--bl)}
+.aci-r{background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(239,68,68,.04));border:1px solid rgba(239,68,68,.25);color:var(--r)}
+.aci-g{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.04));border:1px solid rgba(16,185,129,.25);color:var(--g)}
+.aci-a{background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25);color:var(--a)}
+.aci-b{background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(59,130,246,.04));border:1px solid rgba(59,130,246,.25);color:var(--blue)}
 .ac-type{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:4px}
 .ac-name{font-size:13.5px;font-weight:800;color:var(--t);margin-bottom:6px;line-height:1.4}
 .ac-issue{font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.5}
-.ac-step{font-size:11px;font-weight:600;color:var(--bl);display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(59,130,246,.08);border-radius:100px;border:1px solid rgba(59,130,246,.2)}
-.ac-impact{font-size:11px;font-weight:700;color:var(--gl);margin-top:6px;display:block}
+.ac-step{font-size:11px;font-weight:600;color:var(--blue);display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(59,130,246,.08);border-radius:100px;border:1px solid rgba(59,130,246,.2)}
+.ac-impact{font-size:11px;font-weight:700;color:var(--g);margin-top:6px;display:block}
 .no-actions{
   background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.02));
   border:1px solid rgba(16,185,129,.18);border-radius:var(--rad);padding:40px;text-align:center;backdrop-filter:blur(12px);
 }
 .na-icon{font-size:40px;margin-bottom:14px;filter:drop-shadow(0 4px 8px rgba(16,185,129,0.3))}
-.na-txt{font-size:16px;font-weight:800;color:var(--gl);margin-bottom:6px}
+.na-txt{font-size:16px;font-weight:800;color:var(--g);margin-bottom:6px}
 .na-sub{font-size:13px;color:var(--t2)}
 
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -1250,7 +1250,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
 .modal-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(6,214,160,0.5);filter:brightness(1.1)}
 .modal-btn.secondary{background:rgba(26,26,46,.05);color:var(--t);border:1px solid var(--b)}
 .modal-btn.secondary:hover{background:rgba(26,26,46,.09);transform:translateY(-1px)}
-.delta-pos{color:var(--gl);font-weight:800}.delta-neg{color:var(--rl);font-weight:800}.delta-neu{color:var(--t3);font-weight:600}
+.delta-pos{color:var(--g);font-weight:800}.delta-neg{color:var(--r);font-weight:800}.delta-neu{color:var(--t3);font-weight:600}
 
 /* ── RANGE PICKER ── */
 .range-wrap{display:flex;align-items:center;gap:8px}
@@ -1349,7 +1349,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   </div>
   <!-- Period filter: presets + custom date range in one row -->
   <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
-    <span style="font-size:10px;font-weight:700;color:#475569;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Period:</span>
+    <span style="font-size:10px;font-weight:700;color:#4a4a6a;letter-spacing:1px;text-transform:uppercase;white-space:nowrap">Period:</span>
     <button class="sh-qbtn meta-preset-btn" data-p="today"     onclick="metaSetPreset('today')">Today</button>
     <button class="sh-qbtn meta-preset-btn" data-p="yesterday" onclick="metaSetPreset('yesterday')">Yesterday</button>
     <button class="sh-qbtn meta-preset-btn" data-p="7d"        onclick="metaSetPreset('7d')">7 Days</button>
@@ -1431,7 +1431,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div class="kpi-grid g4" style="margin-bottom:14px" id="amz-ov-kpis">
     <div class="kcard" style="border-top:3px solid #ff9900;"><div class="k-lbl">Amazon Revenue</div><div class="k-val" id="amz-ov-rev">—</div></div>
     <div class="kcard" style="border-top:3px solid #ff9900;"><div class="k-lbl">Amazon Spend</div><div class="k-val" id="amz-ov-spend">—</div></div>
-    <div class="kcard" style="border-top:3px solid #ff9900;"><div class="k-lbl">Amazon ROAS</div><div class="k-val" style="color:var(--al)" id="amz-ov-roas">—</div></div>
+    <div class="kcard" style="border-top:3px solid #ff9900;"><div class="k-lbl">Amazon ROAS</div><div class="k-val" style="color:var(--a)" id="amz-ov-roas">—</div></div>
     <div class="kcard" style="border-top:3px solid #ff9900;"><div class="k-lbl">Amazon Orders</div><div class="k-val" id="amz-ov-orders">—</div></div>
   </div>
 </div>
@@ -1496,7 +1496,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
       <div class="hl-label">💰 Highest Spend Day</div>
       <div class="hl-day">2026-04-22</div>
       <div class="hl-meta">Spend: ₹1,67,645 · ROAS: 1.61x</div>
-      <span class="hl-badge" style="background:rgba(59,130,246,.15);color:var(--bl)">Peak Spend</span>
+      <span class="hl-badge" style="background:rgba(59,130,246,.15);color:var(--blue)">Peak Spend</span>
     </div>
   </div>
 </div>
@@ -1585,7 +1585,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
         <thead><tr><th>Date</th><th>Spend</th><th>Revenue</th><th>ROAS</th><th>Purchases</th><th>CPA</th><th>CTR</th><th>CPM</th><th>Impressions</th></tr></thead>
         <tbody id="dayByDayBody">
           <tr class="" style="cursor:pointer" onclick="switchView('day','2026-04-26')">
-              <td style="font-weight:700;color:var(--bl)">2026-04-26 ← Latest</td>
+              <td style="font-weight:700;color:var(--blue)">2026-04-26 ← Latest</td>
               <td>₹85,949</td>
               <td style="color:var(--g)">₹1,46,853</td>
               <td><span class="badge badge-amber">1.71x</span></td>
@@ -1894,14 +1894,14 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div class="cc" style="margin-bottom:16px">
     <div class="cc-head">
       <div class="cc-title">⏰ Hourly Spend &amp; Revenue — Today vs 7-Day Avg</div>
-      <div class="t-meta" style="font-size:11px;color:#5c5c78">Bars = today · Dashed = 7-day proportional average</div>
+      <div class="t-meta" style="font-size:11px;color:#3a3a56">Bars = today · Dashed = 7-day proportional average</div>
     </div>
     <div class="cw" style="height:240px"><canvas id="chartHourly"></canvas></div>
   </div>
   <div class="cc">
     <div class="cc-head">
       <div class="cc-title">💱 Hourly ROAS — Today vs 7-Day Avg</div>
-      <div class="t-meta" style="font-size:11px;color:#5c5c78">Grey dashed = 7-day average ROAS reference</div>
+      <div class="t-meta" style="font-size:11px;color:#3a3a56">Grey dashed = 7-day average ROAS reference</div>
     </div>
     <div class="cw" style="height:190px"><canvas id="chartHourlyRoas"></canvas></div>
   </div>
@@ -2054,19 +2054,19 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <!-- ── SHOPIFY HEADER ── -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
     <div>
-      <h2 style="font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:3px">🛍️ Shopify Intelligence — Invisel</h2>
-      <div style="font-size:13px;color:#5c5c78" id="sh-period-label">Apr 1 → 2026-04-26 · 53 metrics · Updates every 15 min</div>
+      <h2 style="font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:3px">🛍️ Shopify Intelligence — Invisel</h2>
+      <div style="font-size:13px;color:#3a3a56" id="sh-period-label">Apr 1 → 2026-04-26 · 53 metrics · Updates every 15 min</div>
     </div>
     <!-- Alert badges -->
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:6px 14px;font-size:12px;color:#fca5a5;font-weight:600">⚠️ 6 Abandoned · ₹19,089</div>
+      <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:6px 14px;font-size:12px;color:#dc2626;font-weight:600">⚠️ 6 Abandoned · ₹19,089</div>
       <div style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);border-radius:8px;padding:6px 14px;font-size:12px;color:#b45309;font-weight:600">📦 98 Pending</div>
     </div>
   </div>
 
   <!-- ── DATE FILTER BAR ──────────────────────────────────────────────────── -->
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(30,41,59,0.5);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
-    <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
+    <span style="font-size:11px;font-weight:700;color:#4a4a6a;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
     <button onclick="shSetPreset('today')" id="shp-today" class="sh-qbtn">Today</button>
     <button onclick="shSetPreset('yesterday')" id="shp-yesterday" class="sh-qbtn">Yesterday</button>
     <button onclick="shSetPreset('7d')" id="shp-7d" class="sh-qbtn">7 Days</button>
@@ -2075,9 +2075,9 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <button onclick="shSetPreset('all')" id="shp-all" class="sh-qbtn">All Time</button>
     <div style="width:1px;height:20px;background:rgba(26,26,46,0.08);margin:0 4px"></div>
     <input type="date" id="sh-from" value="2026-05-01" min="2026-04-01" onchange="shSetCustom()" style="background:rgba(255,253,246,0.8);border:1px solid rgba(26,26,46,0.1);border-radius:7px;padding:4px 8px;color:#4a4a6a;font-size:12px">
-    <span style="color:#475569;font-size:12px">→</span>
+    <span style="color:#4a4a6a;font-size:12px">→</span>
     <input type="date" id="sh-to" value="2026-05-06" min="2026-04-01" onchange="shSetCustom()" style="background:rgba(255,253,246,0.8);border:1px solid rgba(26,26,46,0.1);border-radius:7px;padding:4px 8px;color:#4a4a6a;font-size:12px">
-    <span style="font-size:12px;color:#475569;margin-left:6px" id="sh-day-count"></span>
+    <span style="font-size:12px;color:#4a4a6a;margin-left:6px" id="sh-day-count"></span>
   </div>
 
   <!-- True ROAS Banner — updates dynamically with Shopify date filter -->
@@ -2123,15 +2123,15 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <!-- Header + date filter -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
     <div>
-      <h2 style="font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:3px">📦 Amazon Ads Intelligence</h2>
-      <div style="font-size:13px;color:#5c5c78" id="amz-subtitle">Sponsored Products · Sponsored Display · ACOS · Amazon.in</div>
+      <h2 style="font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:3px">📦 Amazon Ads Intelligence</h2>
+      <div style="font-size:13px;color:#3a3a56" id="amz-subtitle">Sponsored Products · Sponsored Display · ACOS · Amazon.in</div>
     </div>
     <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:6px 16px;font-size:12px;color:#059669;font-weight:600">✅ Amazon Ads Connected · Updated 2026-05-06</div>
   </div>
 
   <!-- Date filter bar — mirrors Meta nav-bar date range -->
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(30,41,59,0.5);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
-    <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
+    <span style="font-size:11px;font-weight:700;color:#4a4a6a;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
     <button onclick="amzSetPreset('today')"     id="amzp-today" class="sh-qbtn">Today</button>
     <button onclick="amzSetPreset('yesterday')" id="amzp-yesterday" class="sh-qbtn">Yesterday</button>
     <button onclick="amzSetPreset('7d')"        id="amzp-7d" class="sh-qbtn">7 Days</button>
@@ -2139,7 +2139,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <button onclick="amzSetPreset('mtd')"       id="amzp-mtd" class="sh-qbtn active">MTD</button>
     <button onclick="amzSetPreset('all')"       id="amzp-all" class="sh-qbtn">All Time</button>
     <div style="width:1px;height:20px;background:rgba(26,26,46,0.08);margin:0 4px"></div>
-    <span style="font-size:12px;color:#5c5c78">🔗 Synced with nav date picker</span>
+    <span style="font-size:12px;color:#3a3a56">🔗 Synced with nav date picker</span>
     <span style="font-size:12px;color:#4a4a6a;font-weight:600" id="amz-range-display"></span>
   </div>
 
@@ -2156,10 +2156,10 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(239,68,68,0.04));border:1px solid rgba(245,158,11,0.15);border-radius:14px;padding:24px 28px;margin-top:8px">
     <div style="font-size:15px;font-weight:700;color:#b45309;margin-bottom:12px">🔗 Connect Amazon Ads in 4 Steps</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
-      <div style="background:rgba(30,41,59,0.5);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">1️⃣</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px">Create App</div><div style="font-size:12px;color:#5c5c78">Go to advertising.amazon.com → Tools → API Access → Create Application</div></div>
-      <div style="background:rgba(30,41,59,0.5);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">2️⃣</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px">Get Credentials</div><div style="font-size:12px;color:#5c5c78">Copy Client ID, Client Secret, and complete OAuth to get Refresh Token</div></div>
-      <div style="background:rgba(30,41,59,0.5);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">3️⃣</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px">Find Profile ID</div><div style="font-size:12px;color:#5c5c78">Call GET /v2/profiles to find your brand's Profile ID</div></div>
-      <div style="background:rgba(30,41,59,0.5);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">4️⃣</div><div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px">Add to config.env</div><div style="font-size:12px;color:#5c5c78">AMAZON_CLIENT_ID, AMAZON_CLIENT_SECRET, AMAZON_REFRESH_TOKEN, AMAZON_PROFILE_ID</div></div>
+      <div style="background:rgba(26,26,46,0.04);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">1️⃣</div><div style="font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:4px">Create App</div><div style="font-size:12px;color:#3a3a56">Go to advertising.amazon.com → Tools → API Access → Create Application</div></div>
+      <div style="background:rgba(26,26,46,0.04);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">2️⃣</div><div style="font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:4px">Get Credentials</div><div style="font-size:12px;color:#3a3a56">Copy Client ID, Client Secret, and complete OAuth to get Refresh Token</div></div>
+      <div style="background:rgba(26,26,46,0.04);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">3️⃣</div><div style="font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:4px">Find Profile ID</div><div style="font-size:12px;color:#3a3a56">Call GET /v2/profiles to find your brand's Profile ID</div></div>
+      <div style="background:rgba(26,26,46,0.04);border-radius:10px;padding:14px"><div style="font-size:20px;margin-bottom:6px">4️⃣</div><div style="font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:4px">Add to config.env</div><div style="font-size:12px;color:#3a3a56">AMAZON_CLIENT_ID, AMAZON_CLIENT_SECRET, AMAZON_REFRESH_TOKEN, AMAZON_PROFILE_ID</div></div>
     </div>
   </div>
 
@@ -2174,14 +2174,14 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <!-- Header -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
     <div>
-      <h2 style="font-size:22px;font-weight:800;color:#f8fafc;margin-bottom:3px">🌐 Overall Performance — All Channels</h2>
-      <div style="font-size:13px;color:#5c5c78" id="ov-period-label">Combined Meta Ads + Shopify · 2026-04-26</div>
+      <h2 style="font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:3px">🌐 Overall Performance — All Channels</h2>
+      <div style="font-size:13px;color:#3a3a56" id="ov-period-label">Combined Meta Ads + Shopify · 2026-04-26</div>
     </div>
   </div>
 
   <!-- Date filter bar -->
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(30,41,59,0.5);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
-    <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.07);border-radius:12px;padding:10px 14px">
+    <span style="font-size:11px;font-weight:700;color:#4a4a6a;text-transform:uppercase;letter-spacing:1px;margin-right:4px">Period:</span>
     <button onclick="ovSetPreset('today')" id="ovp-today" class="sh-qbtn">Today</button>
     <button onclick="ovSetPreset('yesterday')" id="ovp-yesterday" class="sh-qbtn">Yesterday</button>
     <button onclick="ovSetPreset('7d')" id="ovp-7d" class="sh-qbtn">7 Days</button>
@@ -2190,9 +2190,9 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <button onclick="ovSetPreset('all')" id="ovp-all" class="sh-qbtn">All Time</button>
     <div style="width:1px;height:20px;background:rgba(26,26,46,0.08);margin:0 4px"></div>
     <input type="date" id="ov-from" value="2026-05-01" min="2026-04-01" onchange="renderOverall()" style="background:rgba(255,253,246,0.8);border:1px solid rgba(26,26,46,0.1);border-radius:7px;padding:4px 8px;color:#4a4a6a;font-size:12px">
-    <span style="color:#475569;font-size:12px">→</span>
+    <span style="color:#4a4a6a;font-size:12px">→</span>
     <input type="date" id="ov-to" value="2026-05-06" min="2026-04-01" onchange="renderOverall()" style="background:rgba(255,253,246,0.8);border:1px solid rgba(26,26,46,0.1);border-radius:7px;padding:4px 8px;color:#4a4a6a;font-size:12px">
-    <span style="font-size:12px;color:#475569;margin-left:6px" id="ov-day-count"></span>
+    <span style="font-size:12px;color:#4a4a6a;margin-left:6px" id="ov-day-count"></span>
   </div>
 
   <!-- Dynamic overall KPIs + charts -->
@@ -2224,7 +2224,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div>
       <h2 style="font-size:22px;font-weight:700;color:#1a1a2e;margin:0">🎨 Creative Intelligence · Meta Ads Analysis</h2>
-      <p style="font-size:13px;color:#5c5c78;margin:4px 0 0">Live Meta Ads — creatives auto-merged across adsets · Action scorecard · vs previous period · Spend waste · Theme rollups</p>
+      <p style="font-size:13px;color:#3a3a56;margin:4px 0 0">Live Meta Ads — creatives auto-merged across adsets · Action scorecard · vs previous period · Spend waste · Theme rollups</p>
     </div>
     <!-- Date range -->
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -2235,25 +2235,25 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
         <button class="sh-qbtn" id="crp-14d"  onclick="crSetPreset('14d')">14 Days</button>
         <button class="sh-qbtn active" id="crp-mtd" onclick="crSetPreset('mtd')">MTD</button>
       </div>
-      <input type="date" id="cr-from" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
-      <span style="color:#5c5c78;font-size:13px">→</span>
-      <input type="date" id="cr-to" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
+      <input type="date" id="cr-from" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
+      <span style="color:#3a3a56;font-size:13px">→</span>
+      <input type="date" id="cr-to" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
       <button onclick="renderCreatives(document.getElementById('cr-from').value,document.getElementById('cr-to').value)" style="background:rgba(6,214,160,0.2);border:1px solid rgba(6,214,160,0.4);color:#0d9488;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer">Apply</button>
     </div>
   </div>
 
   <!-- ── 📅 Period Comparison Bar ─────────────────────────────── -->
-  <div id="cr-period-bar" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:14px;padding:10px 16px;background:rgba(30,41,59,0.4);border:1px solid rgba(26,26,46,0.05);border-radius:10px">
-    <div><span style="color:#5c5c78">Current:</span> <span id="cr-period-curr" style="color:#0d9488;font-weight:600">—</span></div>
-    <div style="color:#475569">↔</div>
-    <div><span style="color:#5c5c78">vs Previous:</span> <span id="cr-period-prev" style="color:#4a4a6a;font-weight:600">—</span></div>
-    <div style="margin-left:auto;color:#5c5c78;font-size:11px">All deltas below are vs the previous equivalent period</div>
+  <div id="cr-period-bar" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:14px;padding:10px 16px;background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.05);border-radius:10px">
+    <div><span style="color:#3a3a56">Current:</span> <span id="cr-period-curr" style="color:#0d9488;font-weight:600">—</span></div>
+    <div style="color:#4a4a6a">↔</div>
+    <div><span style="color:#3a3a56">vs Previous:</span> <span id="cr-period-prev" style="color:#4a4a6a;font-weight:600">—</span></div>
+    <div style="margin-left:auto;color:#3a3a56;font-size:11px">All deltas below are vs the previous equivalent period</div>
   </div>
 
   <!-- ── 🧠 Insights Banner ────────────────────────────────────── -->
   <div id="cr-insights-banner" style="background:linear-gradient(135deg,rgba(6,214,160,0.08),rgba(168,85,247,0.05));border:1px solid rgba(6,214,160,0.2);border-radius:14px;padding:14px 20px;margin-bottom:20px;display:none">
     <div style="font-size:11px;font-weight:700;color:#0d9488;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🧠 Auto-Generated Insights</div>
-    <div id="cr-insights-content" style="font-size:13px;color:#cbd5e1;line-height:1.6"></div>
+    <div id="cr-insights-content" style="font-size:13px;color:#35355a;line-height:1.6"></div>
   </div>
 
   <!-- ── 🎯 Action Scorecard ──────────────────────────────────── -->
@@ -2264,41 +2264,41 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
         <div style="font-size:11px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">🚀 Scale These</div>
         <div style="font-size:24px;font-weight:800;color:#1a1a2e" id="cr-sc-count">—</div>
         <div style="font-size:11px;color:#4a4a6a;margin-top:4px">ads · <span id="cr-sc-spend" style="color:#047857;font-weight:600">—</span> spend · <span id="cr-sc-roas" style="color:#047857;font-weight:600">—</span> avg ROAS</div>
-        <div style="font-size:10px;color:#5c5c78;margin-top:6px">ROAS ≥ 2.5x · Freq &lt; 2.5 · spend &gt; ₹2K</div>
+        <div style="font-size:10px;color:#3a3a56;margin-top:6px">ROAS ≥ 2.5x · Freq &lt; 2.5 · spend &gt; ₹2K</div>
       </div>
       <div onclick="crFilterByAction('solid')" id="cr-action-solid" style="cursor:pointer;background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(255,253,246,0.7));border:1px solid rgba(59,130,246,0.3);border-radius:14px;padding:16px;transition:all 0.2s">
         <div style="font-size:11px;font-weight:700;color:#2b7bbf;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">✓ Solid Performers</div>
         <div style="font-size:24px;font-weight:800;color:#1a1a2e" id="cr-so-count">—</div>
         <div style="font-size:11px;color:#4a4a6a;margin-top:4px">ads · <span id="cr-so-spend" style="color:#2b7bbf;font-weight:600">—</span> spend · <span id="cr-so-roas" style="color:#2b7bbf;font-weight:600">—</span> avg ROAS</div>
-        <div style="font-size:10px;color:#5c5c78;margin-top:6px">ROAS 1.5–2.5x · Freq &lt; 3.5</div>
+        <div style="font-size:10px;color:#3a3a56;margin-top:6px">ROAS 1.5–2.5x · Freq &lt; 3.5</div>
       </div>
       <div onclick="crFilterByAction('optimize')" id="cr-action-optimize" style="cursor:pointer;background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(255,253,246,0.7));border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:16px;transition:all 0.2s">
         <div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">⚠️ Needs Optimization</div>
         <div style="font-size:24px;font-weight:800;color:#1a1a2e" id="cr-op-count">—</div>
         <div style="font-size:11px;color:#4a4a6a;margin-top:4px">ads · <span id="cr-op-spend" style="color:#b45309;font-weight:600">—</span> spend · <span id="cr-op-roas" style="color:#b45309;font-weight:600">—</span> avg ROAS</div>
-        <div style="font-size:10px;color:#5c5c78;margin-top:6px">ROAS 0.7–1.5x OR Freq &gt; 3.5</div>
+        <div style="font-size:10px;color:#3a3a56;margin-top:6px">ROAS 0.7–1.5x OR Freq &gt; 3.5</div>
       </div>
       <div onclick="crFilterByAction('kill')" id="cr-action-kill" style="cursor:pointer;background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(255,253,246,0.7));border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:16px;transition:all 0.2s">
         <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">🛑 Kill Candidates</div>
         <div style="font-size:24px;font-weight:800;color:#1a1a2e" id="cr-ki-count">—</div>
         <div style="font-size:11px;color:#4a4a6a;margin-top:4px">ads · <span id="cr-ki-spend" style="color:#dc2626;font-weight:600">—</span> wasted · <span id="cr-ki-roas" style="color:#dc2626;font-weight:600">—</span> avg ROAS</div>
-        <div style="font-size:10px;color:#5c5c78;margin-top:6px">ROAS &lt; 0.7x · spend &gt; ₹1.5K</div>
+        <div style="font-size:10px;color:#3a3a56;margin-top:6px">ROAS &lt; 0.7x · spend &gt; ₹1.5K</div>
       </div>
     </div>
   </div>
 
   <!-- ── 📊 KPI Summary Row ─────────────────────────────────────── -->
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px" id="cr-kpi-row">
-    <div class="kpi-card"><div class="kl">Spend</div><div class="kv" id="cr-kv-spend">—</div><div class="ks" id="cr-kv-spend-sub" style="font-size:10px;color:#5c5c78">—</div></div>
+    <div class="kpi-card"><div class="kl">Spend</div><div class="kv" id="cr-kv-spend">—</div><div class="ks" id="cr-kv-spend-sub" style="font-size:10px;color:#3a3a56">—</div></div>
     <div class="kpi-card"><div class="kl">Revenue</div><div class="kv" id="cr-kv-rev">—</div><div class="ks" style="font-size:10px;color:#047857" id="cr-kv-rev-sub">—</div></div>
-    <div class="kpi-card"><div class="kl">Blended ROAS</div><div class="kv" id="cr-kv-roas">—</div><div class="ks" style="font-size:10px;color:#5c5c78">target ≥ 2x</div></div>
-    <div class="kpi-card"><div class="kl">Purchases</div><div class="kv" id="cr-kv-pur">—</div><div class="ks" id="cr-kv-cpa-sub" style="font-size:10px;color:#5c5c78">CPA: —</div></div>
-    <div class="kpi-card"><div class="kl">Impressions</div><div class="kv" id="cr-kv-impr">—</div><div class="ks" id="cr-kv-reach-sub" style="font-size:10px;color:#5c5c78">Reach: —</div></div>
-    <div class="kpi-card"><div class="kl">CTR</div><div class="kv" id="cr-kv-ctr">—</div><div class="ks" style="font-size:10px;color:#5c5c78">benchmark 1%+</div></div>
-    <div class="kpi-card"><div class="kl">Thumbstop</div><div class="kv" id="cr-kv-ts">—</div><div class="ks" style="font-size:10px;color:#5c5c78">benchmark 25%+</div></div>
-    <div class="kpi-card"><div class="kl">Hold Rate</div><div class="kv" id="cr-kv-hr">—</div><div class="ks" style="font-size:10px;color:#5c5c78">benchmark 30%+</div></div>
-    <div class="kpi-card"><div class="kl">Avg Frequency</div><div class="kv" id="cr-kv-freq">—</div><div class="ks" style="font-size:10px;color:#5c5c78">fatigue &gt; 3.5</div></div>
-    <div class="kpi-card"><div class="kl">Unique Creatives</div><div class="kv" id="cr-kv-ads">—</div><div class="ks" id="cr-kv-camp-sub" style="font-size:10px;color:#5c5c78">— campaigns</div></div>
+    <div class="kpi-card"><div class="kl">Blended ROAS</div><div class="kv" id="cr-kv-roas">—</div><div class="ks" style="font-size:10px;color:#3a3a56">target ≥ 2x</div></div>
+    <div class="kpi-card"><div class="kl">Purchases</div><div class="kv" id="cr-kv-pur">—</div><div class="ks" id="cr-kv-cpa-sub" style="font-size:10px;color:#3a3a56">CPA: —</div></div>
+    <div class="kpi-card"><div class="kl">Impressions</div><div class="kv" id="cr-kv-impr">—</div><div class="ks" id="cr-kv-reach-sub" style="font-size:10px;color:#3a3a56">Reach: —</div></div>
+    <div class="kpi-card"><div class="kl">CTR</div><div class="kv" id="cr-kv-ctr">—</div><div class="ks" style="font-size:10px;color:#3a3a56">benchmark 1%+</div></div>
+    <div class="kpi-card"><div class="kl">Thumbstop</div><div class="kv" id="cr-kv-ts">—</div><div class="ks" style="font-size:10px;color:#3a3a56">benchmark 25%+</div></div>
+    <div class="kpi-card"><div class="kl">Hold Rate</div><div class="kv" id="cr-kv-hr">—</div><div class="ks" style="font-size:10px;color:#3a3a56">benchmark 30%+</div></div>
+    <div class="kpi-card"><div class="kl">Avg Frequency</div><div class="kv" id="cr-kv-freq">—</div><div class="ks" style="font-size:10px;color:#3a3a56">fatigue &gt; 3.5</div></div>
+    <div class="kpi-card"><div class="kl">Unique Creatives</div><div class="kv" id="cr-kv-ads">—</div><div class="ks" id="cr-kv-camp-sub" style="font-size:10px;color:#3a3a56">— campaigns</div></div>
   </div>
 
   <!-- ── 📈 Daily Trend Chart ──────────────────────────────────── -->
@@ -2306,7 +2306,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <div>
         <div style="font-size:14px;font-weight:600;color:#1a1a2e">📈 Daily Performance Trend</div>
-        <div style="font-size:12px;color:#5c5c78">Spend, Revenue & ROAS by day · spot momentum and turning points</div>
+        <div style="font-size:12px;color:#3a3a56">Spend, Revenue & ROAS by day · spot momentum and turning points</div>
       </div>
     </div>
     <div style="position:relative;height:260px"><canvas id="cr-trend-chart"></canvas></div>
@@ -2316,12 +2316,12 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:4px">📉 Frequency Fatigue Tracker</div>
-      <div style="font-size:12px;color:#5c5c78;margin-bottom:16px">Daily frequency for top 5 ads by spend · 🔴 &gt;3.5 = fatigue zone</div>
+      <div style="font-size:12px;color:#3a3a56;margin-bottom:16px">Daily frequency for top 5 ads by spend · 🔴 &gt;3.5 = fatigue zone</div>
       <div style="position:relative;height:240px"><canvas id="cr-fatigue-chart"></canvas></div>
     </div>
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:4px">🎬 Video Funnel by Ad</div>
-      <div style="font-size:12px;color:#5c5c78;margin-bottom:16px">Thumbstop · Hold Rate · Thruplay — top 8 ads by impressions</div>
+      <div style="font-size:12px;color:#3a3a56;margin-bottom:16px">Thumbstop · Hold Rate · Thruplay — top 8 ads by impressions</div>
       <div style="position:relative;height:240px"><canvas id="cr-video-chart"></canvas></div>
     </div>
   </div>
@@ -2330,11 +2330,11 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:4px">📦 Campaign Rollup</div>
-      <div style="font-size:12px;color:#5c5c78;margin-bottom:14px">Aggregated by campaign · sorted by spend</div>
+      <div style="font-size:12px;color:#3a3a56;margin-bottom:14px">Aggregated by campaign · sorted by spend</div>
       <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
         <table style="width:100%;border-collapse:collapse;font-size:11px">
           <thead style="position:sticky;top:0;background:rgba(255,253,246,0.95);z-index:1">
-            <tr style="color:#5c5c78;border-bottom:1px solid rgba(26,26,46,0.07)">
+            <tr style="color:#3a3a56;border-bottom:1px solid rgba(26,26,46,0.07)">
               <th style="text-align:left;padding:8px 8px">Campaign</th>
               <th style="text-align:right;padding:8px 8px">Ads</th>
               <th style="text-align:right;padding:8px 8px">Spend</th>
@@ -2349,11 +2349,11 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     </div>
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:4px">🎯 Creative Theme Analysis</div>
-      <div style="font-size:12px;color:#5c5c78;margin-bottom:14px">Grouped by ad-name prefix (e.g. GLASS_REEL_UGC) · find winning angles</div>
+      <div style="font-size:12px;color:#3a3a56;margin-bottom:14px">Grouped by ad-name prefix (e.g. GLASS_REEL_UGC) · find winning angles</div>
       <div style="overflow-x:auto;max-height:320px;overflow-y:auto">
         <table style="width:100%;border-collapse:collapse;font-size:11px">
           <thead style="position:sticky;top:0;background:rgba(255,253,246,0.95);z-index:1">
-            <tr style="color:#5c5c78;border-bottom:1px solid rgba(26,26,46,0.07)">
+            <tr style="color:#3a3a56;border-bottom:1px solid rgba(26,26,46,0.07)">
               <th style="text-align:left;padding:8px 8px">Theme</th>
               <th style="text-align:right;padding:8px 8px">Ads</th>
               <th style="text-align:right;padding:8px 8px">Spend</th>
@@ -2372,7 +2372,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;margin-bottom:20px">
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:16px;padding:20px">
       <div style="font-size:14px;font-weight:600;color:#1a1a2e;margin-bottom:4px">💰 Spend Concentration</div>
-      <div style="font-size:12px;color:#5c5c78;margin-bottom:16px">Top 5 ads vs rest</div>
+      <div style="font-size:12px;color:#3a3a56;margin-bottom:16px">Top 5 ads vs rest</div>
       <div style="position:relative;height:200px"><canvas id="cr-spend-donut"></canvas></div>
       <div id="cr-spend-legend" style="margin-top:12px;font-size:11px;color:#4a4a6a"></div>
     </div>
@@ -2381,9 +2381,9 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
         <div style="font-size:14px;font-weight:600;color:#1a1a2e">🏆 Top 5 / ⚠️ Bottom 5</div>
         <div style="display:flex;gap:8px">
           <button onclick="crToggleRankBy('roas')" id="cr-rank-roas" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(6,214,160,0.5);background:rgba(6,214,160,0.2);color:#0d9488;cursor:pointer">ROAS</button>
-          <button onclick="crToggleRankBy('spend')" id="cr-rank-spend" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#5c5c78;cursor:pointer">Spend</button>
-          <button onclick="crToggleRankBy('ts')" id="cr-rank-ts" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#5c5c78;cursor:pointer">Thumbstop</button>
-          <button onclick="crToggleRankBy('cpa')" id="cr-rank-cpa" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#5c5c78;cursor:pointer">CPA</button>
+          <button onclick="crToggleRankBy('spend')" id="cr-rank-spend" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#3a3a56;cursor:pointer">Spend</button>
+          <button onclick="crToggleRankBy('ts')" id="cr-rank-ts" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#3a3a56;cursor:pointer">Thumbstop</button>
+          <button onclick="crToggleRankBy('cpa')" id="cr-rank-cpa" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(26,26,46,0.1);background:transparent;color:#3a3a56;cursor:pointer">CPA</button>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
@@ -2398,11 +2398,11 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
       <div>
         <div style="font-size:17px;font-weight:800;color:#1a1a2e">🎬 Creative Deep-Dive · 3-Bucket Analysis</div>
-        <div style="font-size:12px;color:#4a4a6a;margin-top:3px">Each video graded by hook · hold · CTR · ROAS · explained with 5–10 actionable pointers — <b style="color:#c4b5fd">what worked, what failed, what to do next</b></div>
+        <div style="font-size:12px;color:#4a4a6a;margin-top:3px">Each video graded by hook · hold · CTR · ROAS · explained with 5–10 actionable pointers — <b style="color:#6d28d9">what worked, what failed, what to do next</b></div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <span style="font-size:11px;color:#5c5c78">Show top</span>
-        <select id="cr-bucket-size" onchange="renderCreatives(document.getElementById('cr-from').value,document.getElementById('cr-to').value)" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:4px 10px;border-radius:6px;font-size:11px">
+        <span style="font-size:11px;color:#3a3a56">Show top</span>
+        <select id="cr-bucket-size" onchange="renderCreatives(document.getElementById('cr-from').value,document.getElementById('cr-to').value)" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:4px 10px;border-radius:6px;font-size:11px">
           <option value="3">3 per bucket</option>
           <option value="5" selected>5 per bucket</option>
           <option value="10">10 per bucket</option>
@@ -2418,7 +2418,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
             <div style="font-size:13px;font-weight:800;color:#059669;letter-spacing:0.3px">🏆 TOP PERFORMERS</div>
             <div style="font-size:11px;color:#4a4a6a;margin-top:2px" id="cr-bucket-top-stats">—</div>
           </div>
-          <div style="font-size:9px;color:#5c5c78;text-align:right;line-height:1.4">ROAS ≥ 1.3× portfolio<br>Impr &gt; 5K</div>
+          <div style="font-size:9px;color:#3a3a56;text-align:right;line-height:1.4">ROAS ≥ 1.3× portfolio<br>Impr &gt; 5K</div>
         </div>
         <div id="cr-bucket-top" style="display:flex;flex-direction:column;gap:14px"></div>
       </div>
@@ -2430,7 +2430,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
             <div style="font-size:13px;font-weight:800;color:#2b7bbf;letter-spacing:0.3px">⚖️ AVERAGE PERFORMERS</div>
             <div style="font-size:11px;color:#4a4a6a;margin-top:2px" id="cr-bucket-avg-stats">—</div>
           </div>
-          <div style="font-size:9px;color:#5c5c78;text-align:right;line-height:1.4">ROAS 0.7×–1.3×<br>portfolio avg</div>
+          <div style="font-size:9px;color:#3a3a56;text-align:right;line-height:1.4">ROAS 0.7×–1.3×<br>portfolio avg</div>
         </div>
         <div id="cr-bucket-avg" style="display:flex;flex-direction:column;gap:14px"></div>
       </div>
@@ -2442,7 +2442,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
             <div style="font-size:13px;font-weight:800;color:#dc2626;letter-spacing:0.3px">📉 BOTTOM PERFORMERS</div>
             <div style="font-size:11px;color:#4a4a6a;margin-top:2px" id="cr-bucket-bot-stats">—</div>
           </div>
-          <div style="font-size:9px;color:#5c5c78;text-align:right;line-height:1.4">ROAS &lt; 0.7× portfolio<br>Spend &gt; ₹1.5K</div>
+          <div style="font-size:9px;color:#3a3a56;text-align:right;line-height:1.4">ROAS &lt; 0.7× portfolio<br>Spend &gt; ₹1.5K</div>
         </div>
         <div id="cr-bucket-bot" style="display:flex;flex-direction:column;gap:14px"></div>
       </div>
@@ -2454,23 +2454,23 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
       <div>
         <div style="font-size:14px;font-weight:600;color:#1a1a2e">📋 All Creatives Performance</div>
-        <div style="font-size:12px;color:#5c5c78">Same creative across multiple adsets is merged into one row (<span style="background:rgba(6,214,160,0.18);color:#0d9488;border-radius:3px;padding:1px 4px;font-weight:600">×N</span> badge shows merge count) · Click headers to sort · <span id="cr-table-count" style="color:#0d9488">— ads</span></div>
+        <div style="font-size:12px;color:#3a3a56">Same creative across multiple adsets is merged into one row (<span style="background:rgba(6,214,160,0.18);color:#0d9488;border-radius:3px;padding:1px 4px;font-weight:600">×N</span> badge shows merge count) · Click headers to sort · <span id="cr-table-count" style="color:#0d9488">— ads</span></div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <select id="cr-action-filter" onchange="crFilterTable()" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:12px">
+        <select id="cr-action-filter" onchange="crFilterTable()" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:12px">
           <option value="">All actions</option>
           <option value="scale">🚀 Scale</option>
           <option value="solid">✓ Solid</option>
           <option value="optimize">⚠️ Optimize</option>
           <option value="kill">🛑 Kill</option>
         </select>
-        <input id="cr-search" oninput="crFilterTable()" placeholder="Search ad name…" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 12px;border-radius:8px;font-size:12px;width:200px">
+        <input id="cr-search" oninput="crFilterTable()" placeholder="Search ad name…" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 12px;border-radius:8px;font-size:12px;width:200px">
       </div>
     </div>
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:11.5px" id="cr-ad-table">
         <thead>
-          <tr style="color:#5c5c78;border-bottom:1px solid rgba(26,26,46,0.07);font-size:10.5px;text-transform:uppercase;letter-spacing:0.5px">
+          <tr style="color:#3a3a56;border-bottom:1px solid rgba(26,26,46,0.07);font-size:10.5px;text-transform:uppercase;letter-spacing:0.5px">
             <th style="text-align:left;padding:9px 8px;cursor:pointer;white-space:nowrap" onclick="crSortTable('action_order')">Action</th>
             <th style="text-align:left;padding:9px 8px;cursor:pointer;white-space:nowrap" onclick="crSortTable('ad_name')">Ad Name ↕</th>
             <th style="text-align:right;padding:9px 8px;cursor:pointer" onclick="crSortTable('spend')">Spend ↕</th>
@@ -2504,7 +2504,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px">
     <div>
       <h2 style="font-size:22px;font-weight:700;color:#1a1a2e;margin:0">🔬 Deep Meta Ads Analysis</h2>
-      <p style="font-size:13px;color:#5c5c78;margin:4px 0 0">Actionable changes at <b style="color:#4a4a6a">Campaign</b> → <b style="color:#4a4a6a">Adset</b> → <b style="color:#4a4a6a">Creative</b> level · Specific recommendations with projected impact</p>
+      <p style="font-size:13px;color:#3a3a56;margin:4px 0 0">Actionable changes at <b style="color:#4a4a6a">Campaign</b> → <b style="color:#4a4a6a">Adset</b> → <b style="color:#4a4a6a">Creative</b> level · Specific recommendations with projected impact</p>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <div style="display:flex;gap:6px">
@@ -2513,43 +2513,43 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
         <button class="sh-qbtn active" id="dpp-mtd" onclick="deepSetPreset('mtd')">MTD</button>
         <button class="sh-qbtn" id="dpp-30d" onclick="deepSetPreset('30d')">30 Days</button>
       </div>
-      <input type="date" id="dp-from" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
-      <span style="color:#5c5c78;font-size:13px">→</span>
-      <input type="date" id="dp-to" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
-      <button onclick="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(236,72,153,0.2);border:1px solid rgba(236,72,153,0.4);color:#fbcfe8;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer">Apply</button>
+      <input type="date" id="dp-from" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
+      <span style="color:#3a3a56;font-size:13px">→</span>
+      <input type="date" id="dp-to" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:6px 10px;border-radius:8px;font-size:13px">
+      <button onclick="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(236,72,153,0.2);border:1px solid rgba(236,72,153,0.4);color:#be185d;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer">Apply</button>
     </div>
   </div>
 
   <!-- ── Period bar ───────────────────────────────────────────── -->
-  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:14px;padding:10px 16px;background:rgba(30,41,59,0.4);border:1px solid rgba(26,26,46,0.05);border-radius:10px">
-    <div><span style="color:#5c5c78">Current:</span> <span id="dp-period-curr" style="color:#fbcfe8;font-weight:600">—</span></div>
-    <div style="color:#475569">↔</div>
-    <div><span style="color:#5c5c78">vs Previous:</span> <span id="dp-period-prev" style="color:#4a4a6a;font-weight:600">—</span></div>
-    <div style="margin-left:auto;color:#5c5c78;font-size:11px">Recommendations based on portfolio benchmark</div>
+  <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px;margin-bottom:14px;padding:10px 16px;background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.05);border-radius:10px">
+    <div><span style="color:#3a3a56">Current:</span> <span id="dp-period-curr" style="color:#be185d;font-weight:600">—</span></div>
+    <div style="color:#4a4a6a">↔</div>
+    <div><span style="color:#3a3a56">vs Previous:</span> <span id="dp-period-prev" style="color:#4a4a6a;font-weight:600">—</span></div>
+    <div style="margin-left:auto;color:#3a3a56;font-size:11px">Recommendations based on portfolio benchmark</div>
   </div>
 
   <!-- ── 🏆 Pro Marketer's 10-Step Account Restructure ──────── -->
   <div style="background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(6,214,160,0.04));border:1px solid rgba(245,158,11,0.25);border-radius:16px;padding:22px 24px;margin-bottom:24px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px">
       <div>
-        <div style="font-size:18px;font-weight:800;color:#fef3c7;letter-spacing:0.3px">🏆 Pro Marketer's 10-Step Restructure Plan</div>
+        <div style="font-size:18px;font-weight:800;color:#b45309;letter-spacing:0.3px">🏆 Pro Marketer's 10-Step Restructure Plan</div>
         <div style="font-size:12px;color:#4a4a6a;margin-top:3px">If a senior media buyer took over your account today — these are the changes they'd make this week · <b style="color:#b45309">No new creatives required</b> · uses only your existing ads</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
         <span style="font-size:10px;font-weight:700;color:#0d9488;background:rgba(6,214,160,0.18);border-radius:5px;padding:3px 7px">ACCOUNT</span>
         <span style="font-size:10px;font-weight:700;color:#b45309;background:rgba(245,158,11,0.18);border-radius:5px;padding:3px 7px">CAMPAIGN</span>
         <span style="font-size:10px;font-weight:700;color:#059669;background:rgba(16,185,129,0.18);border-radius:5px;padding:3px 7px">ADSET</span>
-        <span style="font-size:10px;font-weight:700;color:#f9a8d4;background:rgba(236,72,153,0.18);border-radius:5px;padding:3px 7px">CREATIVE</span>
+        <span style="font-size:10px;font-weight:700;color:#be185d;background:rgba(236,72,153,0.18);border-radius:5px;padding:3px 7px">CREATIVE</span>
       </div>
     </div>
     <div id="dp-pro-plan" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:14px;margin-top:18px"></div>
-    <div id="dp-pro-projection" style="margin-top:18px;padding:14px 18px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;font-size:12px;color:#cbd5e1;line-height:1.6"></div>
+    <div id="dp-pro-projection" style="margin-top:18px;padding:14px 18px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:10px;font-size:12px;color:#35355a;line-height:1.6"></div>
   </div>
 
   <!-- ── 🎯 Executive Summary — "What to do this week" ──────── -->
   <div style="background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(168,85,247,0.05));border:1px solid rgba(236,72,153,0.2);border-radius:14px;padding:18px 22px;margin-bottom:24px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div style="font-size:12px;font-weight:700;color:#f9a8d4;text-transform:uppercase;letter-spacing:1.5px">⚡ Executive Action Plan · This Week</div>
+      <div style="font-size:12px;font-weight:700;color:#be185d;text-transform:uppercase;letter-spacing:1.5px">⚡ Executive Action Plan · This Week</div>
       <div id="dp-priority-count" style="font-size:11px;color:#4a4a6a"></div>
     </div>
     <div id="dp-exec-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px"></div>
@@ -2558,12 +2558,12 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <!-- ── 📊 Portfolio Health Score ─────────────────────────── -->
   <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:24px">
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-      <div style="font-size:11px;font-weight:700;color:#5c5c78;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Portfolio Health</div>
+      <div style="font-size:11px;font-weight:700;color:#3a3a56;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Portfolio Health</div>
       <div id="dp-health-score" style="font-size:48px;font-weight:800;line-height:1;color:#047857">—</div>
       <div id="dp-health-label" style="font-size:12px;color:#4a4a6a;margin-top:6px">—</div>
     </div>
     <div style="background:rgba(255,253,246,0.7);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:18px">
-      <div style="font-size:11px;font-weight:700;color:#5c5c78;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Diagnostic Breakdown</div>
+      <div style="font-size:11px;font-weight:700;color:#3a3a56;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Diagnostic Breakdown</div>
       <div id="dp-diagnostics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px"></div>
     </div>
   </div>
@@ -2573,7 +2573,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
       <div>
         <div style="font-size:16px;font-weight:700;color:#1a1a2e">📦 Campaign-Level Changes</div>
-        <div style="font-size:12px;color:#5c5c78">Budget reallocation · Scale/Pause decisions · Performance vs portfolio</div>
+        <div style="font-size:12px;color:#3a3a56">Budget reallocation · Scale/Pause decisions · Performance vs portfolio</div>
       </div>
       <div style="display:flex;gap:8px">
         <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#4a4a6a"><span style="width:10px;height:10px;border-radius:50%;background:#047857"></span>Scale</div>
@@ -2590,10 +2590,10 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
       <div>
         <div style="font-size:16px;font-weight:700;color:#1a1a2e">🎯 Adset-Level Changes</div>
-        <div style="font-size:12px;color:#5c5c78">Audience saturation · Bid efficiency · Budget shifts within campaign</div>
+        <div style="font-size:12px;color:#3a3a56">Audience saturation · Bid efficiency · Budget shifts within campaign</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="dp-adset-filter" onchange="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px">
+        <select id="dp-adset-filter" onchange="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px">
           <option value="">All adsets</option>
           <option value="issue">Only with issues</option>
           <option value="scale">Only Scale tier</option>
@@ -2605,7 +2605,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="overflow-x:auto;margin-top:14px">
       <table style="width:100%;border-collapse:collapse;font-size:11.5px">
         <thead>
-          <tr style="color:#5c5c78;border-bottom:1px solid rgba(26,26,46,0.07);font-size:10.5px;text-transform:uppercase;letter-spacing:0.5px">
+          <tr style="color:#3a3a56;border-bottom:1px solid rgba(26,26,46,0.07);font-size:10.5px;text-transform:uppercase;letter-spacing:0.5px">
             <th style="text-align:left;padding:9px 8px">Action</th>
             <th style="text-align:left;padding:9px 8px">Adset</th>
             <th style="text-align:right;padding:9px 8px">Spend</th>
@@ -2629,10 +2629,10 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:10px">
       <div>
         <div style="font-size:16px;font-weight:700;color:#1a1a2e">🎨 Creative-Level Changes</div>
-        <div style="font-size:12px;color:#5c5c78">Pause / Refresh / Scale decisions per ad · Hook strength · Retention diagnostics</div>
+        <div style="font-size:12px;color:#3a3a56">Pause / Refresh / Scale decisions per ad · Hook strength · Retention diagnostics</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="dp-ad-filter" onchange="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px">
+        <select id="dp-ad-filter" onchange="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px">
           <option value="">All recommendations</option>
           <option value="pause">🛑 Pause now</option>
           <option value="refresh">🔄 Refresh creative</option>
@@ -2641,7 +2641,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
           <option value="hook">🎬 Fix hook (low thumbstop)</option>
           <option value="retention">⏱️ Fix retention (low hold)</option>
         </select>
-        <input id="dp-ad-search" oninput="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" placeholder="Search creative…" style="background:rgba(30,41,59,0.8);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px;width:180px">
+        <input id="dp-ad-search" oninput="renderDeep(document.getElementById('dp-from').value,document.getElementById('dp-to').value)" placeholder="Search creative…" style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.1);color:#1a1a2e;padding:5px 10px;border-radius:6px;font-size:11px;width:180px">
       </div>
     </div>
     <div id="dp-ad-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;margin-top:16px"></div>
@@ -2650,7 +2650,7 @@ tbody tr:hover{border-left-color:rgba(6,214,160,0.5)}
   <!-- ── 💰 Budget Reallocation Simulator ────────────────── -->
   <div style="background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(255,253,246,0.7));border:1px solid rgba(16,185,129,0.25);border-radius:16px;padding:22px">
     <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:4px">💰 Budget Reallocation Simulator</div>
-    <div style="font-size:12px;color:#5c5c78;margin-bottom:18px">Project the impact of reclaiming spend from Pause candidates and reinvesting in Scale tier</div>
+    <div style="font-size:12px;color:#3a3a56;margin-bottom:18px">Project the impact of reclaiming spend from Pause candidates and reinvesting in Scale tier</div>
     <div id="dp-budget-sim" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px"></div>
   </div>
 
@@ -3195,7 +3195,7 @@ function initDemoCharts(rows) {
       if (el) {
         const ctx = el.getContext('2d');
         ctx.clearRect(0, 0, el.width, el.height);
-        ctx.fillStyle = '#475569';
+        ctx.fillStyle = '#4a4a6a';
         ctx.font = '13px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Demographic data loading…', el.width / 2, el.height / 2);
@@ -3475,26 +3475,26 @@ function renderShopify(from, to) {
   const _bannerEl  = document.getElementById('sh-true-roas-banner');
   if(_bannerEl) _bannerEl.innerHTML = _trueRoas > 0 ? `
     <div style="background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(6,214,160,0.08));border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-      <div><div style="font-size:10px;color:#5c5c78;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">True ROAS (${from===to?from:from+' → '+to})</div>
+      <div><div style="font-size:10px;color:#3a3a56;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px">True ROAS (${from===to?from:from+' → '+to})</div>
         <div style="font-size:26px;font-weight:800;color:${_roasColor}">${_trueRoas.toFixed(2)}x</div>
-        <div style="font-size:11px;color:#5c5c78">Shopify GMV ÷ Meta Spend</div></div>
+        <div style="font-size:11px;color:#3a3a56">Shopify GMV ÷ Meta Spend</div></div>
       <div style="width:1px;height:44px;background:rgba(26,26,46,0.07)"></div>
-      <div><div style="font-size:10px;color:#5c5c78;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">CAC (Period)</div>
-        <div style="font-size:20px;font-weight:700;color:#e2e8f0">${_cac>0?'₹'+parseInt(_cac).toLocaleString('en-IN'):'—'}</div>
-        <div style="font-size:11px;color:#5c5c78">${S.newCust} new customers</div></div>
+      <div><div style="font-size:10px;color:#3a3a56;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">CAC (Period)</div>
+        <div style="font-size:20px;font-weight:700;color:#1a1a2e">${_cac>0?'₹'+parseInt(_cac).toLocaleString('en-IN'):'—'}</div>
+        <div style="font-size:11px;color:#3a3a56">${S.newCust} new customers</div></div>
       <div style="width:1px;height:44px;background:rgba(26,26,46,0.07)"></div>
-      <div style="font-size:12px;color:#5c5c78;line-height:1.9">
+      <div style="font-size:12px;color:#3a3a56;line-height:1.9">
         Meta Spend: <strong style="color:#4a4a6a">₹${parseInt(_metaSpend).toLocaleString('en-IN')}</strong> &nbsp;·&nbsp;
         Shopify GMV: <strong style="color:#047857">₹${parseInt(S.gmv).toLocaleString('en-IN')}</strong><br>
         ${_pixelRoas>0?`Pixel ROAS: <strong style="color:#4a4a6a">${_pixelRoas.toFixed(2)}x</strong> &nbsp;·&nbsp;
-        Gap: <strong style="color:${_trueRoas>_pixelRoas?'#047857':'#dc2626'}">${_trueRoas>_pixelRoas?'+':''}${(_trueRoas-_pixelRoas).toFixed(2)}x</strong>`:'Pixel ROAS: <strong style="color:#475569">—</strong>'}
+        Gap: <strong style="color:${_trueRoas>_pixelRoas?'#047857':'#dc2626'}">${_trueRoas>_pixelRoas?'+':''}${(_trueRoas-_pixelRoas).toFixed(2)}x</strong>`:'Pixel ROAS: <strong style="color:#4a4a6a">—</strong>'}
       </div>
     </div>` : `
-    <div style="background:rgba(30,41,59,0.4);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:16px">
+    <div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.07);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:16px">
       <div style="font-size:20px">📊</div>
       <div>
-        <div style="font-size:13px;font-weight:700;color:#e2e8f0">GMV: ₹${parseInt(S.gmv).toLocaleString('en-IN')}</div>
-        <div style="font-size:11px;color:#5c5c78;margin-top:2px">No Meta Ads data for ${from===to?from:from+' → '+to} — ROAS unavailable</div>
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e">GMV: ₹${parseInt(S.gmv).toLocaleString('en-IN')}</div>
+        <div style="font-size:11px;color:#3a3a56;margin-top:2px">No Meta Ads data for ${from===to?from:from+' → '+to} — ROAS unavailable</div>
       </div>
     </div>`;
   // ─────────────────────────────────────────────────────────────────────────
@@ -3508,7 +3508,7 @@ function renderShopify(from, to) {
   const pf = v => parseFloat(v||0).toFixed(1)+'%';
 
   const kpiHTML = `
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Revenue — ${from===to?from:from+' → '+to}</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Revenue — ${from===to?from:from+' → '+to}</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kcs('Gross GMV',inr(S.gmv),nDays+' days · '+inr(avgDaily)+'/day','green')}
     ${kcs('Net Revenue',inr(netRev),'After '+inr(S.discount)+' discounts','')}
@@ -3518,7 +3518,7 @@ function renderShopify(from, to) {
     ${kc('Tax + Shipping',inr(S.tax+S.shipping),'Tax: '+inr(S.tax)+' · Ship: '+inr(S.shipping),'')}
   </div>
 
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">👥 Customers</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">👥 Customers</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kc('New Customers',S.newCust,Math.round(S.newCust/nDays*10)/10+'/day avg','')}
     ${kc('Returning Customers',S.retCust,pf(repeatRate)+' repeat rate','')}
@@ -3528,7 +3528,7 @@ function renderShopify(from, to) {
     ${kc('Abandoned Carts (Today)',_SH_TODAY.abandoned,inr(_SH_TODAY.abandonedVal)+' at risk',_SH_TODAY.abandoned>10?'red':_SH_TODAY.abandoned>4?'amber':'')}
   </div>
 
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📦 Orders & Fulfilment</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📦 Orders & Fulfilment</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kc('COD Orders',S.cod,pf(codRate)+' of all orders',S.cod>S.prepaid?'amber':'')}
     ${kc('Prepaid Orders',S.prepaid,pf(100-codRate)+' prepaid rate','green')}
@@ -3538,7 +3538,7 @@ function renderShopify(from, to) {
     ${kc('Pending (Today)',_SH_TODAY.pending,_SH_TODAY.fulfilled+' fulfilled today',_SH_TODAY.pending>5?'orange':'')}
   </div>
 
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🛒 Discounts & Efficiency</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🛒 Discounts & Efficiency</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kc('Discount Given',inr(S.discount),pf(discPct)+' of gross GMV','amber')}
     ${kc('Avg Discount %',pf(discPct),inr(S.discount/Math.max(S.orders,1))+'/order avg','')}
@@ -3548,7 +3548,7 @@ function renderShopify(from, to) {
     ${kc('Pixel ROAS',_pixelRoas>0?_pixelRoas.toFixed(2)+'x':'—','Meta-attributed revenue · '+nDays+'d','')}
   </div>
 
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Period Intelligence</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Period Intelligence</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kcs('Avg Daily GMV',inr(avgDaily),parseFloat(avgDailyOrd.toFixed(1))+' orders/day avg','green')}
     ${kcs('Best Day',bestDay?bestDay.date:'—',bestDay?inr(bestDay.gmv)+' · '+bestDay.orders+' orders':'—','green')}
@@ -3561,10 +3561,10 @@ function renderShopify(from, to) {
   document.getElementById('sh-kpi-section').innerHTML = kpiHTML;
 
   // ── Render tables ──────────────────────────────────────────────────────────
-  const thStyle = 'style="text-align:left;padding:8px 10px;font-weight:600;color:#5c5c78;font-size:12px;border-bottom:1px solid rgba(26,26,46,0.07);background:#0a1628;position:sticky;top:0"';
-  const thR = 'style="text-align:right;padding:8px 10px;font-weight:600;color:#5c5c78;font-size:12px;border-bottom:1px solid rgba(26,26,46,0.07);background:#0a1628;position:sticky;top:0"';
+  const thStyle = 'style="text-align:left;padding:8px 10px;font-weight:600;color:#3a3a56;font-size:12px;border-bottom:1px solid rgba(26,26,46,0.07);background:rgba(26,26,46,0.06);position:sticky;top:0"';
+  const thR = 'style="text-align:right;padding:8px 10px;font-weight:600;color:#3a3a56;font-size:12px;border-bottom:1px solid rgba(26,26,46,0.07);background:rgba(26,26,46,0.06);position:sticky;top:0"';
   const trStyle = 'style="border-bottom:1px solid rgba(26,26,46,0.04)"';
-  const td = v => `<td style="padding:7px 10px;color:#e2e8f0;font-size:12px">${v}</td>`;
+  const td = v => `<td style="padding:7px 10px;color:#1a1a2e;font-size:12px">${v}</td>`;
   const tdR = v => `<td style="padding:7px 10px;text-align:right;color:#4a4a6a;font-size:12px">${v}</td>`;
   const tdG = v => `<td style="padding:7px 10px;text-align:right;color:#047857;font-weight:600;font-size:12px">${v}</td>`;
 
@@ -3602,7 +3602,7 @@ function renderShopify(from, to) {
     </div>`).join('');
 
   document.getElementById('sh-tables-section').innerHTML = `
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🏆 Products & Geography (All Time)</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🏆 Products & Geography (All Time)</div>
   <div class="cg2" style="margin-bottom:14px">
     <div class="cc">
       <div class="cc-head"><div class="cc-title">🏆 Top Products by Revenue</div></div>
@@ -3643,9 +3643,9 @@ function renderShopify(from, to) {
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:4px">${discRows}</div>
   </div>` : ''}
   ${_SH_TODAY.abandoned > 0 ? `
-  <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 18px;font-size:13px;color:#fca5a5;margin-bottom:8px">
+  <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 18px;font-size:13px;color:#dc2626;margin-bottom:8px">
     ⚠️ <strong>${_SH_TODAY.abandoned} abandoned carts right now</strong> worth <strong>${inr(_SH_TODAY.abandonedVal)}</strong> — send recovery flow immediately
-  </div>` : `<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px 18px;font-size:13px;color:#6ee7b7">✅ No abandoned carts right now</div>`}
+  </div>` : `<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px 18px;font-size:13px;color:#047857">✅ No abandoned carts right now</div>`}
   `;
 
   // ── Re-render trend + cumGmv + cust + cod charts with filtered data ────────
@@ -3668,9 +3668,9 @@ function initShopifyChart(){
     {label:'Revenue',data:revs,type:'line',borderColor:'#047857',backgroundColor:'rgba(16,185,129,0.1)',borderWidth:2,pointRadius:3,fill:true,tension:0.4,yAxisID:'yR'}
   ]},options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label==='Revenue'?' ₹'+parseInt(c.raw).toLocaleString('en-IN'):' '+c.raw+' orders'}}},
-    scales:{yO:{position:'left',beginAtZero:true,ticks:{color:'#5c5c78',font:{size:10}},grid:{color:'rgba(26,26,46,0.04)'}},
-      yR:{position:'right',beginAtZero:true,ticks:{color:'#5c5c78',font:{size:10},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)},grid:{display:false}},
-      x:{ticks:{color:'#5c5c78',font:{size:9}},grid:{display:false}}}}});
+    scales:{yO:{position:'left',beginAtZero:true,ticks:{color:'#3a3a56',font:{size:10}},grid:{color:'rgba(26,26,46,0.04)'}},
+      yR:{position:'right',beginAtZero:true,ticks:{color:'#3a3a56',font:{size:10},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)},grid:{display:false}},
+      x:{ticks:{color:'#3a3a56',font:{size:9}},grid:{display:false}}}}});
 }
 
 function _renderShopifyCharts(days, S) {
@@ -3686,9 +3686,9 @@ function _renderShopifyCharts(days, S) {
       {label:'Orders',data:days.map(d=>d.orders),type:'line',borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,0.1)',borderWidth:2,pointRadius:2,fill:true,tension:0.4,yAxisID:'yO'}
     ]},options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>c.dataset.label==='GMV'?' ₹'+parseInt(c.raw).toLocaleString('en-IN'):' '+c.raw+' orders'}}},
-      scales:{yG:{position:'left',beginAtZero:true,ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)},grid:{color:'rgba(26,26,46,0.04)'}},
-        yO:{position:'right',beginAtZero:true,ticks:{color:'#5c5c78',font:{size:9}},grid:{display:false}},
-        x:{ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:15},grid:{display:false}}}}});
+      scales:{yG:{position:'left',beginAtZero:true,ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)},grid:{color:'rgba(26,26,46,0.04)'}},
+        yO:{position:'right',beginAtZero:true,ticks:{color:'#3a3a56',font:{size:9}},grid:{display:false}},
+        x:{ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:15},grid:{display:false}}}}});
   }
   // Cumulative GMV
   const cEl = document.getElementById('chartShopifyCumGmv');
@@ -3696,7 +3696,7 @@ function _renderShopifyCharts(days, S) {
     if(_shCumChart){_shCumChart.destroy();_shCumChart=null;}
     let cum=0;
     const cumVals = days.map(d=>{cum+=d.gmv;return cum;});
-    _shCumChart=new Chart(cEl,{type:'line',data:{labels,datasets:[{label:'Cum. GMV',data:cumVals,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.12)',borderWidth:2.5,fill:true,tension:0.4,pointRadius:2,pointBackgroundColor:'#b45309'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:12},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+    _shCumChart=new Chart(cEl,{type:'line',data:{labels,datasets:[{label:'Cum. GMV',data:cumVals,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.12)',borderWidth:2.5,fill:true,tension:0.4,pointRadius:2,pointBackgroundColor:'#b45309'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:12},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
   }
   // New vs Returning
   const custEl = document.getElementById('chartShopifyCust');
@@ -3705,7 +3705,7 @@ function _renderShopifyCharts(days, S) {
     _shCustChart=new Chart(custEl,{type:'bar',data:{labels,datasets:[
       {label:'New',data:days.map(d=>d.newCust),backgroundColor:'rgba(59,130,246,0.75)',borderRadius:3,stack:'c'},
       {label:'Return',data:days.map(d=>d.retCust),backgroundColor:'rgba(16,185,129,0.75)',borderRadius:3,stack:'c'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked:true,ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9}}}}}});
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked:true,ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9}}}}}});
   }
   // COD vs Prepaid
   const codEl = document.getElementById('chartShopifyCod');
@@ -3714,21 +3714,21 @@ function _renderShopifyCharts(days, S) {
     _shCodChart=new Chart(codEl,{type:'bar',data:{labels,datasets:[
       {label:'COD',data:days.map(d=>d.cod||0),backgroundColor:'rgba(245,158,11,0.7)',borderRadius:3,stack:'p'},
       {label:'Prepaid',data:days.map(d=>d.prepaid||0),backgroundColor:'rgba(6,214,160,0.7)',borderRadius:3,stack:'p'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked:true,ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9}}}}}});
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked:true,ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{stacked:true,beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9}}}}}});
   }
   // Buckets
   const bEl = document.getElementById('chartShopifyBuckets');
   if(bEl){
     if(_shBucketsChart){_shBucketsChart.destroy();_shBucketsChart=null;}
     const bLabels=Object.keys(_SH_BUCKETS), bVals=Object.values(_SH_BUCKETS);
-    _shBucketsChart=new Chart(bEl,{type:'bar',data:{labels:bLabels,datasets:[{label:'Orders',data:bVals,backgroundColor:['rgba(139,92,246,0.7)','rgba(59,130,246,0.7)','rgba(16,185,129,0.7)','rgba(245,158,11,0.7)','rgba(239,68,68,0.7)'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' orders'}}},scales:{x:{grid:{display:false},ticks:{color:'#5c5c78',font:{size:10}}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:10}}}}}});
+    _shBucketsChart=new Chart(bEl,{type:'bar',data:{labels:bLabels,datasets:[{label:'Orders',data:bVals,backgroundColor:['rgba(139,92,246,0.7)','rgba(59,130,246,0.7)','rgba(16,185,129,0.7)','rgba(245,158,11,0.7)','rgba(239,68,68,0.7)'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' orders'}}},scales:{x:{grid:{display:false},ticks:{color:'#3a3a56',font:{size:10}}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:10}}}}}});
   }
   // Top Products horizontal bar
   const pEl = document.getElementById('chartShopifyProducts');
   if(pEl){
     if(_shProductsChart){_shProductsChart.destroy();_shProductsChart=null;}
     const top8 = _SH_PRODUCTS.slice(0,8);
-    _shProductsChart=new Chart(pEl,{type:'bar',data:{labels:top8.map(p=>(p.title||'').slice(0,20)),datasets:[{label:'Revenue',data:top8.map(p=>p.revenue),backgroundColor:'rgba(16,185,129,0.7)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}},y:{grid:{display:false},ticks:{color:'#5c5c78',font:{size:9}}}}}});
+    _shProductsChart=new Chart(pEl,{type:'bar',data:{labels:top8.map(p=>(p.title||'').slice(0,20)),datasets:[{label:'Revenue',data:top8.map(p=>p.revenue),backgroundColor:'rgba(16,185,129,0.7)',borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}},y:{grid:{display:false},ticks:{color:'#3a3a56',font:{size:9}}}}}});
   }
 }
 
@@ -3823,7 +3823,7 @@ function renderOverall(from, to) {
 
   const kc=(l,v,s,c='')=>`<div class="kcard ${c}"><div class="k-lbl">${l}</div><div class="k-val">${v}</div><div class="k-meta"><span class="k-bench">${s}</span></div></div>`;
   document.getElementById('ov-kpi-section').innerHTML=`
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Revenue & Spend — ${from===to?from:from+' → '+to}</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Revenue & Spend — ${from===to?from:from+' → '+to}</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kc('Meta Ad Spend',inr(metaS.spend),nDays+' days · '+inr(metaS.spend/nDays)+'/day','')}
     ${kc('Shopify GMV',inr(shS.gmv),inr(shS.gmv/nDays)+'/day avg','green')}
@@ -3832,7 +3832,7 @@ function renderOverall(from, to) {
     ${kc('Pixel ROAS',pixelRoas.toFixed(2)+'x','Meta attributed ROAS',pixelRoas>=2?'green':pixelRoas>=1?'amber':'red')}
     ${kc('ROAS Gap',(blendedRoas-pixelRoas).toFixed(2)+'x','True vs Pixel gap',(blendedRoas>pixelRoas)?'green':'amber')}
   </div>
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Efficiency & Customers</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Efficiency & Customers</div>
   <div class="kpi-grid g6" style="margin-bottom:14px">
     ${kc('CAC',cac>0?inr(cac):'—','Meta spend ÷ new customers','purple')}
     ${kc('CPA (Meta)',inr(cpa),'Per purchase','purple')}
@@ -3841,7 +3841,7 @@ function renderOverall(from, to) {
     ${kc('Total Orders',shS.orders.toLocaleString(),'Shopify orders','')}
     ${kc('Purchases (Pixel)',metaS.purchases.toLocaleString(),'Meta-attributed purchases','')}
   </div>
-  <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🛒 Blended Funnel</div>
+  <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">🛒 Blended Funnel</div>
   <div class="kpi-grid g6" style="margin-bottom:20px">
     ${kc('Net Revenue',inr(netRev),'Shopify GMV after discounts','green')}
     ${kc('Discount Given',inr(shS.discount),shS.gmv>0?(shS.discount/shS.gmv*100).toFixed(1)+'% of GMV':'—','amber')}
@@ -3863,13 +3863,13 @@ function renderOverall(from, to) {
     _ovSpendChart=new Chart(sgEl,{type:'bar',data:{labels:allDates.map(d=>d.slice(5)),datasets:[
       {label:'Meta Spend',data:allDates.map(d=>metaByDate[d]?.spend||0),backgroundColor:'rgba(239,68,68,0.6)',borderRadius:3,yAxisID:'y'},
       {label:'Shopify GMV',data:allDates.map(d=>shByDate[d]?.gmv||0),type:'line',borderColor:'#047857',backgroundColor:'rgba(16,185,129,0.08)',fill:true,borderWidth:2,pointRadius:2,tension:0.4,yAxisID:'y'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:15},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:15},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=100000?(v/100000).toFixed(1)+'L':v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
   }
   const roasEl=document.getElementById('chartOvRoas');
   if(roasEl){
     if(_ovRoasChart){_ovRoasChart.destroy();_ovRoasChart=null;}
     const roasArr=allDates.map(d=>{const sp=metaByDate[d]?.spend||0,gm=shByDate[d]?.gmv||0;return sp>0&&gm>0?parseFloat((gm/sp).toFixed(2)):null;});
-    _ovRoasChart=new Chart(roasEl,{type:'line',data:{labels:allDates.map(d=>d.slice(5)),datasets:[{label:'Blended ROAS',data:roasArr,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.1)',fill:true,borderWidth:2.5,pointRadius:3,pointBackgroundColor:roasArr.map(r=>r===null?'transparent':r>=2?'#047857':r>=1?'#b45309':'#dc2626'),tension:0.4,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?'No data':' ROAS: '+c.raw+'x'}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:15},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>v+'x'}}}}});
+    _ovRoasChart=new Chart(roasEl,{type:'line',data:{labels:allDates.map(d=>d.slice(5)),datasets:[{label:'Blended ROAS',data:roasArr,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.1)',fill:true,borderWidth:2.5,pointRadius:3,pointBackgroundColor:roasArr.map(r=>r===null?'transparent':r>=2?'#047857':r>=1?'#b45309':'#dc2626'),tension:0.4,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?'No data':' ROAS: '+c.raw+'x'}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:15},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>v+'x'}}}}});
   }
   const chEl=document.getElementById('chartOvChannel');
   if(chEl){
@@ -3885,7 +3885,7 @@ function renderOverall(from, to) {
   if(cacEl){
     if(_ovCacChart){_ovCacChart.destroy();_ovCacChart=null;}
     const cacArr=allDates.map(d=>{const sp=metaByDate[d]?.spend||0,nc=shByDate[d]?.newCust||0;return nc>0?parseFloat((sp/nc).toFixed(0)):null;});
-    _ovCacChart=new Chart(cacEl,{type:'bar',data:{labels:allDates.map(d=>d.slice(5)),datasets:[{label:'CAC (₹)',data:cacArr,backgroundColor:'rgba(6,214,160,0.65)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?'No data':' ₹'+parseInt(c.raw)+'/new cust.'}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+    _ovCacChart=new Chart(cacEl,{type:'bar',data:{labels:allDates.map(d=>d.slice(5)),datasets:[{label:'CAC (₹)',data:cacArr,backgroundColor:'rgba(6,214,160,0.65)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?'No data':' ₹'+parseInt(c.raw)+'/new cust.'}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9},maxTicksLimit:14},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
   }
 }
 
@@ -3953,7 +3953,7 @@ function renderAmazon(fromOverride, toOverride) {
   // KPI section
   const kSec=document.getElementById('amz-kpi-section');
   if(kSec) kSec.innerHTML=`
-    <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Ad Performance</div>
+    <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">💰 Ad Performance</div>
     <div class="kpi-grid g6" style="margin-bottom:14px">
       <div class="kcard green"><div class="k-lbl">Ad Revenue</div><div class="k-val">₹${totRev.toLocaleString('en-IN')}</div><div class="k-meta"><span class="k-bench">${nDays} days</span></div></div>
       <div class="kcard"><div class="k-lbl">Ad Spend</div><div class="k-val">₹${totSpend.toLocaleString('en-IN')}</div><div class="k-meta"><span class="k-bench">Amazon Ads</span></div></div>
@@ -3962,7 +3962,7 @@ function renderAmazon(fromOverride, toOverride) {
       <div class="kcard amber"><div class="k-lbl">ACOS</div><div class="k-val">${acos.toFixed(1)}%</div><div class="k-meta"><span class="k-bench">Spend ÷ Rev</span></div></div>
       <div class="kcard"><div class="k-lbl">AOV</div><div class="k-val">₹${Math.round(aov).toLocaleString('en-IN')}</div><div class="k-meta"><span class="k-bench">Per order</span></div></div>
     </div>
-    <div style="font-size:11px;font-weight:800;color:#475569;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Campaign Metrics</div>
+    <div style="font-size:11px;font-weight:800;color:#4a4a6a;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px">📊 Campaign Metrics</div>
     <div class="kpi-grid g6" style="margin-bottom:14px">
       <div class="kcard"><div class="k-lbl">Impressions</div><div class="k-val">${(totImp/1000).toFixed(1)}K</div><div class="k-meta"><span class="k-bench">Total</span></div></div>
       <div class="kcard"><div class="k-lbl">Clicks</div><div class="k-val">${totClicks.toLocaleString('en-IN')}</div><div class="k-meta"><span class="k-bench">Total</span></div></div>
@@ -3981,7 +3981,7 @@ function renderAmazon(fromOverride, toOverride) {
   const rEl=document.getElementById('chartAmzRoas');
   if(rEl){
     if(_amzRoasChart){_amzRoasChart.destroy();_amzRoasChart=null;}
-    _amzRoasChart=new Chart(rEl,{type:'line',data:{labels,datasets:[{label:'ROAS',data:roasArr,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.1)',fill:true,borderWidth:2.5,pointRadius:2,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'x'}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9}},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>v+'x'}}}}});
+    _amzRoasChart=new Chart(rEl,{type:'line',data:{labels,datasets:[{label:'ROAS',data:roasArr,borderColor:'#b45309',backgroundColor:'rgba(245,158,11,0.1)',fill:true,borderWidth:2.5,pointRadius:2,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'x'}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9}},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>v+'x'}}}}});
   }
   const sEl=document.getElementById('chartAmzSpend');
   if(sEl){
@@ -3989,7 +3989,7 @@ function renderAmazon(fromOverride, toOverride) {
     _amzSpendChart=new Chart(sEl,{type:'bar',data:{labels,datasets:[
       {label:'Spend',data:spendArr,backgroundColor:'rgba(239,68,68,0.6)',borderRadius:3,yAxisID:'y'},
       {label:'Revenue',data:revArr,type:'line',borderColor:'#047857',backgroundColor:'rgba(16,185,129,0.08)',fill:true,borderWidth:2,pointRadius:2,tension:0.4,yAxisID:'y'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#5c5c78',font:{size:9}},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#5c5c78',font:{size:9},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#4a4a6a',font:{size:11}}},tooltip:{callbacks:{label:c=>' ₹'+parseInt(c.raw).toLocaleString('en-IN')}}},scales:{x:{ticks:{color:'#3a3a56',font:{size:9}},grid:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(26,26,46,0.04)'},ticks:{color:'#3a3a56',font:{size:9},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
   }
 }
 
@@ -4249,13 +4249,13 @@ function runCompare(){
     ['Days',A.days,B.days,''],
   ];
   let h='<hr style="border-color:var(--b);margin:14px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px;font-weight:700">'
-    +'<div style="color:var(--bl)">Period A: '+a1+' → '+a2+' ('+A.days+'d)</div>'
+    +'<div style="color:var(--blue)">Period A: '+a1+' → '+a2+' ('+A.days+'d)</div>'
     +'<div style="color:#047857">Period B: '+b1+' → '+b2+' ('+B.days+'d)</div></div>'
     +'<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t2)">'
-    +'<th style="padding:6px 0;text-align:left">Metric</th><th style="text-align:right;color:var(--bl)">A</th><th style="text-align:right;color:#047857">B</th><th style="text-align:right">vs A</th></tr></thead><tbody>';
+    +'<th style="padding:6px 0;text-align:left">Metric</th><th style="text-align:right;color:var(--blue)">A</th><th style="text-align:right;color:#047857">B</th><th style="text-align:right">vs A</th></tr></thead><tbody>';
   rows.forEach(([n,a,b,d])=>{
     h+='<tr style="border-top:1px solid var(--b)"><td style="padding:8px 0;color:var(--t2)">'+n+'</td>'
-      +'<td style="text-align:right;color:var(--bl);font-weight:600">'+a+'</td>'
+      +'<td style="text-align:right;color:var(--blue);font-weight:600">'+a+'</td>'
       +'<td style="text-align:right;color:#047857;font-weight:600">'+b+'</td>'
       +'<td style="text-align:right">'+d+'</td></tr>';
   });
@@ -4755,7 +4755,7 @@ function _crFmtDelta(curr, prev, invertColor) {
   const sign  = pct >= 0 ? '+' : '';
   // invertColor: true for metrics where lower is better (CPA, Frequency)
   const isGood = invertColor ? pct < 0 : pct >= 0;
-  const color = Math.abs(pct) < 0.5 ? '#5c5c78' : isGood ? '#047857' : '#dc2626';
+  const color = Math.abs(pct) < 0.5 ? '#3a3a56' : isGood ? '#047857' : '#dc2626';
   return `<span style="color:${color};font-weight:600">${arrow} ${sign}${pct.toFixed(1)}%</span>`;
 }
 
@@ -4766,7 +4766,7 @@ function renderCreatives(from, to) {
 
   if (ads.length === 0) {
     document.getElementById('cr-ad-tbody').innerHTML =
-      '<tr><td colspan="14" style="text-align:center;padding:40px;color:#5c5c78">No ad data found for this period. Meta sync runs every 15 min.</td></tr>';
+      '<tr><td colspan="14" style="text-align:center;padding:40px;color:#3a3a56">No ad data found for this period. Meta sync runs every 15 min.</td></tr>';
     return;
   }
 
@@ -5039,8 +5039,8 @@ function _crRenderTrendChart(from, to) {
           : ' '+c.dataset.label+': ₹'+(c.raw||0).toLocaleString('en-IN') } },
       },
       scales: {
-        x: { ticks:{color:'#5c5c78',font:{size:10},maxTicksLimit:15}, grid:{display:false} },
-        y: { position:'left', beginAtZero:true, ticks:{color:'#5c5c78',font:{size:10},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}, grid:{color:'rgba(26,26,46,0.04)'}, title:{display:true,text:'₹ Spend / Revenue',color:'#5c5c78',font:{size:10}} },
+        x: { ticks:{color:'#3a3a56',font:{size:10},maxTicksLimit:15}, grid:{display:false} },
+        y: { position:'left', beginAtZero:true, ticks:{color:'#3a3a56',font:{size:10},callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}, grid:{color:'rgba(26,26,46,0.04)'}, title:{display:true,text:'₹ Spend / Revenue',color:'#3a3a56',font:{size:10}} },
         y1:{ position:'right', beginAtZero:true, ticks:{color:'#b45309',font:{size:10},callback:v=>v+'x'}, grid:{display:false}, title:{display:true,text:'ROAS',color:'#b45309',font:{size:10}} },
       }
     }
@@ -5052,7 +5052,7 @@ function _crRenderCampaignTable(ads) {
   const tbody = document.getElementById('cr-campaign-tbody');
   if (!tbody) return;
   const camps = _buildCampaignAgg(ads);
-  if (camps.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#5c5c78">No data</td></tr>'; return; }
+  if (camps.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#3a3a56">No data</td></tr>'; return; }
   tbody.innerHTML = camps.slice(0,40).map(c => {
     const roasColor = c.roas>=2?'#047857':c.roas>=1?'#b45309':'#dc2626';
     return `<tr style="border-bottom:1px solid rgba(26,26,46,0.04)">
@@ -5071,7 +5071,7 @@ function _crRenderThemeTable(ads) {
   const tbody = document.getElementById('cr-theme-tbody');
   if (!tbody) return;
   const themes = _buildThemeAgg(ads);
-  if (themes.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#5c5c78">No data</td></tr>'; return; }
+  if (themes.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#3a3a56">No data</td></tr>'; return; }
   tbody.innerHTML = themes.slice(0,40).map(t => {
     const roasColor = t.roas>=2?'#047857':t.roas>=1?'#b45309':'#dc2626';
     const tsColor   = t.thumbstop>=25?'#047857':t.thumbstop>=15?'#b45309':'#dc2626';
@@ -5286,18 +5286,18 @@ function _crRenderBucketCard(ad, bucket, port) {
   const accent = bucket==='top'?'#047857':bucket==='bottom'?'#dc2626':'#2b7bbf';
   const mergeBadge = ad.merged_count > 1 ? `<span style="font-size:9px;background:rgba(6,214,160,0.18);color:#0d9488;border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:600">×${ad.merged_count}</span>` : '';
 
-  return `<div style="background:rgba(30,41,59,0.5);border:1px solid rgba(26,26,46,0.06);border-radius:10px;padding:14px 16px;border-left:3px solid ${accent}">
+  return `<div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.06);border-radius:10px;padding:14px 16px;border-left:3px solid ${accent}">
     <div style="display:flex;align-items:start;justify-content:space-between;gap:8px;margin-bottom:8px">
       <div style="flex:1;min-width:0">
         <div style="font-size:12.5px;font-weight:700;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${ad.ad_name.replace(/"/g,'&quot;')}">${ad.ad_name}${mergeBadge}</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;padding:8px;background:rgba(255,253,246,0.5);border-radius:7px;font-size:10px">
-      <div style="text-align:center"><div style="color:#5c5c78;text-transform:uppercase;font-size:8.5px">Hook</div><div style="color:${ad.thumbstop>=25?'#047857':ad.thumbstop>=15?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.thumbstop>0?ad.thumbstop.toFixed(1)+'%':'—'}</div></div>
-      <div style="text-align:center"><div style="color:#5c5c78;text-transform:uppercase;font-size:8.5px">Hold</div><div style="color:${ad.hold_rate>=30?'#047857':ad.hold_rate>=20?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.hold_rate>0?ad.hold_rate.toFixed(1)+'%':'—'}</div></div>
-      <div style="text-align:center"><div style="color:#5c5c78;text-transform:uppercase;font-size:8.5px">CTR</div><div style="color:${ad.ctr>=1?'#047857':ad.ctr>=0.5?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.ctr.toFixed(2)}%</div></div>
-      <div style="text-align:center"><div style="color:#5c5c78;text-transform:uppercase;font-size:8.5px">ROAS</div><div style="color:${ad.roas>=2?'#047857':ad.roas>=1?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.roas.toFixed(2)}x</div></div>
-      <div style="text-align:center"><div style="color:#5c5c78;text-transform:uppercase;font-size:8.5px">Spend</div><div style="color:#cbd5e1;font-weight:700;font-size:11px">₹${(ad.spend/1000).toFixed(0)}K</div></div>
+      <div style="text-align:center"><div style="color:#3a3a56;text-transform:uppercase;font-size:8.5px">Hook</div><div style="color:${ad.thumbstop>=25?'#047857':ad.thumbstop>=15?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.thumbstop>0?ad.thumbstop.toFixed(1)+'%':'—'}</div></div>
+      <div style="text-align:center"><div style="color:#3a3a56;text-transform:uppercase;font-size:8.5px">Hold</div><div style="color:${ad.hold_rate>=30?'#047857':ad.hold_rate>=20?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.hold_rate>0?ad.hold_rate.toFixed(1)+'%':'—'}</div></div>
+      <div style="text-align:center"><div style="color:#3a3a56;text-transform:uppercase;font-size:8.5px">CTR</div><div style="color:${ad.ctr>=1?'#047857':ad.ctr>=0.5?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.ctr.toFixed(2)}%</div></div>
+      <div style="text-align:center"><div style="color:#3a3a56;text-transform:uppercase;font-size:8.5px">ROAS</div><div style="color:${ad.roas>=2?'#047857':ad.roas>=1?'#b45309':'#dc2626'};font-weight:700;font-size:11px">${ad.roas.toFixed(2)}x</div></div>
+      <div style="text-align:center"><div style="color:#3a3a56;text-transform:uppercase;font-size:8.5px">Spend</div><div style="color:#35355a;font-weight:700;font-size:11px">₹${(ad.spend/1000).toFixed(0)}K</div></div>
     </div>
     <details style="margin-bottom:8px">
       <summary style="cursor:pointer;font-size:10.5px;color:${accent};font-weight:600;letter-spacing:0.3px;text-transform:uppercase">📋 Detected Concept & Script Style</summary>
@@ -5305,7 +5305,7 @@ function _crRenderBucketCard(ad, bucket, port) {
         ${conceptLines.map(l=>'• '+l).join('<br>')}
       </div>
     </details>
-    <div style="font-size:11px;color:#cbd5e1;line-height:1.65">
+    <div style="font-size:11px;color:#35355a;line-height:1.65">
       ${pointers.map((p,i)=>`<div style="margin-bottom:6px;display:flex;gap:6px"><span style="color:${accent};font-weight:700;flex-shrink:0;min-width:18px">${i+1}.</span><span>${p}</span></div>`).join('')}
     </div>
   </div>`;
@@ -5350,10 +5350,10 @@ function _crRenderBucketAnalysis(ads, port) {
   const avgEl = document.getElementById('cr-bucket-avg');
   const botEl = document.getElementById('cr-bucket-bot');
   if (topEl) topEl.innerHTML = topAds.length === 0
-    ? '<div style="color:#5c5c78;text-align:center;padding:20px;font-size:11px">No top performers yet — need ads with ROAS &gt; '+topThreshold.toFixed(2)+'x and impressions &gt; 5K</div>'
+    ? '<div style="color:#3a3a56;text-align:center;padding:20px;font-size:11px">No top performers yet — need ads with ROAS &gt; '+topThreshold.toFixed(2)+'x and impressions &gt; 5K</div>'
     : topAds.map(ad => _crRenderBucketCard(ad, 'top', port)).join('');
   if (avgEl) avgEl.innerHTML = avgAds.length === 0
-    ? '<div style="color:#5c5c78;text-align:center;padding:20px;font-size:11px">No average-tier ads in range</div>'
+    ? '<div style="color:#3a3a56;text-align:center;padding:20px;font-size:11px">No average-tier ads in range</div>'
     : avgAds.map(ad => _crRenderBucketCard(ad, 'average', port)).join('');
   if (botEl) botEl.innerHTML = botAds.length === 0
     ? '<div style="color:#047857;text-align:center;padding:20px;font-size:11px">✅ No bleeders — your floor is clean</div>'
@@ -5409,11 +5409,11 @@ function _crRenderFatigueChart(from, to, topAds) {
         }}}
       },
       scales: {
-        x: { ticks:{color:'#5c5c78',font:{size:10}}, grid:{color:'rgba(26,26,46,0.04)'} },
+        x: { ticks:{color:'#3a3a56',font:{size:10}}, grid:{color:'rgba(26,26,46,0.04)'} },
         y: {
-          ticks:{color:'#5c5c78',font:{size:10}},
+          ticks:{color:'#3a3a56',font:{size:10}},
           grid:{color:'rgba(26,26,46,0.04)'},
-          min:0, title:{ display:true, text:'Frequency', color:'#5c5c78', font:{size:10} }
+          min:0, title:{ display:true, text:'Frequency', color:'#3a3a56', font:{size:10} }
         },
       },
     }
@@ -5448,8 +5448,8 @@ function _crRenderVideoChart(ads) {
         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}%` } },
       },
       scales: {
-        x: { ticks:{color:'#5c5c78',font:{size:9},maxRotation:35}, grid:{color:'rgba(26,26,46,0.04)'} },
-        y: { ticks:{color:'#5c5c78',font:{size:10},callback:v=>v+'%'}, grid:{color:'rgba(26,26,46,0.04)'}, min:0, max:100 },
+        x: { ticks:{color:'#3a3a56',font:{size:9},maxRotation:35}, grid:{color:'rgba(26,26,46,0.04)'} },
+        y: { ticks:{color:'#3a3a56',font:{size:10},callback:v=>v+'%'}, grid:{color:'rgba(26,26,46,0.04)'}, min:0, max:100 },
       }
     }
   });
@@ -5467,7 +5467,7 @@ function _crRenderSpendDonut(ads) {
   const data   = [...top5.map(a=>Math.round(a.spend))];
   if (otherSpend > 0) { labels.push('Others ('+others.length+')'); data.push(Math.round(otherSpend)); }
 
-  const palette = ['#6366f1','#047857','#b45309','#dc2626','#8b5cf6','#5c5c78'];
+  const palette = ['#6366f1','#047857','#b45309','#dc2626','#8b5cf6','#3a3a56'];
   _crSpendDonut = new Chart(canvas, {
     type: 'doughnut',
     data: {
@@ -5520,12 +5520,12 @@ function _crRenderRanks(ads) {
     const freq  = a.frequency;
     const fatigueTag = freq>3.5 ? `<span style="font-size:9px;background:rgba(239,68,68,0.2);color:#dc2626;border-radius:4px;padding:1px 5px;margin-left:4px">FATIGUE</span>` : '';
     const mergeBadge = a.merged_count > 1 ? `<span title="${a.merged_count} ad_ids merged across ${a.adset_count} adsets" style="font-size:9px;background:rgba(6,214,160,0.18);color:#0d9488;border-radius:4px;padding:1px 5px;margin-left:4px">×${a.merged_count}</span>` : '';
-    return `<div style="background:rgba(30,41,59,0.6);border:1px solid rgba(26,26,46,0.06);border-radius:8px;padding:10px;margin-bottom:8px">
+    return `<div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.06);border-radius:8px;padding:10px;margin-bottom:8px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <span style="font-size:11px;color:#1a1a2e;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${a.ad_name}${mergeBadge}${fatigueTag}</span>
         <span style="font-size:13px;font-weight:700;color:${color};flex-shrink:0;margin-left:4px">${val}</span>
       </div>
-      <div style="font-size:10px;color:#5c5c78">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} camps` : a.campaign_name.slice(0,30)} · Freq ${freq.toFixed(1)}</div>
+      <div style="font-size:10px;color:#3a3a56">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} camps` : a.campaign_name.slice(0,30)} · Freq ${freq.toFixed(1)}</div>
     </div>`;
   }
 
@@ -5544,7 +5544,7 @@ function crToggleRankBy(by) {
     if (k === by) {
       btn.style.background='rgba(6,214,160,0.2)';btn.style.borderColor='rgba(6,214,160,0.5)';btn.style.color='#0d9488';
     } else {
-      btn.style.background='transparent';btn.style.borderColor='rgba(26,26,46,0.1)';btn.style.color='#5c5c78';
+      btn.style.background='transparent';btn.style.borderColor='rgba(26,26,46,0.1)';btn.style.color='#3a3a56';
     }
   });
   _crRenderRanks(_crAllAds);
@@ -5577,7 +5577,7 @@ function crRenderTable(ads) {
   if (countEl) countEl.textContent = `${rows.length} ad${rows.length===1?'':'s'}${_crActionFilter?' · '+_crActionFilter:''}`;
 
   if (rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:40px;color:#5c5c78">No ads match the current filters.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:40px;color:#3a3a56">No ads match the current filters.</td></tr>';
     return;
   }
 
@@ -5593,7 +5593,7 @@ function crRenderTable(ads) {
       <td style="padding:9px 8px;white-space:nowrap"><span style="font-size:10px;font-weight:700;background:${actionBg};color:${a.action_color};border-radius:5px;padding:3px 7px">${a.action_label}</span></td>
       <td style="padding:9px 8px;color:#1a1a2e;font-weight:600;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${a.ad_name} · ${a.merged_count} ad_id(s), ${a.adset_count} adset(s), ${a.camp_count} campaign(s)">
         ${a.ad_name}${a.merged_count>1 ? `<span style="font-size:9px;background:rgba(6,214,160,0.18);color:#0d9488;border-radius:4px;padding:1px 5px;margin-left:5px;font-weight:600">×${a.merged_count}</span>` : ''}
-        <div style="font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} campaigns` : a.campaign_name.slice(0,50)}</div>
+        <div style="font-size:10px;color:#4a4a6a;overflow:hidden;text-overflow:ellipsis">${a.merged_count>1 ? `${a.adset_count} adsets · ${a.camp_count} campaigns` : a.campaign_name.slice(0,50)}</div>
       </td>
       <td style="text-align:right;padding:9px 8px;color:#1a1a2e;font-weight:600">₹${Math.round(a.spend).toLocaleString('en-IN')}</td>
       <td style="text-align:right;padding:9px 8px;color:#4a4a6a">₹${Math.round(a.revenue).toLocaleString('en-IN')}</td>
@@ -5845,7 +5845,7 @@ function renderDeep(from, to) {
   const ads = _buildAdAggregates(from, to);
   if (ads.length === 0) {
     document.getElementById('dp-exec-summary').innerHTML =
-      '<div style="grid-column:1/-1;text-align:center;color:#5c5c78;padding:30px">No Meta ad data for this period. Meta sync runs every 15 minutes.</div>';
+      '<div style="grid-column:1/-1;text-align:center;color:#3a3a56;padding:30px">No Meta ad data for this period. Meta sync runs every 15 minutes.</div>';
     return;
   }
   const adsets = _buildAdsetAggDeep(from, to);
@@ -5982,7 +5982,7 @@ function _renderProPlan(ads, adsets, camps, port) {
   // 5. CREATIVE — Scale winners +40% (no new content)
   if (scaleAds.length > 0) {
     plan.push({
-      n: 5, level: 'CREATIVE', levelColor: '#f9a8d4', levelBg: 'rgba(236,72,153,0.18)',
+      n: 5, level: 'CREATIVE', levelColor: '#be185d', levelBg: 'rgba(236,72,153,0.18)',
       color: '#047857', risk: 'Low risk',
       title: `Push ${scaleAds.length} proven winner${scaleAds.length>1?'s':''} +40% — they have room`,
       why: `${scaleAds.length} ads at <b style="color:#047857">${scaleRoas.toFixed(2)}x</b> ROAS with <b>frequency under 2.5</b> = audience not saturated yet. Every rupee not scaled here is leaving money on the table.`,
@@ -6010,8 +6010,8 @@ function _renderProPlan(ads, adsets, camps, port) {
   // 7. CREATIVE — Move proven winners to broader targeting
   if (top3Creatives.length >= 2) {
     plan.push({
-      n: 7, level: 'CREATIVE', levelColor: '#f9a8d4', levelBg: 'rgba(236,72,153,0.18)',
-      color: '#f9a8d4', risk: 'Medium risk',
+      n: 7, level: 'CREATIVE', levelColor: '#be185d', levelBg: 'rgba(236,72,153,0.18)',
+      color: '#be185d', risk: 'Medium risk',
       title: `Test top ${top3Creatives.length} creatives in BROAD targeting (no new ads needed)`,
       why: `Meta 2024 algorithm rewards <b>broad + great creative</b> over narrow targeting. Your top ${top3Creatives.length} creatives (${top3Creatives.map(a=>a.roas.toFixed(1)+'x').join(', ')}) are proven — they're ready to be unleashed on broad audiences.`,
       do: `Duplicate each top creative into a NEW adset with: age 18-65, no interest targeting, all placements. Budget ₹500-1000/day to start. Run 5 days minimum. <b>Don't create new ads — just duplicate the existing winners.</b>`,
@@ -6023,7 +6023,7 @@ function _renderProPlan(ads, adsets, camps, port) {
   if (fatigueAds.length > 0) {
     const totFatSpend = fatigueAds.reduce((s,a)=>s+a.spend,0);
     plan.push({
-      n: 8, level: 'CREATIVE', levelColor: '#f9a8d4', levelBg: 'rgba(236,72,153,0.18)',
+      n: 8, level: 'CREATIVE', levelColor: '#be185d', levelBg: 'rgba(236,72,153,0.18)',
       color: '#b45309', risk: 'Low risk',
       title: `Save ${fatigueAds.length} fatigued creative${fatigueAds.length>1?'s':''} by expanding audience (no new content)`,
       why: `${fatigueAds.length} creatives spending ${fmt(totFatSpend)} have hit frequency >3.5 — audience saturated. Killing them = wasting working creative. Refreshing = creating new content (slow).`,
@@ -6063,9 +6063,9 @@ function _renderProPlan(ads, adsets, camps, port) {
         <span style="font-size:9.5px;font-weight:600;color:#4a4a6a;background:rgba(100,116,139,0.15);border-radius:4px;padding:2px 7px">${p.risk}</span>
       </div>
       <div style="font-size:13.5px;font-weight:700;color:#1a1a2e;margin-bottom:10px;line-height:1.4">${p.title}</div>
-      <div style="font-size:11.5px;color:#4a4a6a;margin-bottom:8px;line-height:1.55"><b style="color:#cbd5e1">Why:</b> ${p.why}</div>
-      <div style="font-size:11.5px;color:#cbd5e1;margin-bottom:8px;line-height:1.55"><b style="color:#1a1a2e">How:</b> ${p.do}</div>
-      <div style="font-size:11.5px;color:${p.color};line-height:1.55"><b style="color:#cbd5e1">Impact:</b> ${p.impact}</div>
+      <div style="font-size:11.5px;color:#4a4a6a;margin-bottom:8px;line-height:1.55"><b style="color:#35355a">Why:</b> ${p.why}</div>
+      <div style="font-size:11.5px;color:#35355a;margin-bottom:8px;line-height:1.55"><b style="color:#1a1a2e">How:</b> ${p.do}</div>
+      <div style="font-size:11.5px;color:${p.color};line-height:1.55"><b style="color:#35355a">Impact:</b> ${p.impact}</div>
     </div>
   `).join('');
 
@@ -6081,10 +6081,10 @@ function _renderProPlan(ads, adsets, camps, port) {
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
         <div>
           <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">📈 If you execute all 10 steps over the next 14 days</div>
-          <div style="color:#cbd5e1">Projected net account impact (conservative estimates · ${ads.length} live creatives across ${camps.length} campaigns)</div>
+          <div style="color:#35355a">Projected net account impact (conservative estimates · ${ads.length} live creatives across ${camps.length} campaigns)</div>
         </div>
         <div style="text-align:right">
-          <div style="font-size:10px;color:#5c5c78;text-transform:uppercase;letter-spacing:1px">Projected Lift</div>
+          <div style="font-size:10px;color:#3a3a56;text-transform:uppercase;letter-spacing:1px">Projected Lift</div>
           <div style="font-size:24px;font-weight:800;color:#047857">+${fmt(totalProj)}</div>
           <div style="font-size:11px;color:#4a4a6a;margin-top:2px">vs current ${fmt(port.revenue)} revenue (${port.roas.toFixed(2)}x ROAS)</div>
         </div>
@@ -6125,8 +6125,8 @@ function _renderDiagnostics(port, ads, adsets) {
     { l:'Scale-Tier Spend',v:'₹'+Math.round(scaleSpend).toLocaleString('en-IN'), c:'#047857' },
   ];
   el.innerHTML = items.map(i => `
-    <div style="background:rgba(30,41,59,0.5);border:1px solid rgba(26,26,46,0.05);border-radius:10px;padding:12px">
-      <div style="font-size:10px;color:#5c5c78;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${i.l}</div>
+    <div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.05);border-radius:10px;padding:12px">
+      <div style="font-size:10px;color:#3a3a56;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">${i.l}</div>
       <div style="font-size:17px;font-weight:700;color:${i.c}">${i.v}</div>
     </div>
   `).join('');
@@ -6222,26 +6222,26 @@ function _renderExecSummary(camps, adsets, ads, port) {
 function _renderCampaignCards(camps, port) {
   const el = document.getElementById('dp-campaign-cards');
   if (!el) return;
-  if (camps.length === 0) { el.innerHTML = '<div style="grid-column:1/-1;color:#5c5c78">No campaigns in this period</div>'; return; }
+  if (camps.length === 0) { el.innerHTML = '<div style="grid-column:1/-1;color:#3a3a56">No campaigns in this period</div>'; return; }
   el.innerHTML = camps.slice(0, 12).map(c => {
     const cls = c.classify;
     const roasColor = c.roas>=2?'#047857':c.roas>=1?'#b45309':'#dc2626';
-    return `<div style="background:rgba(30,41,59,0.55);border:1px solid rgba(26,26,46,0.05);border-radius:12px;padding:14px 16px;border-left:3px solid ${cls.color}">
+    return `<div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.05);border-radius:12px;padding:14px 16px;border-left:3px solid ${cls.color}">
       <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:10px">
         <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:700;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${c.name}">${c.name}</div>
-          <div style="font-size:10px;color:#5c5c78;margin-top:2px">${c.count} ad${c.count>1?'s':''}</div>
+          <div style="font-size:10px;color:#3a3a56;margin-top:2px">${c.count} ad${c.count>1?'s':''}</div>
         </div>
         <span style="font-size:11px;font-weight:700;background:${cls.color}22;color:${cls.color};border-radius:6px;padding:4px 10px;white-space:nowrap">${cls.label}</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;padding:10px;background:rgba(255,253,246,0.5);border-radius:8px">
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Spend</div><div style="font-size:12px;color:#1a1a2e;font-weight:600">₹${Math.round(c.spend/1000)}K</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">ROAS</div><div style="font-size:12px;color:${roasColor};font-weight:700">${c.roas.toFixed(2)}x</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Pur</div><div style="font-size:12px;color:#1a1a2e;font-weight:600">${Math.round(c.purchases)}</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">CTR</div><div style="font-size:12px;color:#4a4a6a;font-weight:600">${c.ctr.toFixed(2)}%</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Spend</div><div style="font-size:12px;color:#1a1a2e;font-weight:600">₹${Math.round(c.spend/1000)}K</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">ROAS</div><div style="font-size:12px;color:${roasColor};font-weight:700">${c.roas.toFixed(2)}x</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Pur</div><div style="font-size:12px;color:#1a1a2e;font-weight:600">${Math.round(c.purchases)}</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">CTR</div><div style="font-size:12px;color:#4a4a6a;font-weight:600">${c.ctr.toFixed(2)}%</div></div>
       </div>
-      <div style="font-size:11px;color:#4a4a6a;margin-bottom:6px"><b style="color:#cbd5e1">Why:</b> ${cls.reason}</div>
-      <div style="font-size:11px;color:${cls.color}"><b style="color:#cbd5e1">Action:</b> ${cls.change}</div>
+      <div style="font-size:11px;color:#4a4a6a;margin-bottom:6px"><b style="color:#35355a">Why:</b> ${cls.reason}</div>
+      <div style="font-size:11px;color:${cls.color}"><b style="color:#35355a">Action:</b> ${cls.change}</div>
     </div>`;
   }).join('');
 }
@@ -6255,16 +6255,16 @@ function _renderAdsetTableDeep(adsets, port) {
   if (filter === 'scale')    rows = rows.filter(a => a.classify.action==='scale');
   if (filter === 'fatigue')  rows = rows.filter(a => a.frequency > 3.5);
   if (filter === 'killpause')rows = rows.filter(a => a.classify.action==='pause');
-  if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#5c5c78">No adsets match filter.</td></tr>'; return; }
+  if (rows.length === 0) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:#3a3a56">No adsets match filter.</td></tr>'; return; }
   tbody.innerHTML = rows.slice(0, 50).map(a => {
     const cls = a.classify;
     const roasColor = a.roas>=2?'#047857':a.roas>=1?'#b45309':'#dc2626';
     const freqColor = a.frequency>3.5?'#dc2626':a.frequency>2.5?'#b45309':'#047857';
     return `<tr style="border-bottom:1px solid rgba(26,26,46,0.04)">
       <td style="padding:9px 8px;white-space:nowrap"><span style="font-size:10px;font-weight:700;background:${cls.color}22;color:${cls.color};border-radius:5px;padding:3px 7px">${cls.label}</span></td>
-      <td style="padding:9px 8px;color:#e2e8f0;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.adset_name} · ${a.campaign_name}">
+      <td style="padding:9px 8px;color:#1a1a2e;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.adset_name} · ${a.campaign_name}">
         ${a.adset_name}
-        <div style="font-size:10px;color:#475569;overflow:hidden;text-overflow:ellipsis">${a.campaign_name.slice(0,40)}</div>
+        <div style="font-size:10px;color:#4a4a6a;overflow:hidden;text-overflow:ellipsis">${a.campaign_name.slice(0,40)}</div>
       </td>
       <td style="text-align:right;padding:9px 8px;color:#1a1a2e;font-weight:600">₹${Math.round(a.spend).toLocaleString('en-IN')}</td>
       <td style="text-align:right;padding:9px 8px;font-weight:700;color:${roasColor}">${a.roas>0?a.roas.toFixed(2)+'x':'—'}</td>
@@ -6274,9 +6274,9 @@ function _renderAdsetTableDeep(adsets, port) {
       <td style="text-align:right;padding:9px 8px;color:#4a4a6a">₹${Math.round(a.cpm)}</td>
       <td style="text-align:right;padding:9px 8px;font-weight:600;color:${freqColor}">${a.frequency.toFixed(2)}</td>
       <td style="text-align:right;padding:9px 8px;color:#4a4a6a">${a.unique_creatives}</td>
-      <td style="padding:9px 8px;font-size:11px;color:#cbd5e1">
+      <td style="padding:9px 8px;font-size:11px;color:#35355a">
         <div style="color:${cls.color};margin-bottom:2px">${cls.change}</div>
-        <div style="font-size:10px;color:#5c5c78">${cls.reason}</div>
+        <div style="font-size:10px;color:#3a3a56">${cls.reason}</div>
       </td>
     </tr>`;
   }).join('');
@@ -6298,31 +6298,31 @@ function _renderAdCardsDeep(ads, port) {
   filtered.sort((a,b) => b.spend - a.spend);
 
   if (filtered.length === 0) {
-    el.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#5c5c78;padding:30px">✅ No creatives need action under current filter.</div>';
+    el.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#3a3a56;padding:30px">✅ No creatives need action under current filter.</div>';
     return;
   }
 
   el.innerHTML = filtered.slice(0, 30).map(a => {
     const r = a.rec;
     const roasColor = a.roas>=2?'#047857':a.roas>=1?'#b45309':'#dc2626';
-    return `<div style="background:rgba(30,41,59,0.55);border:1px solid rgba(26,26,46,0.05);border-radius:12px;padding:14px 16px;border-left:3px solid ${r.color}">
+    return `<div style="background:rgba(26,26,46,0.04);border:1px solid rgba(26,26,46,0.05);border-radius:12px;padding:14px 16px;border-left:3px solid ${r.color}">
       <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:10px">
         <div style="flex:1;min-width:0">
           <div style="font-size:12.5px;font-weight:700;color:#1a1a2e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.ad_name}">${a.ad_name}${a.merged_count>1?` <span style="font-size:9px;background:rgba(6,214,160,0.18);color:#0d9488;border-radius:4px;padding:1px 5px">×${a.merged_count}</span>`:''}</div>
-          <div style="font-size:10px;color:#5c5c78;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.campaign_name}">${a.merged_count>1 ? a.adset_count+' adsets · '+a.camp_count+' campaigns' : a.campaign_name.slice(0,50)}</div>
+          <div style="font-size:10px;color:#3a3a56;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.campaign_name}">${a.merged_count>1 ? a.adset_count+' adsets · '+a.camp_count+' campaigns' : a.campaign_name.slice(0,50)}</div>
         </div>
         <span style="font-size:11px;font-weight:700;background:${r.color}22;color:${r.color};border-radius:6px;padding:4px 10px;white-space:nowrap">${r.label}</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;padding:10px;background:rgba(255,253,246,0.5);border-radius:8px">
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Spend</div><div style="font-size:11px;color:#1a1a2e;font-weight:600">₹${Math.round(a.spend/1000)}K</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">ROAS</div><div style="font-size:11px;color:${roasColor};font-weight:700">${a.roas.toFixed(2)}x</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Thumb</div><div style="font-size:11px;color:#4a4a6a;font-weight:600">${a.thumbstop>0?a.thumbstop.toFixed(0)+'%':'—'}</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Hold</div><div style="font-size:11px;color:#4a4a6a;font-weight:600">${a.hold_rate>0?a.hold_rate.toFixed(0)+'%':'—'}</div></div>
-        <div><div style="font-size:9px;color:#5c5c78;text-transform:uppercase">Freq</div><div style="font-size:11px;color:${a.frequency>3.5?'#dc2626':'#4a4a6a'};font-weight:600">${a.frequency.toFixed(2)}</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Spend</div><div style="font-size:11px;color:#1a1a2e;font-weight:600">₹${Math.round(a.spend/1000)}K</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">ROAS</div><div style="font-size:11px;color:${roasColor};font-weight:700">${a.roas.toFixed(2)}x</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Thumb</div><div style="font-size:11px;color:#4a4a6a;font-weight:600">${a.thumbstop>0?a.thumbstop.toFixed(0)+'%':'—'}</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Hold</div><div style="font-size:11px;color:#4a4a6a;font-weight:600">${a.hold_rate>0?a.hold_rate.toFixed(0)+'%':'—'}</div></div>
+        <div><div style="font-size:9px;color:#3a3a56;text-transform:uppercase">Freq</div><div style="font-size:11px;color:${a.frequency>3.5?'#dc2626':'#4a4a6a'};font-weight:600">${a.frequency.toFixed(2)}</div></div>
       </div>
-      <div style="font-size:11px;color:#4a4a6a;margin-bottom:6px;line-height:1.5"><b style="color:#cbd5e1">Why:</b> ${r.why}</div>
-      <div style="font-size:11px;color:#cbd5e1;margin-bottom:6px;line-height:1.5"><b style="color:#1a1a2e">Do:</b> ${r.do}</div>
-      <div style="font-size:11px;color:${r.color};line-height:1.5"><b style="color:#cbd5e1">Projected impact:</b> ${r.impact}</div>
+      <div style="font-size:11px;color:#4a4a6a;margin-bottom:6px;line-height:1.5"><b style="color:#35355a">Why:</b> ${r.why}</div>
+      <div style="font-size:11px;color:#35355a;margin-bottom:6px;line-height:1.5"><b style="color:#1a1a2e">Do:</b> ${r.do}</div>
+      <div style="font-size:11px;color:${r.color};line-height:1.5"><b style="color:#35355a">Projected impact:</b> ${r.impact}</div>
     </div>`;
   }).join('');
 }
@@ -6352,7 +6352,7 @@ function _renderBudgetSim(ads, port) {
   ];
   el.innerHTML = items.map(i => `
     <div style="text-align:center">
-      <div style="font-size:10px;color:#5c5c78;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${i.l}</div>
+      <div style="font-size:10px;color:#3a3a56;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">${i.l}</div>
       <div style="font-size:18px;font-weight:800;color:${i.c}">${i.v}</div>
     </div>
   `).join('');
